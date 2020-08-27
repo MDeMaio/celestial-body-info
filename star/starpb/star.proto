@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package planet;
+
+option go_package = "planetpb";
+
+// We can define our planet and all of its corresponding data here, we can split this up later if we want.
+message Planet {
+    string planet_id = 1;
+    string name = 2;
+    float aphelion = 3; // golang float32
+    float perihelion = 4; // golang float32
+}
+
+message ReadPlanetRequest {
+    string planet_id = 1;
+}
+
+message ReadPlanetResponse {
+    repeated Planet planet = 1;
+}
+
+service BlogService {
+    rpc ListPlanet (ReadPlanetRequest) returns (ReadPlanetResponse); // return NOT_FOUND if not found
+}

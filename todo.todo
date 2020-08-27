@@ -1,0 +1,22 @@
+- [X] Setup planet proto file.
+- [X] Updated generate.sh to point to correct files.
+- [X] Generate planetpb code.
+- [X] Insert test data into planet table.
+- [X] Update planet_server code to use newly generated code from above.
+- [X] Updated main.go to correctly use new planet server.
+- [X] Implement ListPlanent Functionality.
+- [X] Setup http server to handle request from frontend.
+- [X] Test with postman to ensure its working properly.
+- [] Update http server for error handling and returning errors to frontend.
+- [] Update http server to implement Read method along with existing list method.
+- [] Update http server to use timeouts.
+- [] Update http server by adding logging.
+
+---- Future Ideas -----
+- [] Real time distance from tracker. (Track planets distance from earth in realtime updated every x seconds)
+- [] Ability to convert units of measure for each property of the celestial body.
+- [] Pull data from other APIs. (NASA)
+- [] Add data and information about solar systems and galaxies.
+- [] Add data and information about dwarf planets.
+- [] Add data and information about black holes.
+- [] Add data and information about NEOs.
