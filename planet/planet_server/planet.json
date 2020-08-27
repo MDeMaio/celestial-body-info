@@ -1,0 +1,100 @@
+{
+    "name": "Mars",
+    "orbital_info": {
+        "aphelion": 249200000,
+        "perihelion": 206700000,
+        "semi_major_axis": 227939200,
+        "eccentricity": 0.0934,
+        "orbital_period": 686.971,
+        "synodic_period": 779.96,
+        "avg_orbital_speed": 24.007,
+        "mean_anomaly": 19.412,
+        "inclination": {
+            "ecliptic": 1.850,
+            "suns_equator": 5.65,
+            "invariable_plane": 1.67
+        },
+        "longitude_of_ascending_node": 49.558,
+        "satelites": 2
+    },
+    "physical_info": {
+        "mean_radius": "3,389.5 ± 0.2",
+        "equatorial_radius": "3,396.2 ± 0.1",
+        "polar_radius": "3,376.2 ± 0.1",
+        "flattening": "0.00589 ± 0.00015",
+        "surface_area": 144798500,
+        "volume": 163180000000,
+        "mass": 641710000000000000000000,
+        "mean_density": 3.9335,
+        "surface_gravity": 3.72076,
+        "moment_of_inertia_factor": "0.3662 ± 0.0017",
+        "escape_velocity": 5.027,
+        "sidereal_rotation_period": 1.025957,
+        "equatorial_rotation_velocity": 241.17,
+        "axial_tilt": 25.19,
+        "northpole_right_ascension": 317.6814,
+        "northpole_declination": 52.88650,
+        "albedo": {
+            "geometric": 0.170,
+            "bond": 0.25
+        },
+        "surface_temp": {
+            "min": -226,
+            "max": 95,
+            "mean": -82
+        },
+        "apparemt_magnitude": {
+            "min": -2.94,
+            "max": 1.86
+        }
+    },
+    "atmosphere_info": {
+        "surface_pressure": 0.636,
+        "element": [
+            {
+                "name": "Carbon Dioxide",
+                "percent_as_decimal": 95.97
+            },
+            {
+                "name": "Argon",
+                "percent_as_decimal": 1.93
+            },
+            {
+                "name": "Nitrogen",
+                "percent_as_decimal": 1.89
+            },
+            {
+                "name": "Oxygen",
+                "percent_as_decimal": 0.146
+            },
+            {
+                "name": "Carbon Monoxide",
+                "percent_as_decimal": 0.0557
+            },
+            {
+                "name": "Water Vapor",
+                "percent_as_decimal": 0.0210
+            },
+            {
+                "name": "Nitrogen Oxide",
+                "percent_as_decimal": 0.0100
+            },
+            {
+                "name": "Neon",
+                "percent_as_decimal": 0.00025
+            },
+            {
+                "name": "Hydrogen Deuterium Oxide",
+                "percent_as_decimal": 0.00008
+            },
+            {
+                "name": "Krypton",
+                "percent_as_decimal": 0.00003
+            },
+            {
+                "name": "Xenon",
+                "percent_as_decimal": 0.00001
+            }
+        ]
+    }
+}
