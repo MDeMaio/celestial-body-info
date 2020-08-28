@@ -278,6 +278,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
 	}
+	fmt.Println("Up and running on: " port)
 
 	opts := []grpc.ServerOption{}
 	s := grpc.NewServer(opts...)
