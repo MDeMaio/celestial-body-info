@@ -32,3 +32,4 @@
 - [] Add data and information about dwarf planets.
 - [] Add data and information about black holes.
 - [] Add data and information about NEOs.
+- [] If no reliable APIs, possibly an html scraper to grab the data from wikipedia.

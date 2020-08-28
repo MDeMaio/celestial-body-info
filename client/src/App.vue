@@ -1,7 +1,7 @@
 <template>
 <div id="app">
     <nav class="navbar navbar-expand navbar-dark bg-dark">
-        <a href="#" class="navbar-brand">Celestial Body Info</a>
+        <a href="/" class="navbar-brand">Celestial Body Info</a>
         <div class="navbar-nav mr-auto">
             <li class="nav-item">
                 <a href="/planets" class="nav-link">Planets</a>
