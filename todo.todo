@@ -1,3 +1,4 @@
+---- Backend ----
 - [X] Setup planet proto file.
 - [X] Updated generate.sh to point to correct files.
 - [X] Generate planetpb code.
@@ -11,6 +12,15 @@
 - [] Update http server to implement Read method along with existing list method.
 - [] Update http server to use timeouts.
 - [] Update http server by adding logging.
+
+---- Frontend ----
+- [] Set up boiler plate frontend project(Vue? React?)
+- [] Download all packages we will need for making API requests and handling data.
+- [] Test fetching the data to the frontend by making an API call to our backend.
+- [] Test load data onto the page and listing it.
+- [] Add some styling and formatting to the data.
+- [] Ability to click planet in the list and view it by itself with full details.
+- [] Research routing/rerendering of the page to handle viewing one planet at a time.
 
 ---- Future Ideas -----
 - [] Real time distance from tracker. (Track planets distance from earth in realtime updated every x seconds)
