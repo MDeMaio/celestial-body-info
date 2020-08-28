@@ -16,7 +16,7 @@
         <div class="col-md-6">
             <h4>Planets List</h4>
             <ul class="list-group">
-                <li class="list-group-item" :class="{ active: index == currentIndex }" v-for="(planet, index) in planets" :key="index" @click="setActivePlanet(planet, index)">
+                <li class="list-group-item lgi-pointer" :class="{ active: index == currentIndex }" v-for="(planet, index) in planets" :key="index" @click="setActivePlanet(planet, index)">
                     {{ planet.name }}
                 </li>
             </ul>
@@ -130,3 +130,12 @@ export default {
     }
 };
 </script>
+
+<style>
+.lgi-pointer{
+  cursor: pointer;
+}
+.lgi-pointer:hover{
+  background-color: #53a5fc;
+}
+</style>
