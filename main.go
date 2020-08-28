@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/mdemaio/celestial-body-info/planet/planetpb"
@@ -81,10 +82,17 @@ func main() {
 	r.HandleFunc("/planet", listPlanetHandler)
 	r.HandleFunc("/planet/{id}", readPlanetHandler)
 
-	log.Println("Listening on localhost:8080")
+	log.Println("Listening for http requests.")
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
 	}
-	log.Fatal(http.ListenAndServe(":"+port, r))
+
+	srv := &http.Server{
+		Handler:      r,
+		Addr:         ":" + port,
+		WriteTimeout: 15 * time.Second,
+		ReadTimeout:  15 * time.Second,
+	}
+	log.Fatal(srv.ListenAndServe())
 }
