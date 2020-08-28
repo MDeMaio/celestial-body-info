@@ -21,6 +21,7 @@
 - [X] Add some styling and formatting to the data.
 - [X] Ability to click planet in the list and view it by itself with full details.
 - [] Update styles and formatting.
+- [] Add tooltip from NPM to put tips each property to explain what it is.
 - [] Research routing/rerendering of the page to handle viewing one planet at a time.
 
 ---- Future Ideas -----

@@ -22,6 +22,7 @@
             </ul>
         </div>
     </div>
+    <h1 style="text-align: center; margin-top: 2%; font-size: 50px;" v-if="currentPlanet">{{ currentPlanet.name }}</h1>
     <div class="row mt-3">
         <div class="col-md-4">
             <div v-if="currentPlanet">
