@@ -12,6 +12,8 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/mdemaio/celestial-body-info/planet/planetpb"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 // Change logic for closing cc later, we only need it when a request is made to be open, otherwise closed.
@@ -36,14 +38,37 @@ func connectToGRPCPlanet() (*grpc.ClientConn, planetpb.PlanetServiceClient) {
 	return cc, c
 }
 
+func handleGRPCErrors(err error) (int, []byte) {
+	if e, ok := status.FromError(err); ok {
+		switch e.Code() {
+		case codes.Internal:
+			return http.StatusInternalServerError, []byte(fmt.Sprintf(`{"error": "%v"}`, e.Message()))
+		case codes.InvalidArgument:
+			return http.StatusBadRequest, []byte(fmt.Sprintf(`{"error": "%v"}`, e.Message()))
+		case codes.NotFound:
+			return http.StatusNotFound, []byte(fmt.Sprintf(`{"error": "%v"}`, e.Message()))
+		default:
+			return http.StatusInternalServerError, []byte(fmt.Sprintf(`{"error": "%v"}`, e.Message()))
+
+		}
+	} else {
+		return http.StatusInternalServerError, []byte(fmt.Sprintf(`{"error": "%v"}`, "Unknown internal error occured."))
+	}
+}
+
 func listPlanetHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Listing the planets")
 	cc, c := connectToGRPCPlanet()
 	defer cc.Close()
 
+	w.Header().Set("Content-Type", "application/json")
 	resList, err := c.ListPlanet(context.Background(), &planetpb.ListPlanetRequest{})
-	if err != nil {
+	if err != nil { // Handle our gRPC errors.
 		fmt.Printf("Error happened while listing: %v \n", err)
+		code, errJSON := handleGRPCErrors(err)
+		w.WriteHeader(code)
+		w.Write(errJSON)
+		return
 	}
 	fmt.Printf("Planets were listed: %v \n", resList)
 	slcB, err := json.Marshal(resList.GetPlanet())
@@ -51,7 +76,6 @@ func listPlanetHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("Error happened while marshalling: %v \n", err)
 	}
 
-	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(slcB)
 }
@@ -61,18 +85,23 @@ func readPlanetHandler(w http.ResponseWriter, r *http.Request) {
 	cc, c := connectToGRPCPlanet()
 	defer cc.Close()
 
+	w.Header().Set("Content-Type", "application/json")
 	vars := mux.Vars(r)
 	resRead, err := c.ReadPlanet(context.Background(), &planetpb.ReadPlanetRequest{PlanetId: vars["id"]})
-	if err != nil {
+	if err != nil { // Handle our gRPC errors.
 		fmt.Printf("Error happened while reading: %v \n", err)
+		code, errJSON := handleGRPCErrors(err)
+		w.WriteHeader(code)
+		w.Write(errJSON)
+		return
 	}
+
 	fmt.Printf("Planet was read: %v \n", resRead)
 	slcB, err := json.Marshal(resRead.GetPlanet())
 	if err != nil {
 		fmt.Printf("Error happened while marshalling: %v \n", err)
 	}
 
-	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(slcB)
 }
