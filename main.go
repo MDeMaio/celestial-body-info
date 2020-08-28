@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/mdemaiocwg/celestial-body-info/planet/planetpb"
+	"github.com/mdemaio/celestial-body-info/planet/planetpb"
 	"google.golang.org/grpc"
 )
 

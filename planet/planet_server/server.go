@@ -18,7 +18,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
-	"github.com/mdemaiocwg/celestial-body-info/planet/planetpb"
+	"github.com/mdemaio/celestial-body-info/planet/planetpb"
 	"google.golang.org/grpc"
 )
 
