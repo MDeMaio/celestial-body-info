@@ -25,7 +25,7 @@ func connectToGRPCPlanet() (*grpc.ClientConn, planetpb.PlanetServiceClient) {
 		port = "0.0.0.0:80"
 	}
 
-	cc, err := grpc.Dial("https://pacific-castle-11317.herokuapp.com:80", opts)
+	cc, err := grpc.Dial(port, opts)
 	if err != nil {
 		log.Fatalf("could not connect: %v", err)
 	}
