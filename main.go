@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/gorilla/mux"
 	"github.com/mdemaio/celestial-body-info/planet/planetpb"
 	"google.golang.org/grpc"
 )
@@ -34,56 +35,56 @@ func connectToGRPCPlanet() (*grpc.ClientConn, planetpb.PlanetServiceClient) {
 	return cc, c
 }
 
-// todo: Define an http server to handle requests from the client.
-// This http server should fetch the data first from our microservices using gRPC.
-// Afterwards we return the data back to the frontend user and display it formatted.
-func main() {
-
+func listPlanetHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Listing the planets")
 	cc, c := connectToGRPCPlanet()
 	defer cc.Close()
 
-	// read Planet
-	// fmt.Println("Reading the planet")
+	resList, err := c.ListPlanet(context.Background(), &planetpb.ListPlanetRequest{})
+	if err != nil {
+		fmt.Printf("Error happened while listing: %v \n", err)
+	}
+	fmt.Printf("Planets were listed: %v \n", resList)
+	slcB, err := json.Marshal(resList.GetPlanet())
+	if err != nil {
+		fmt.Printf("Error happened while marshalling: %v \n", err)
+	}
 
-	// resRead, err := c.ReadPlanet(context.Background(), &planetpb.ReadPlanetRequest{PlanetId: "5f47c1ad093cc8a6577e0918"})
-	// if err != nil {
-	// 	fmt.Printf("Error happened while reading: %v \n", err)
-	// }
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(slcB)
+}
 
-	// fmt.Printf("Planet was read: %v \n", resRead)
+func readPlanetHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("reading a planet")
+	cc, c := connectToGRPCPlanet()
+	defer cc.Close()
 
-	//list Planet
-	// fmt.Println("Listing the planets")
+	vars := mux.Vars(r)
+	resRead, err := c.ReadPlanet(context.Background(), &planetpb.ReadPlanetRequest{PlanetId: vars["id"]})
+	if err != nil {
+		fmt.Printf("Error happened while reading: %v \n", err)
+	}
+	fmt.Printf("Planet was read: %v \n", resRead)
+	slcB, err := json.Marshal(resRead.GetPlanet())
+	if err != nil {
+		fmt.Printf("Error happened while marshalling: %v \n", err)
+	}
 
-	// resList, err := c.ListPlanet(context.Background(), &planetpb.ListPlanetRequest{})
-	// if err != nil {
-	// 	fmt.Printf("Error happened while listing: %v \n", err)
-	// }
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(slcB)
+}
 
-	// fmt.Printf("Planets were listed: %v \n", resList.GetPlanet())
+func main() {
+	r := mux.NewRouter()
+	r.HandleFunc("/planet", listPlanetHandler)
+	r.HandleFunc("/planet/{id}", readPlanetHandler)
 
-	http.HandleFunc("/planet", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("Listing the planets")
-
-		resList, err := c.ListPlanet(context.Background(), &planetpb.ListPlanetRequest{})
-		if err != nil {
-			fmt.Printf("Error happened while listing: %v \n", err)
-		}
-		fmt.Printf("Planets were listed: %v \n", resList)
-		slcB, err := json.Marshal(resList.GetPlanet())
-		if err != nil {
-			fmt.Printf("Error happened while marshalling: %v \n", err)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		w.Write(slcB)
-
-	})
 	log.Println("Listening on localhost:8080")
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
 	}
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	log.Fatal(http.ListenAndServe(":"+port, r))
 }
