@@ -18,7 +18,14 @@ func connectToGRPCPlanet() (*grpc.ClientConn, planetpb.PlanetServiceClient) {
 
 	opts := grpc.WithInsecure()
 
-	cc, err := grpc.Dial("tcp:"+os.Getenv("PORT"), opts)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "0.0.0.0:" + port
+	} else {
+		port = "tcp:" + port
+	}
+
+	cc, err := grpc.Dial("0.0.0.0:"+port, opts)
 	if err != nil {
 		log.Fatalf("could not connect: %v", err)
 	}
