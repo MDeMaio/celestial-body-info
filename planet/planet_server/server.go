@@ -272,7 +272,7 @@ func main() {
 	if port == "" {
 		port = "0.0.0.0:50051"
 	} else {
-		port = "tcp:" + port
+		port = "0.0.0.0:" + port
 	}
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
