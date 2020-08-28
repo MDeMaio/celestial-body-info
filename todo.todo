@@ -14,7 +14,7 @@
 - [] Update http server by adding logging.
 
 ---- Frontend ----
-- [] Set up boiler plate frontend project(Vue? React?)
+- [] Set up boiler plate frontend project(Vue!)
 - [] Download all packages we will need for making API requests and handling data.
 - [] Test fetching the data to the frontend by making an API call to our backend.
 - [] Test load data onto the page and listing it.
