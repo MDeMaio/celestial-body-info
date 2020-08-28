@@ -75,10 +75,8 @@ func main() {
 			fmt.Printf("Error happened while marshalling: %v \n", err)
 		}
 
-		//test := `{"test": "test"}`
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		//w.Write([]byte(test))
 		w.Write(slcB)
 
 	})
