@@ -1,2 +1,2 @@
 web: celestial-body-info
-web: planet/planet_server
+worker: ./planet/planet_server/server.go
