@@ -22,7 +22,7 @@ func connectToGRPCPlanet() (*grpc.ClientConn, planetpb.PlanetServiceClient) {
 	if port == "" {
 		port = "0.0.0.0:50051"
 	} else {
-		port = "0.0.0.0:53"
+		port = "0.0.0.0:80"
 	}
 
 	cc, err := grpc.Dial(port, opts)
