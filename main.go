@@ -62,6 +62,8 @@ func listPlanetHandler(w http.ResponseWriter, r *http.Request) {
 	defer cc.Close()
 
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
 	resList, err := c.ListPlanet(context.Background(), &planetpb.ListPlanetRequest{})
 	if err != nil { // Handle our gRPC errors.
 		fmt.Printf("Error happened while listing: %v \n", err)
@@ -86,6 +88,8 @@ func readPlanetHandler(w http.ResponseWriter, r *http.Request) {
 	defer cc.Close()
 
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
 	vars := mux.Vars(r)
 	resRead, err := c.ReadPlanet(context.Background(), &planetpb.ReadPlanetRequest{PlanetId: vars["id"]})
 	if err != nil { // Handle our gRPC errors.
@@ -108,8 +112,9 @@ func readPlanetHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	r := mux.NewRouter()
-	r.HandleFunc("/planet", listPlanetHandler)
-	r.HandleFunc("/planet/{id}", readPlanetHandler)
+	r.HandleFunc("/planet", listPlanetHandler).Methods(http.MethodGet)
+	r.HandleFunc("/planet/{id}", readPlanetHandler).Methods(http.MethodGet)
+	r.Use(mux.CORSMethodMiddleware(r))
 
 	log.Println("Listening for http requests.")
 	port := os.Getenv("PORT")

@@ -14,12 +14,13 @@
 - [] Update http server by adding logging.
 
 ---- Frontend ----
-- [] Set up boiler plate frontend project(Vue!)
-- [] Download all packages we will need for making API requests and handling data.
-- [] Test fetching the data to the frontend by making an API call to our backend.
-- [] Test load data onto the page and listing it.
-- [] Add some styling and formatting to the data.
-- [] Ability to click planet in the list and view it by itself with full details.
+- [X] Set up boiler plate frontend project(Vue!)
+- [X] Download all packages we will need for making API requests and handling data.
+- [X] Test fetching the data to the frontend by making an API call to our backend.
+- [X] Test load data onto the page and listing it.
+- [X] Add some styling and formatting to the data.
+- [X] Ability to click planet in the list and view it by itself with full details.
+- [] Update styles and formatting.
 - [] Research routing/rerendering of the page to handle viewing one planet at a time.
 
 ---- Future Ideas -----
