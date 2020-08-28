@@ -268,7 +268,13 @@ func main() {
 	fmt.Println("Planet Service Started")
 	collection = client.Database("celestial-body-info").Collection("planet")
 
-	lis, err := net.Listen("tcp", "0.0.0.0:50051")
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "0.0.0.0:50051"
+	} else {
+		port = "tcp:" + port
+	}
+	lis, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
 	}

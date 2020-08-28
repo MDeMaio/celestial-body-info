@@ -20,12 +20,12 @@ func connectToGRPCPlanet() (*grpc.ClientConn, planetpb.PlanetServiceClient) {
 
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "0.0.0.0:" + port
+		port = "0.0.0.0:50051"
 	} else {
 		port = "tcp:" + port
 	}
 
-	cc, err := grpc.Dial("0.0.0.0:"+port, opts)
+	cc, err := grpc.Dial(port, opts)
 	if err != nil {
 		log.Fatalf("could not connect: %v", err)
 	}
