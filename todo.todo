@@ -8,7 +8,7 @@
 - [X] Implement ListPlanent Functionality.
 - [X] Setup http server to handle request from frontend.
 - [X] Test with postman to ensure its working properly.
-- [] Update http server for error handling and returning errors to frontend.
+- [X] Update http server for error handling and returning errors to frontend.
 - [X] Update http server to implement Read method along with existing list method.
 - [X] Update http server to use timeouts.
 - [] Update http server by adding logging.
