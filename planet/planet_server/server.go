@@ -270,9 +270,9 @@ func main() {
 
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "0.0.0.0:50051"
+		port = ":50051"
 	} else {
-		port = "0.0.0.0:" + port
+		port = ":" + port
 	}
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
