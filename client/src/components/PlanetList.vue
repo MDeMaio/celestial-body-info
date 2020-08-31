@@ -25,15 +25,15 @@
     <h1 style="text-align: center; margin-top: 2%; font-size: 50px;" v-if="currentPlanet">{{ currentPlanet.name }}</h1>
     <div class="row mt-3">
         <div class="col-md-4">
-            <div v-if="currentPlanet" v-html="generateAttributeHTML(currentPlanet.atmosphere_info,`Atmosphere Info:`)">
+            <div v-if="currentPlanet" v-html="generateAttributeHTML(currentPlanet.atmosphere_info,`Atmosphere Info:`, ``, ``)">
             </div>
         </div>
         <div class="col-md-4">
-            <div v-if="currentPlanet" v-html="generateAttributeHTML(currentPlanet.physical_info,`Physical Info:`)">
+            <div v-if="currentPlanet" v-html="generateAttributeHTML(currentPlanet.physical_info,`Physical Info:`, ``, ``)">
             </div>
         </div>
         <div class="col-md-4">
-            <div v-if="currentPlanet" v-html="generateAttributeHTML(currentPlanet.orbital_info,`Orbital Info:`)">
+            <div v-if="currentPlanet" v-html="generateAttributeHTML(currentPlanet.orbital_info,`Orbital Info:`, ``, ``)">
             </div>
         </div>
     </div>
@@ -98,27 +98,35 @@ export default {
             return finalVal.trim();
         },
 
-            generateAttributeHTML: function(data, category){
-            let html = "";
-            let nestedHtml = "";
-
+            generateAttributeHTML: function(data, category, html, nestedHtml){
             if(this.currentPlanet){
-                html += `<label><strong>` + category + `</strong></label><ul class="list-group">`
+                if(html === ""){
+                    html += `<label><strong>` + category + `</strong></label>`
+                }
+                html += `<ul class="list-group">`;
                 for (const prop in data){
-                    if(typeof data[prop] === "object"){
-                         nestedHtml += `<ul class="list-group">`
-                        for (const nestedProp in data[prop]){
-                            nestedHtml += `<li class="list-group-item">
-                             <strong>` + this.capitalizeAttributes(nestedProp) + `: </strong>` + data[prop][nestedProp] + `
-                            </li>`;
+                    if(typeof data[prop] === "object" && !Array.isArray(data[prop])){ // Recursive call for nested props.
+                         html += `<li class="list-group-item">
+                             <strong>` + this.capitalizeAttributes(prop) + `: </strong>`;
+                        return this.generateAttributeHTML(data[prop], category, html, nestedHtml) + "</li>";
+                    } else if(Array.isArray(data[prop])){   // Handle array of object data.
+                        html += `<li class="list-group-item"><strong>` + this.capitalizeAttributes(prop) +": </strong> <ul>";
+                        for(const item in data[prop]){
+                            html += `<li class="list-group-item">`;
+                            for(const nestedItem in data[prop][item]){
+                                html += `<strong>` + this.capitalizeAttributes(nestedItem) + `: </strong>` + data[prop][item][nestedItem] + `
+                               </br>`;
+                            }
+                            html += " </li>";
                         }
-                        nestedHtml += "</ul>";
-                    } else {
+                        html += "</ul></li>";
+                    } 
+                    else {  // Default case.
                         nestedHtml = data[prop];
-                    }
-                    html += `<li class="list-group-item">
+                         html += `<li class="list-group-item">
                              <strong>` + this.capitalizeAttributes(prop) + `: </strong>` + nestedHtml + `
                          </li>`;
+                    }
                 }
             } else{
                 html = "</ul><div></div>"
