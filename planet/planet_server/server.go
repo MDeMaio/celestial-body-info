@@ -166,20 +166,20 @@ func (*server) ListPlanet(ctx context.Context, req *planetpb.ListPlanetRequest) 
 func dataToPlanetPb(data *planetItem) *planetpb.Planet {
 	inclination := &planetpb.Inclination{
 		Ecliptic:        data.OrbitalInfo.Inclination.Ecliptic,
-		Sunsequator:     data.OrbitalInfo.Inclination.SunsEquator,
-		Invariableplane: data.OrbitalInfo.Inclination.InvariablePlane,
+		SunsEquator:     data.OrbitalInfo.Inclination.SunsEquator,
+		InvariablePlane: data.OrbitalInfo.Inclination.InvariablePlane,
 	}
 	orbitalInfo := &planetpb.OrbitalInfo{
 		Aphelion:                 data.OrbitalInfo.Aphelion,
 		Perihelion:               data.OrbitalInfo.Perihelion,
-		Semimajoraxis:            data.OrbitalInfo.SemiMajorAxis,
+		SemiMajorAxis:            data.OrbitalInfo.SemiMajorAxis,
 		Eccentricity:             data.OrbitalInfo.Eccentricity,
-		Orbitalperiod:            data.OrbitalInfo.OrbitalPeriod,
-		Synodicperiod:            data.OrbitalInfo.SynodicPeriod,
-		Avgorbitalspeed:          data.OrbitalInfo.AvgOrbitalSpeed,
-		Meananomaly:              data.OrbitalInfo.MeanAnomaly,
+		OrbitalPeriod:            data.OrbitalInfo.OrbitalPeriod,
+		SynodicPeriod:            data.OrbitalInfo.SynodicPeriod,
+		AvgOrbitalSpeed:          data.OrbitalInfo.AvgOrbitalSpeed,
+		MeanAnomaly:              data.OrbitalInfo.MeanAnomaly,
 		Inclination:              inclination,
-		Longitudeofascendingnode: data.OrbitalInfo.LongitudeOfAscendingNode,
+		LongitudeOfAscendingNode: data.OrbitalInfo.LongitudeOfAscendingNode,
 		Satelites:                data.OrbitalInfo.Satelites,
 	}
 
@@ -197,48 +197,48 @@ func dataToPlanetPb(data *planetItem) *planetpb.Planet {
 		Max: data.PhysicalInfo.ApparentMagnitude.Max,
 	}
 	physicalInfo := &planetpb.PhysicalInfo{
-		Meanradius:                 data.PhysicalInfo.MeanRadius,
-		Equatorialradius:           data.PhysicalInfo.EquatorialRadius,
-		Polarradius:                data.PhysicalInfo.PolarRadius,
+		MeanRadius:                 data.PhysicalInfo.MeanRadius,
+		EquatorialRadius:           data.PhysicalInfo.EquatorialRadius,
+		PolarRadius:                data.PhysicalInfo.PolarRadius,
 		Flattening:                 data.PhysicalInfo.Flattening,
-		Surfacearea:                data.PhysicalInfo.SurfaceArea,
+		SurfaceArea:                data.PhysicalInfo.SurfaceArea,
 		Volume:                     data.PhysicalInfo.Volume,
 		Mass:                       data.PhysicalInfo.Mass,
-		Meandensity:                data.PhysicalInfo.MeanDensity,
-		Surfacegravity:             data.PhysicalInfo.SurfaceGravity,
-		Momentofinertiafactor:      data.PhysicalInfo.MomentOfInertiaFactor,
-		Escapevelocity:             data.PhysicalInfo.EscapeVelocity,
-		Siderealrotationperiod:     data.PhysicalInfo.SiderealRotationPeriod,
-		Equatorialrotationvelocity: data.PhysicalInfo.EquatorialRotationVelocity,
-		Axialtilt:                  data.PhysicalInfo.AxialTilt,
-		Northpolerightascension:    data.PhysicalInfo.NorthpoleRightAscension,
-		Northpoledeclination:       data.PhysicalInfo.NorthpoleDeclination,
+		MeanDensity:                data.PhysicalInfo.MeanDensity,
+		SurfaceGravity:             data.PhysicalInfo.SurfaceGravity,
+		MomentOfInertiaFactor:      data.PhysicalInfo.MomentOfInertiaFactor,
+		EscapeVelocity:             data.PhysicalInfo.EscapeVelocity,
+		SiderealRotationPeriod:     data.PhysicalInfo.SiderealRotationPeriod,
+		EquatorialRotationVelocity: data.PhysicalInfo.EquatorialRotationVelocity,
+		AxialTilt:                  data.PhysicalInfo.AxialTilt,
+		NorthpoleRightAscension:    data.PhysicalInfo.NorthpoleRightAscension,
+		NorthpoleDeclination:       data.PhysicalInfo.NorthpoleDeclination,
 		Albedo:                     albedo,
-		Surfacetemp:                surfaceTemp,
-		Apparentmagnitude:          apparentMagnitude,
+		SurfaceTemp:                surfaceTemp,
+		ApparentMagnitude:          apparentMagnitude,
 	}
 
 	elements := []*planetpb.Element{} // Not sure if this is correct.
 	for _, v := range data.AtmosphereInfo.Elements {
 		element := &planetpb.Element{
 			Name:             v.Name,
-			Percentasdecimal: v.PercentAsDecimal,
+			PercentAsDecimal: v.PercentAsDecimal,
 		}
 
 		elements = append(elements, element)
 	}
 
 	atmosphereInfo := &planetpb.AtmosphereInfo{
-		Surfacepressure: data.AtmosphereInfo.SurfacePressure,
+		SurfacePressure: data.AtmosphereInfo.SurfacePressure,
 		Element:         elements,
 	}
 
 	return &planetpb.Planet{
 		PlanetId:       data.ID.Hex(),
 		Name:           data.Name,
-		Orbitalinfo:    orbitalInfo,
-		Physicalinfo:   physicalInfo,
-		Atmosphereinfo: atmosphereInfo,
+		OrbitalInfo:    orbitalInfo,
+		PhysicalInfo:   physicalInfo,
+		AtmosphereInfo: atmosphereInfo,
 	}
 }
 

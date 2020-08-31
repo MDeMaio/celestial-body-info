@@ -8,55 +8,55 @@ option go_package = "planetpb";
 message Planet {
     string planet_id = 1;
     string name = 2;
-    OrbitalInfo orbitalinfo = 3;
-    PhysicalInfo physicalinfo = 4;
-    AtmosphereInfo atmosphereinfo = 5;
+    OrbitalInfo orbital_info = 3;
+    PhysicalInfo physical_info = 4;
+    AtmosphereInfo atmosphere_info = 5;
 }
 
 message OrbitalInfo {
     double aphelion = 1; // golang float64
     double perihelion = 2; // golang float64
-    double semimajoraxis = 3; // golang float64
+    double semi_major_axis = 3; // golang float64
     double eccentricity = 4; // golang float64
-    double orbitalperiod = 5; // golang float64
-    double synodicperiod = 6; // golang float64
-    double avgorbitalspeed = 7; // golang float64
-    double meananomaly = 8; // golang float64
+    double orbital_period = 5; // golang float64
+    double synodic_period = 6; // golang float64
+    double avg_orbital_speed = 7; // golang float64
+    double mean_anomaly = 8; // golang float64
     Inclination inclination = 9; 
-    double longitudeofascendingnode = 10; // golang float64
+    double longitude_of_ascending_node = 10; // golang float64
     uint32 satelites = 11; // golang uint32
 }
 
 message PhysicalInfo {
-    string meanradius = 1; 
-    string equatorialradius = 2; 
-    string polarradius = 3; 
+    string mean_radius = 1; 
+    string equatorial_radius = 2; 
+    string polar_radius = 3; 
     string flattening = 4; 
-    double surfacearea = 5; // golang float64
+    double surface_area = 5; // golang float64
     double volume = 6; // golang float64
     double mass = 7; // golang float64
-    double meandensity = 8; // golang float64
-    double surfacegravity = 9; // golang float64
-    string momentofinertiafactor = 10;
-    double escapevelocity = 11; // golang float64
-    double siderealrotationperiod = 12; // golang float64
-    double equatorialrotationvelocity = 13; // golang float64
-    double axialtilt = 14; // golang float64
-    double northpolerightascension = 15; // golang float64
-    double northpoledeclination = 16; // golang float64
+    double mean_density = 8; // golang float64
+    double surface_gravity = 9; // golang float64
+    string moment_of_inertia_factor = 10;
+    double escape_velocity = 11; // golang float64
+    double sidereal_rotation_period = 12; // golang float64
+    double equatorial_rotation_velocity = 13; // golang float64
+    double axial_tilt = 14; // golang float64
+    double northpole_right_ascension = 15; // golang float64
+    double northpole_declination = 16; // golang float64
     Albedo albedo = 17; 
-    SurfaceTemp surfacetemp = 18;
-    ApparentMagnitude apparentmagnitude = 19;
+    SurfaceTemp surface_temp = 18;
+    ApparentMagnitude apparent_magnitude = 19;
 }
 
 message AtmosphereInfo{
-    double surfacepressure = 1; // golang float64
+    double surface_pressure = 1; // golang float64
     repeated Element element = 2;
 }
 
 message Element{
     string name = 1;
-    double percentasdecimal = 2; // golang float64(We will calculate the percent composition of this element based on the float provided)
+    double percent_as_decimal = 2; // golang float64(We will calculate the percent composition of this element based on the float provided)
 }
 
 message SurfaceTemp {
@@ -72,8 +72,8 @@ message ApparentMagnitude{
 
 message Inclination {
     double ecliptic = 1; // golang float64
-    double sunsequator = 2; // golang float64
-    double invariableplane = 3; // golang float64
+    double suns_equator = 2; // golang float64
+    double invariable_plane = 3; // golang float64
 }
 
 message Albedo {

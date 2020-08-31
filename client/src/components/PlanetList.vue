@@ -30,11 +30,11 @@
                 <div>
                     <label><strong>Atmosphere Info:</strong></label>
                     <ul class="list-group">
-                        <li class="list-group-item"><strong>Surface Pressure: </strong>{{currentPlanet.atmosphereinfo.surfacepressure}}</li>
+                        <li class="list-group-item"><strong>Surface Pressure: </strong>{{currentPlanet.atmosphere_info.surface_pressure}}</li>
                         <li class="list-group-item"><strong>Elemental Composition: </strong>
                             <ul class="list-group">
-                                <li class="list-group-item" v-for="(info2, index2) in currentPlanet.atmosphereinfo.element" :key="index2">
-                                    <strong>{{info2.name}}:</strong> {{info2.percentasdecimal}}%
+                                <li class="list-group-item" v-for="(info2, index2) in currentPlanet.atmosphere_info.element" :key="index2">
+                                    <strong>{{info2.name}}:</strong> {{info2.percent_as_decimal}}%
                                 </li>
                             </ul>
                         </li>
@@ -51,8 +51,8 @@
                 <div>
                     <label><strong>Physical Info:</strong></label>
                     <ul class="list-group">
-                        <li class="list-group-item" v-for="(value, key) in currentPlanet.physicalinfo" v-bind:key="key">
-                            <strong>{{key}}:</strong> {{ value }}
+                        <li class="list-group-item" v-for="(value, key) in currentPlanet.physical_info" v-bind:key="key">
+                            <strong>{{capitalizeAttributes(key)}}:</strong> {{ value }}
                         </li>
                     </ul>
                 </div>
@@ -66,8 +66,8 @@
                 <div>
                     <label><strong>Orbital Info:</strong></label>
                     <ul class="list-group">
-                        <li class="list-group-item" v-for="(value, key) in currentPlanet.orbitalinfo" v-bind:key="key">
-                            <strong>{{key}}:</strong> {{ value }}
+                        <li class="list-group-item" v-for="(value, key) in currentPlanet.orbital_info" v-bind:key="key">
+                            <strong>{{capitalizeAttributes(key)}}:</strong> {{ value }}
                         </li>
                     </ul>
                 </div>
@@ -124,6 +124,17 @@ export default {
                 .catch(e => {
                     console.log(e);
                 });
+        },
+
+        capitalizeAttributes(str){  // Capitlize words split by _
+            const res = str.split("_");
+            let finalVal = "";
+            for (let i = 0; i < res.length; i++){
+                res[i].charAt(0).toUpperCase();
+                finalVal += res[i].charAt(0).toUpperCase() + res[i].slice(1) + " ";
+            }
+
+            return finalVal.trim();
         }
     },
     mounted() {
