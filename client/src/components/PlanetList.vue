@@ -107,8 +107,16 @@ export default {
                 for (const prop in data){
                     if(typeof data[prop] === "object" && !Array.isArray(data[prop])){ // Recursive call for nested props.
                          html += `<li class="list-group-item">
-                             <strong>` + this.capitalizeAttributes(prop) + `: </strong>`;
-                        return this.generateAttributeHTML(data[prop], category, html, nestedHtml) + "</li>";
+                             <strong>` + this.capitalizeAttributes(prop) + `: </strong><ul>`;
+
+                             html += `<li class="list-group-item">`;
+                        for(const nestedItem in data[prop]){
+                            html += `<strong>` + this.capitalizeAttributes(nestedItem) + `: </strong>` + data[prop][nestedItem] + `
+                            </br>`;
+                        }
+                        html += " </li>";
+                        html += "</ul></li>";
+                        
                     } else if(Array.isArray(data[prop])){   // Handle array of object data.
                         html += `<li class="list-group-item"><strong>` + this.capitalizeAttributes(prop) +": </strong> <ul>";
                         for(const item in data[prop]){
