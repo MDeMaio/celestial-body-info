@@ -1,21 +1,17 @@
 <template>
 <div>
-   <h1 style="text-align: center;">Stars will go here!</h1>
+    <h1 style="text-align: center;">Stars will go here!</h1>
 </div>
 </template>
 
 <script>
-
 export default {
     name: "home",
     data() {
-        return {
-        };
+        return {};
     },
-    methods: {
-    },
-    mounted() {
-    }
+    methods: {},
+    mounted() {}
 };
 </script>
 
