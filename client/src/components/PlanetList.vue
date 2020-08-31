@@ -17,9 +17,9 @@
     </div>
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <h4>Planets List</h4>
+            <h4 style="font-size: 35px;">Available Planets</h4>
             <ul class="list-group">
-                <li class="list-group-item lgi-pointer" :class="{ active: index == currentIndex }" v-for="(planet, index) in planets" :key="planet.planet_id" @click="setActivePlanet(planet, index)">
+                <li class="list-group-item lgi-pointer py-1" :class="{ active: index == currentIndex }" v-for="(planet, index) in planets" :key="planet.planet_id" @click="setActivePlanet(planet, index)">
                     {{ planet.name }}
                 </li>
             </ul>
