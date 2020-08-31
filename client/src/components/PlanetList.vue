@@ -3,10 +3,13 @@
     <div class="row justify-content-center">
         <div class="col-md-6 list">
             <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="Search by name" v-model="name" />
+                <input ref="name" type="text" class="form-control" placeholder="Search by name" v-model="name" />
                 <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="button" @click="searchName">
+                    <button class="btn btn-outline-primary" type="button" @click="searchName">
                         Search
+                    </button>
+                     <button class="btn btn-outline-secondary" type="button" @click="refreshList">
+                        Reset
                     </button>
                 </div>
             </div>
@@ -16,7 +19,7 @@
         <div class="col-md-6">
             <h4>Planets List</h4>
             <ul class="list-group">
-                <li class="list-group-item lgi-pointer" :class="{ active: index == currentIndex }" v-for="(planet, index) in planets" :key="index" @click="setActivePlanet(planet, index)">
+                <li class="list-group-item lgi-pointer" :class="{ active: index == currentIndex }" v-for="(planet, index) in planets" :key="planet.planet_id" @click="setActivePlanet(planet, index)">
                     {{ planet.name }}
                 </li>
             </ul>
@@ -67,6 +70,7 @@ export default {
             this.retrievePlanets();
             this.currentPlanet = null;
             this.currentIndex = -1;
+             this.name = "";
         },
 
         setActivePlanet(planet, index) {
@@ -75,10 +79,26 @@ export default {
         },
 
         searchName() {
-            PlanetService.findByTitle(this.name)
+            let id = "";
+            this.planets.forEach((element) => {
+                if(element.name.toLowerCase() == this.name.toLowerCase()){
+                    id = element.planet_id;
+                }
+            });
+
+             if(id === ""){
+                alert("No planet exists by that name.");
+                this.name = "";
+                this.$refs.name.focus();
+                return;
+            }
+
+            PlanetService.get(id)
                 .then(response => {
-                    this.planets = response.data;
-                    console.log(response.data);
+                    this.planets = [];
+                    this.planets.push(response.data);
+                    this.currentPlanet = null;
+                    this.currentIndex = -1;
                 })
                 .catch(e => {
                     console.log(e);
