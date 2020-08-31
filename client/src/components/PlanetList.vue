@@ -8,7 +8,7 @@
                     <button class="btn btn-outline-primary" type="button" @click="searchName">
                         Search
                     </button>
-                     <button class="btn btn-outline-secondary" type="button" @click="refreshList">
+                    <button class="btn btn-outline-secondary" type="button" @click="refreshList">
                         Reset
                     </button>
                 </div>
@@ -23,6 +23,13 @@
                     {{ planet.name }}
                 </li>
             </ul>
+            <ul class="pagination mt-2 justify-content-center">
+                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            </ul>
         </div>
     </div>
     <h1 style="text-align: center; margin-top: 2%; font-size: 50px;" v-if="currentPlanet">{{ currentPlanet.name }}</h1>
@@ -31,13 +38,13 @@
         <div class="col-md-8">
             <div v-if="currentPlanet">
                 <ul class="list-group">
-                <li class="list-group-item" v-for="(val, index) in currentPlanet.facts" :key="index">
-                    <h1 style="font-size: 40px; text-align: center;">{{val.title}}</h1>
-                    <p style="font-size: 22px;">{{val.fact}}</p>
-                </li>
-            </ul>
+                    <li class="list-group-item" v-for="(val, index) in currentPlanet.facts" :key="index">
+                        <h1 style="font-size: 40px; text-align: center;">{{val.title}}</h1>
+                        <p style="font-size: 22px;">{{val.fact}}</p>
+                    </li>
+                </ul>
             </div>
-        </div> 
+        </div>
     </div>
 </div>
 </template>
@@ -71,7 +78,7 @@ export default {
             this.retrievePlanets();
             this.currentPlanet = null;
             this.currentIndex = -1;
-             this.name = "";
+            this.name = "";
         },
 
         setActivePlanet(planet, index) {
@@ -82,12 +89,12 @@ export default {
         searchName() {
             let id = "";
             this.planets.forEach((element) => {
-                if(element.name.toLowerCase() == this.name.toLowerCase()){
+                if (element.name.toLowerCase() == this.name.toLowerCase()) {
                     id = element.planet_id;
                 }
             });
 
-             if(id === ""){
+            if (id === "") {
                 alert("No planet exists by that name.");
                 this.name = "";
                 this.$refs.name.focus();
@@ -108,23 +115,24 @@ export default {
     },
     mounted() {
         this.retrievePlanets();
-        
+
     }
 };
 </script>
 
 <style>
-.lgi-pointer{
-  cursor: pointer;
+.lgi-pointer {
+    cursor: pointer;
 }
-.lgi-pointer:hover{
-  background-color: #53a5fc;
+
+.lgi-pointer:hover {
+    background-color: #53a5fc;
 }
 
 .img-center {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 50%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
 }
 </style>
