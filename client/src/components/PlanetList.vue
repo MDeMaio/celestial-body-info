@@ -23,19 +23,17 @@
         </div>
     </div>
     <h1 style="text-align: center; margin-top: 2%; font-size: 50px;" v-if="currentPlanet">{{ currentPlanet.name }}</h1>
-    <div class="row mt-3">
-        <div class="col-md-4">
-            <div v-if="currentPlanet" v-html="generateAttributeHTML(currentPlanet.atmosphere_info,`Atmosphere Info:`, ``, ``)">
+    <div class="row mt-3 justify-content-center">
+        <div class="col-md-8">
+            <div v-if="currentPlanet">
+                <ul class="list-group">
+                <li class="list-group-item" v-for="(val, index) in currentPlanet.facts" :key="index">
+                    <h1 style="font-size: 40px; text-align: center;">{{val.title}}</h1>
+                    <p style="font-size: 22px;">{{val.fact}}</p>
+                </li>
+            </ul>
             </div>
-        </div>
-        <div class="col-md-4">
-            <div v-if="currentPlanet" v-html="generateAttributeHTML(currentPlanet.physical_info,`Physical Info:`, ``, ``)">
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div v-if="currentPlanet" v-html="generateAttributeHTML(currentPlanet.orbital_info,`Orbital Info:`, ``, ``)">
-            </div>
-        </div>
+        </div> 
     </div>
 </div>
 </template>
@@ -85,62 +83,6 @@ export default {
                 .catch(e => {
                     console.log(e);
                 });
-        },
-
-        capitalizeAttributes(str){  // Capitlize words split by _
-            const res = str.split("_");
-            let finalVal = "";
-            for (let i = 0; i < res.length; i++){
-                res[i].charAt(0).toUpperCase();
-                finalVal += res[i].charAt(0).toUpperCase() + res[i].slice(1) + " ";
-            }
-
-            return finalVal.trim();
-        },
-
-            generateAttributeHTML: function(data, category, html, nestedHtml){
-            if(this.currentPlanet){
-                if(html === ""){
-                    html += `<label><strong>` + category + `</strong></label>`
-                }
-                html += `<ul class="list-group">`;
-                for (const prop in data){
-                    if(typeof data[prop] === "object" && !Array.isArray(data[prop])){ // Recursive call for nested props.
-                         html += `<li class="list-group-item">
-                             <strong>` + this.capitalizeAttributes(prop) + `: </strong><ul>`;
-
-                             html += `<li class="list-group-item">`;
-                        for(const nestedItem in data[prop]){
-                            html += `<strong>` + this.capitalizeAttributes(nestedItem) + `: </strong>` + data[prop][nestedItem] + `
-                            </br>`;
-                        }
-                        html += " </li>";
-                        html += "</ul></li>";
-                        
-                    } else if(Array.isArray(data[prop])){   // Handle array of object data.
-                        html += `<li class="list-group-item"><strong>` + this.capitalizeAttributes(prop) +": </strong> <ul>";
-                        for(const item in data[prop]){
-                            html += `<li class="list-group-item">`;
-                            for(const nestedItem in data[prop][item]){
-                                html += `<strong>` + this.capitalizeAttributes(nestedItem) + `: </strong>` + data[prop][item][nestedItem] + `
-                               </br>`;
-                            }
-                            html += " </li>";
-                        }
-                        html += "</ul></li>";
-                    } 
-                    else {  // Default case.
-                        nestedHtml = data[prop];
-                         html += `<li class="list-group-item">
-                             <strong>` + this.capitalizeAttributes(prop) + `: </strong>` + nestedHtml + `
-                         </li>`;
-                    }
-                }
-            } else{
-                html = "</ul><div></div>"
-            }
-
-            return html;
         }
     },
     mounted() {

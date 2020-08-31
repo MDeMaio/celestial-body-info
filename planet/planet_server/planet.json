@@ -1,199 +1,58 @@
-[{
-    "name": "Mars",
-    "orbital_info": {
-        "aphelion": 249200000,
-        "perihelion": 206700000,
-        "semi_major_axis": 227939200,
-        "eccentricity": 0.0934,
-        "orbital_period": 686.971,
-        "synodic_period": 779.96,
-        "avg_orbital_speed": 24.007,
-        "mean_anomaly": 19.412,
-        "inclination": {
-            "ecliptic": 1.850,
-            "suns_equator": 5.65,
-            "invariable_plane": 1.67
+[
+    {
+        "name": "Earth",
+        "facts": [{
+            "title": "The Earth’s rotation is gradually slowing",
+            "fact": "This deceleration is happening almost imperceptibly, at approximately 17 milliseconds per hundred years, although the rate at which it occurs is not perfectly uniform. This has the effect of lengthening our days, but it happens so slowly that it could be as much as 140 million years before the length of a day will have increased to 25 hours."
         },
-        "longitude_of_ascending_node": 49.558,
-        "satelites": 2
-    },
-    "physical_info": {
-        "mean_radius": "3,389.5 ± 0.2",
-        "equatorial_radius": "3,396.2 ± 0.1",
-        "polar_radius": "3,376.2 ± 0.1",
-        "flattening": "0.00589 ± 0.00015",
-        "surface_area": 144798500,
-        "volume": 163180000000,
-        "mass": 641710000000000000000000,
-        "mean_density": 3.9335,
-        "surface_gravity": 3.72076,
-        "moment_of_inertia_factor": "0.3662 ± 0.0017",
-        "escape_velocity": 5.027,
-        "sidereal_rotation_period": 1.025957,
-        "equatorial_rotation_velocity": 241.17,
-        "axial_tilt": 25.19,
-        "northpole_right_ascension": 317.6814,
-        "northpole_declination": 52.88650,
-        "albedo": {
-            "geometric": 0.170,
-            "bond": 0.25
+        {
+            "title": "The Earth was once believed to be the centre of the universe",
+            "fact": "Due to the apparent movements of the Sun and planets in relation to their viewpoint, ancient scientists insisted that the Earth remained static, whilst other celestial bodies travelled in circular orbits around it. Eventually, the view that the Sun was at the centre of the universe was postulated by Copernicus, though this is also not the case."
         },
-        "surface_temp": {
-            "min": -226,
-            "max": 95,
-            "mean": -82
+        {
+            "title": "Earth has a powerful magnetic field",
+            "fact": "This phenomenon is caused by the nickel-iron core of the planet, coupled with its rapid rotation. This field protects the Earth from the effects of solar wind."
         },
-        "apparent_magnitude": {
-            "min": -2.94,
-            "max": 1.86
+        {
+            "title": "There is only one natural satellite of the planet Earth",
+            "fact": "As a percentage of the size of the body it orbits, the Moon is the largest satellite of any planet in our solar system. In real terms, however, it is only the fifth largest natural satellite."
+        },
+        {
+            "title": "Earth is the only planet not named after a god",
+            "fact": "The other seven planets in our solar system are all named after Roman gods or goddesses. Although only Mercury, Venus, Mars, Jupiter and Saturn were named during ancient times, because they were visible to the naked eye, the Roman method of naming planets was retained after the discovery of Uranus and Neptune."
+        },
+        {
+            "title": "The Earth is the densest planet in the Solar System",
+            "fact": "This varies according to the part of the planet; for example, the metallic core is denser than the crust. The average density of the Earth is approximately 5.52 grams per cubic centimetre."
         }
+        ]
     },
-    "atmosphere_info": {
-        "surface_pressure": 0.636,
-        "element": [
-            {
-                "name": "Carbon Dioxide",
-                "percent_as_decimal": 95.97
-            },
-            {
-                "name": "Argon",
-                "percent_as_decimal": 1.93
-            },
-            {
-                "name": "Nitrogen",
-                "percent_as_decimal": 1.89
-            },
-            {
-                "name": "Oxygen",
-                "percent_as_decimal": 0.146
-            },
-            {
-                "name": "Carbon Monoxide",
-                "percent_as_decimal": 0.0557
-            },
-            {
-                "name": "Water Vapor",
-                "percent_as_decimal": 0.0210
-            },
-            {
-                "name": "Nitrogen Oxide",
-                "percent_as_decimal": 0.0100
-            },
-            {
-                "name": "Neon",
-                "percent_as_decimal": 0.00025
-            },
-            {
-                "name": "Hydrogen Deuterium Oxide",
-                "percent_as_decimal": 0.00008
-            },
-            {
-                "name": "Krypton",
-                "percent_as_decimal": 0.00003
-            },
-            {
-                "name": "Xenon",
-                "percent_as_decimal": 0.00001
-            }
+    {
+        "name": "Mars",
+        "facts": [{
+            "title": "Mars and Earth have approximately the same landmass",
+            "fact": "Even though Mars has only 15% of the Earth’s volume and just over 10% of the Earth’s mass, around two thirds of the Earth’s surface is covered in water. Martian surface gravity is only 37% of the Earth’s (meaning you could leap nearly three times higher on Mars)."
+        },
+        {
+            "title": "Mars is home to the tallest mountain in the solar system",
+            "fact": "Olympus Mons, a shield volcano, is 21km high and 600km in diameter. Despite having formed over billions of years, evidence from volcanic lava flows is so recent many scientists believe it could still be active."
+        },
+        {
+            "title": "Only 18 missions to Mars have been successful",
+            "fact": "As of September 2014 there have been 40 missions to Mars, including orbiters, landers and rovers but not counting flybys. The most recent arrivals include the Mars Curiosity mission in 2012, the MAVEN mission, which arrived on September 22, 2014, followed by the Indian Space Research Organization’s MOM Mangalyaan orbiter, which arrived on September 24, 2014. The next missions to arrive will be the European Space Agency’s ExoMars mission, comprising an orbiter, lander, and a rover, followed by NASA’s InSight robotic lander mission, slated for launch in March 2016 and a planned arrival in September, 2016."
+        },
+        {
+            "title": "Mars has the largest dust storms in the solar system",
+            "fact": "They can last for months and cover the entire planet. The seasons are extreme because its elliptical (oval-shaped) orbital path around the Sun is more elongated than most other planets in the solar system."
+        },
+        {
+            "title": "On Mars the Sun appears about half the size as it does on Earth",
+            "fact": "At the closest point to the Sun, the Martian southern hemisphere leans towards the Sun, causing a short, intensely hot summer, while the northern hemisphere endures a brief, cold winter: at its farthest point from the Sun, the Martian northern hemisphere leans towards the Sun, causing a long, mild summer, while the southern hemisphere endures a lengthy, cold winter."
+        },
+        {
+            "title": "Pieces of Mars have fallen to Earth",
+            "fact": "Scientists have found tiny traces of Martian atmosphere within meteorites violently ejected from Mars, then orbiting the solar system amongst galactic debris for millions of years, before crash landing on Earth. This allowed scientists to begin studying Mars prior to launching space missions."
+        }
         ]
     }
-},
-{
-    "_id": {
-        "$oid": "5f47e3b5093cc8a6577e0919"
-    },
-    "name": "Earth",
-    "orbital_info": {
-        "aphelion": 152100000,
-        "perihelion": 147095000,
-        "semi_major_axis": 149598023,
-        "eccentricity": 0.0167086,
-        "orbital_period": 365.256363004,
-        "synodic_period": 0,
-        "avg_orbital_speed": 29.78,
-        "mean_anomaly": 358.617,
-        "inclination": {
-            "ecliptic": 0.00005,
-            "suns_equator": 7.155,
-            "invariable_plane": 1.57869
-        },
-        "longitude_of_ascending_node": -11.26064,
-        "satelites": 1
-    },
-    "physical_info": {
-        "mean_radius": "6,371.0",
-        "equatorial_radius": "6,378.1",
-        "polar_radius": "6,356.8",
-        "flattening": "0.0033528",
-        "surface_area": 510072000,
-        "volume": 1083210000000,
-        "mass": 5.97237e+24,
-        "mean_density": 5.514,
-        "surface_gravity": 9.80665,
-        "moment_of_inertia_factor": "0.3307",
-        "escape_velocity": 11.186,
-        "sidereal_rotation_period": 0.99726968,
-        "equatorial_rotation_velocity": 0.4651,
-        "axial_tilt": 23.4392811,
-        "northpole_right_ascension": 0,
-        "northpole_declination": 0,
-        "albedo": {
-            "geometric": 0.367,
-            "bond": 0.306
-        },
-        "surface_temp": {
-            "min": -128.5,
-            "max": 134,
-            "mean": 57.2
-        },
-        "apparent_magnitude": {
-            "min": 0,
-            "max": 0
-        }
-    },
-    "atmosphere_info": {
-        "surface_pressure": 101.325,
-        "element": [
-            {
-                "name": "Nitrogen",
-                "percent_as_decimal": 78.08
-            },
-            {
-                "name": "Oxygen",
-                "percent_as_decimal": 20.95
-            },
-            {
-                "name": "Water Vapor",
-                "percent_as_decimal": 1
-            },
-            {
-                "name": "Argon",
-                "percent_as_decimal": 0.934
-            },
-            {
-                "name": "Carbon Dioxide",
-                "percent_as_decimal": 0.0408
-            },
-            {
-                "name": "Neon",
-                "percent_as_decimal": 0.00182
-            },
-            {
-                "name": "Helium",
-                "percent_as_decimal": 0.00052
-            },
-            {
-                "name": "Methane",
-                "percent_as_decimal": 0.00017
-            },
-            {
-                "name": "Krypton",
-                "percent_as_decimal": 0.00011
-            },
-            {
-                "name": "Hydrogen",
-                "percent_as_decimal": 0.00006
-            }
-        ]
-    }
-}]
+]

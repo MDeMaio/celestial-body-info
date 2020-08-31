@@ -27,80 +27,15 @@ var collection *mongo.Collection
 type server struct {
 }
 
-type inclination struct {
-	Ecliptic        float64 `bson:"ecliptic"`
-	SunsEquator     float64 `bson:"suns_equator"`
-	InvariablePlane float64 `bson:"invariable_plane"`
-}
-
-type orbitalInfo struct {
-	Aphelion                 float64     `bson:"aphelion"`
-	Perihelion               float64     `bson:"perihelion"`
-	SemiMajorAxis            float64     `bson:"semi_major_axis"`
-	Eccentricity             float64     `bson:"eccentricity"`
-	OrbitalPeriod            float64     `bson:"orbital_period"`
-	SynodicPeriod            float64     `bson:"synodic_period"`
-	AvgOrbitalSpeed          float64     `bson:"avg_orbital_speed"`
-	MeanAnomaly              float64     `bson:"mean_anomaly"`
-	Inclination              inclination `bson:"inclination"`
-	LongitudeOfAscendingNode float64     `bson:"longitude_of_ascending_node"`
-	Satelites                uint32      `bson:"satelites"`
-}
-
-type albedo struct {
-	Geometric float64 `bson:"geometric"`
-	Bond      float64 `bson:"bond"`
-}
-
-type surfaceTemp struct {
-	Min  float64 `bson:"min"`
-	Max  float64 `bson:"max"`
-	Mean float64 `bson:"mean"`
-}
-
-type apparentMagnitude struct {
-	Min float64 `bson:"min"`
-	Max float64 `bson:"max"`
-}
-
-type physicalInfo struct {
-	MeanRadius                 string            `bson:"mean_radius"`
-	EquatorialRadius           string            `bson:"equatorial_radius"`
-	PolarRadius                string            `bson:"polar_radius"`
-	Flattening                 string            `bson:"flattening"`
-	SurfaceArea                float64           `bson:"surface_area"`
-	Volume                     float64           `bson:"volume"`
-	Mass                       float64           `bson:"mass"`
-	MeanDensity                float64           `bson:"mean_density"`
-	SurfaceGravity             float64           `bson:"surface_gravity"`
-	MomentOfInertiaFactor      string            `bson:"moment_of_inertia_factor"`
-	EscapeVelocity             float64           `bson:"escape_velocity"`
-	SiderealRotationPeriod     float64           `bson:"sidereal_rotation_period"`
-	EquatorialRotationVelocity float64           `bson:"equatorial_rotation_velocity"`
-	AxialTilt                  float64           `bson:"axial_tilt"`
-	NorthpoleRightAscension    float64           `bson:"northpole_right_ascension"`
-	NorthpoleDeclination       float64           `bson:"northpole_declination"`
-	Albedo                     albedo            `bson:"albedo"`
-	SurfaceTemp                surfaceTemp       `bson:"surface_temp"`
-	ApparentMagnitude          apparentMagnitude `bson:"apparent_magnitude"`
-}
-
-type element struct {
-	Name             string  `bson:"name"`
-	PercentAsDecimal float64 `bson:"percent_as_decimal"`
-}
-
-type atmosphereInfo struct {
-	SurfacePressure float64   `bson:"surface_pressure"`
-	Elements        []element `bson:"element"` // Many elements make up a planets atmospheric composition.
+type facts struct {
+	Title string `bson:"title"`
+	Fact  string `bson:"fact"`
 }
 
 type planetItem struct {
-	ID             primitive.ObjectID `bson:"_id,omitempty"`
-	Name           string             `bson:"name"`
-	OrbitalInfo    orbitalInfo        `bson:"orbital_info"`
-	PhysicalInfo   physicalInfo       `bson:"physical_info"`
-	AtmosphereInfo atmosphereInfo     `bson:"atmosphere_info"`
+	ID    primitive.ObjectID `bson:"_id,omitempty"`
+	Name  string             `bson:"name"`
+	Facts []facts            `bson:"facts"`
 }
 
 func (*server) ReadPlanet(ctx context.Context, req *planetpb.ReadPlanetRequest) (*planetpb.ReadPlanetResponse, error) {
@@ -164,81 +99,20 @@ func (*server) ListPlanet(ctx context.Context, req *planetpb.ListPlanetRequest) 
 }
 
 func dataToPlanetPb(data *planetItem) *planetpb.Planet {
-	inclination := &planetpb.Inclination{
-		Ecliptic:        data.OrbitalInfo.Inclination.Ecliptic,
-		SunsEquator:     data.OrbitalInfo.Inclination.SunsEquator,
-		InvariablePlane: data.OrbitalInfo.Inclination.InvariablePlane,
-	}
-	orbitalInfo := &planetpb.OrbitalInfo{
-		Aphelion:                 data.OrbitalInfo.Aphelion,
-		Perihelion:               data.OrbitalInfo.Perihelion,
-		SemiMajorAxis:            data.OrbitalInfo.SemiMajorAxis,
-		Eccentricity:             data.OrbitalInfo.Eccentricity,
-		OrbitalPeriod:            data.OrbitalInfo.OrbitalPeriod,
-		SynodicPeriod:            data.OrbitalInfo.SynodicPeriod,
-		AvgOrbitalSpeed:          data.OrbitalInfo.AvgOrbitalSpeed,
-		MeanAnomaly:              data.OrbitalInfo.MeanAnomaly,
-		Inclination:              inclination,
-		LongitudeOfAscendingNode: data.OrbitalInfo.LongitudeOfAscendingNode,
-		Satelites:                data.OrbitalInfo.Satelites,
-	}
-
-	albedo := &planetpb.Albedo{
-		Geometric: data.PhysicalInfo.Albedo.Geometric,
-		Bond:      data.PhysicalInfo.Albedo.Bond,
-	}
-	surfaceTemp := &planetpb.SurfaceTemp{
-		Min:  data.PhysicalInfo.SurfaceTemp.Min,
-		Max:  data.PhysicalInfo.SurfaceTemp.Max,
-		Mean: data.PhysicalInfo.SurfaceTemp.Mean,
-	}
-	apparentMagnitude := &planetpb.ApparentMagnitude{
-		Min: data.PhysicalInfo.ApparentMagnitude.Min,
-		Max: data.PhysicalInfo.ApparentMagnitude.Max,
-	}
-	physicalInfo := &planetpb.PhysicalInfo{
-		MeanRadius:                 data.PhysicalInfo.MeanRadius,
-		EquatorialRadius:           data.PhysicalInfo.EquatorialRadius,
-		PolarRadius:                data.PhysicalInfo.PolarRadius,
-		Flattening:                 data.PhysicalInfo.Flattening,
-		SurfaceArea:                data.PhysicalInfo.SurfaceArea,
-		Volume:                     data.PhysicalInfo.Volume,
-		Mass:                       data.PhysicalInfo.Mass,
-		MeanDensity:                data.PhysicalInfo.MeanDensity,
-		SurfaceGravity:             data.PhysicalInfo.SurfaceGravity,
-		MomentOfInertiaFactor:      data.PhysicalInfo.MomentOfInertiaFactor,
-		EscapeVelocity:             data.PhysicalInfo.EscapeVelocity,
-		SiderealRotationPeriod:     data.PhysicalInfo.SiderealRotationPeriod,
-		EquatorialRotationVelocity: data.PhysicalInfo.EquatorialRotationVelocity,
-		AxialTilt:                  data.PhysicalInfo.AxialTilt,
-		NorthpoleRightAscension:    data.PhysicalInfo.NorthpoleRightAscension,
-		NorthpoleDeclination:       data.PhysicalInfo.NorthpoleDeclination,
-		Albedo:                     albedo,
-		SurfaceTemp:                surfaceTemp,
-		ApparentMagnitude:          apparentMagnitude,
-	}
-
-	elements := []*planetpb.Element{} // Not sure if this is correct.
-	for _, v := range data.AtmosphereInfo.Elements {
-		element := &planetpb.Element{
-			Name:             v.Name,
-			PercentAsDecimal: v.PercentAsDecimal,
+	facts := []*planetpb.Facts{} // Not sure if this is correct.
+	for _, v := range data.Facts {
+		fact := &planetpb.Facts{
+			Title: v.Title,
+			Fact:  v.Fact,
 		}
 
-		elements = append(elements, element)
-	}
-
-	atmosphereInfo := &planetpb.AtmosphereInfo{
-		SurfacePressure: data.AtmosphereInfo.SurfacePressure,
-		Element:         elements,
+		facts = append(facts, fact)
 	}
 
 	return &planetpb.Planet{
-		PlanetId:       data.ID.Hex(),
-		Name:           data.Name,
-		OrbitalInfo:    orbitalInfo,
-		PhysicalInfo:   physicalInfo,
-		AtmosphereInfo: atmosphereInfo,
+		PlanetId: data.ID.Hex(),
+		Name:     data.Name,
+		Facts:    facts,
 	}
 }
 

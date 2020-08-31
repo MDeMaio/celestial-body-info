@@ -8,77 +8,12 @@ option go_package = "planetpb";
 message Planet {
     string planet_id = 1;
     string name = 2;
-    OrbitalInfo orbital_info = 3;
-    PhysicalInfo physical_info = 4;
-    AtmosphereInfo atmosphere_info = 5;
+    repeated Facts facts = 3;
 }
 
-message OrbitalInfo {
-    double aphelion = 1; // golang float64
-    double perihelion = 2; // golang float64
-    double semi_major_axis = 3; // golang float64
-    double eccentricity = 4; // golang float64
-    double orbital_period = 5; // golang float64
-    double synodic_period = 6; // golang float64
-    double avg_orbital_speed = 7; // golang float64
-    double mean_anomaly = 8; // golang float64
-    Inclination inclination = 9; 
-    double longitude_of_ascending_node = 10; // golang float64
-    uint32 satelites = 11; // golang uint32
-}
-
-message PhysicalInfo {
-    string mean_radius = 1; 
-    string equatorial_radius = 2; 
-    string polar_radius = 3; 
-    string flattening = 4; 
-    double surface_area = 5; // golang float64
-    double volume = 6; // golang float64
-    double mass = 7; // golang float64
-    double mean_density = 8; // golang float64
-    double surface_gravity = 9; // golang float64
-    string moment_of_inertia_factor = 10;
-    double escape_velocity = 11; // golang float64
-    double sidereal_rotation_period = 12; // golang float64
-    double equatorial_rotation_velocity = 13; // golang float64
-    double axial_tilt = 14; // golang float64
-    double northpole_right_ascension = 15; // golang float64
-    double northpole_declination = 16; // golang float64
-    Albedo albedo = 17; 
-    SurfaceTemp surface_temp = 18;
-    ApparentMagnitude apparent_magnitude = 19;
-}
-
-message AtmosphereInfo{
-    double surface_pressure = 1; // golang float64
-    repeated Element element = 2;
-}
-
-message Element{
-    string name = 1;
-    double percent_as_decimal = 2; // golang float64(We will calculate the percent composition of this element based on the float provided)
-}
-
-message SurfaceTemp {
-    double min = 1; // golang int32
-    double max = 2; // golang int32
-    double mean = 3; // golang int32
-}
-
-message ApparentMagnitude{
-    double min = 1; // golang float64
-    double max = 2; // golang float64
-}
-
-message Inclination {
-    double ecliptic = 1; // golang float64
-    double suns_equator = 2; // golang float64
-    double invariable_plane = 3; // golang float64
-}
-
-message Albedo {
-    double geometric = 1; // golang float64
-    double bond = 2; // golang float64
+message Facts {
+    string title = 1;
+    string fact = 2; 
 }
 
 message ReadPlanetRequest {
