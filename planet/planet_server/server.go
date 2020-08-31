@@ -36,6 +36,7 @@ type planetItem struct {
 	ID    primitive.ObjectID `bson:"_id,omitempty"`
 	Name  string             `bson:"name"`
 	Facts []facts            `bson:"facts"`
+	Image string             `bson:"image"`
 }
 
 func (*server) ReadPlanet(ctx context.Context, req *planetpb.ReadPlanetRequest) (*planetpb.ReadPlanetResponse, error) {
@@ -113,6 +114,7 @@ func dataToPlanetPb(data *planetItem) *planetpb.Planet {
 		PlanetId: data.ID.Hex(),
 		Name:     data.Name,
 		Facts:    facts,
+		Image:    data.Image,
 	}
 }
 

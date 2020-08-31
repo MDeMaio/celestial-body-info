@@ -26,6 +26,7 @@
         </div>
     </div>
     <h1 style="text-align: center; margin-top: 2%; font-size: 50px;" v-if="currentPlanet">{{ currentPlanet.name }}</h1>
+    <img class="img-center" v-if="currentPlanet" v-bind:src="currentPlanet.image">
     <div class="row mt-3 justify-content-center">
         <div class="col-md-8">
             <div v-if="currentPlanet">
@@ -107,6 +108,7 @@ export default {
     },
     mounted() {
         this.retrievePlanets();
+        
     }
 };
 </script>
@@ -117,5 +119,12 @@ export default {
 }
 .lgi-pointer:hover{
   background-color: #53a5fc;
+}
+
+.img-center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
 }
 </style>

@@ -9,6 +9,7 @@ message Planet {
     string planet_id = 1;
     string name = 2;
     repeated Facts facts = 3;
+    string image = 4;
 }
 
 message Facts {
