@@ -3,7 +3,7 @@
     <div class="row justify-content-center">
         <div class="col-md-6 list">
             <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="Search by name" v-model="title" />
+                <input type="text" class="form-control" placeholder="Search by name" v-model="name" />
                 <div class="input-group-append">
                     <button class="btn btn-outline-secondary" type="button" @click="searchName">
                         Search
@@ -25,54 +25,15 @@
     <h1 style="text-align: center; margin-top: 2%; font-size: 50px;" v-if="currentPlanet">{{ currentPlanet.name }}</h1>
     <div class="row mt-3">
         <div class="col-md-4">
-            <div v-if="currentPlanet">
-                <!-- <h1>{{ currentPlanet.name }}</h1> -->
-                <div>
-                    <label><strong>Atmosphere Info:</strong></label>
-                    <ul class="list-group">
-                        <li class="list-group-item"><strong>Surface Pressure: </strong>{{currentPlanet.atmosphere_info.surface_pressure}}</li>
-                        <li class="list-group-item"><strong>Elemental Composition: </strong>
-                            <ul class="list-group">
-                                <li class="list-group-item" v-for="(info2, index2) in currentPlanet.atmosphere_info.element" :key="index2">
-                                    <strong>{{info2.name}}:</strong> {{info2.percent_as_decimal}}%
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div v-else>
-
+            <div v-if="currentPlanet" v-html="generateAttributeHTML(currentPlanet.atmosphere_info,`Atmosphere Info:`)">
             </div>
         </div>
         <div class="col-md-4">
-            <div v-if="currentPlanet">
-                <!-- <h1>{{ currentPlanet.name }}</h1> -->
-                <div>
-                    <label><strong>Physical Info:</strong></label>
-                    <ul class="list-group">
-                        <li class="list-group-item" v-for="(value, key) in currentPlanet.physical_info" v-bind:key="key">
-                            <strong>{{capitalizeAttributes(key)}}:</strong> {{ value }}
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div v-else>
-
+            <div v-if="currentPlanet" v-html="generateAttributeHTML(currentPlanet.physical_info,`Physical Info:`)">
             </div>
         </div>
         <div class="col-md-4">
-            <div v-if="currentPlanet">
-                <div>
-                    <label><strong>Orbital Info:</strong></label>
-                    <ul class="list-group">
-                        <li class="list-group-item" v-for="(value, key) in currentPlanet.orbital_info" v-bind:key="key">
-                            <strong>{{capitalizeAttributes(key)}}:</strong> {{ value }}
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div v-else>
+            <div v-if="currentPlanet" v-html="generateAttributeHTML(currentPlanet.orbital_info,`Orbital Info:`)">
             </div>
         </div>
     </div>
@@ -89,7 +50,7 @@ export default {
             planets: [],
             currentPlanet: null,
             currentIndex: -1,
-            title: ""
+            name: ""
         };
     },
     methods: {
@@ -116,7 +77,7 @@ export default {
         },
 
         searchName() {
-            PlanetService.findByTitle(this.title)
+            PlanetService.findByTitle(this.name)
                 .then(response => {
                     this.planets = response.data;
                     console.log(response.data);
@@ -135,6 +96,35 @@ export default {
             }
 
             return finalVal.trim();
+        },
+
+            generateAttributeHTML: function(data, category){
+            let html = "";
+            let nestedHtml = "";
+
+            if(this.currentPlanet){
+                html += `<label><strong>` + category + `</strong></label><ul class="list-group">`
+                for (const prop in data){
+                    if(typeof data[prop] === "object"){
+                         nestedHtml += `<ul class="list-group">`
+                        for (const nestedProp in data[prop]){
+                            nestedHtml += `<li class="list-group-item">
+                             <strong>` + this.capitalizeAttributes(nestedProp) + `: </strong>` + data[prop][nestedProp] + `
+                            </li>`;
+                        }
+                        nestedHtml += "</ul>";
+                    } else {
+                        nestedHtml = data[prop];
+                    }
+                    html += `<li class="list-group-item">
+                             <strong>` + this.capitalizeAttributes(prop) + `: </strong>` + nestedHtml + `
+                         </li>`;
+                }
+            } else{
+                html = "</ul><div></div>"
+            }
+
+            return html;
         }
     },
     mounted() {
