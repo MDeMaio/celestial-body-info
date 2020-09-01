@@ -2,7 +2,9 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net"
 	"os"
@@ -142,6 +144,30 @@ func dataToPlanetPb(data *planetItem) *planetpb.Planet {
 	}
 }
 
+func insertTestData(ctx context.Context) {
+	filter := bson.M{}
+	collection.DeleteMany(ctx, filter) // Empty collection.
+
+	jsonFile, err := os.Open("planet.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	byteValues, err := ioutil.ReadAll(jsonFile)
+	if err != nil {
+		// Print any IO errors with the .json file
+		log.Fatal("ioutil.ReadFile ERROR:", err)
+	}
+
+	var v []interface{}
+	if err := json.Unmarshal(byteValues, &v); err != nil {
+		log.Fatal(err)
+	}
+	if _, err := collection.InsertMany(ctx, v); err != nil {
+		log.Fatal(err)
+	}
+}
+
 func main() {
 	// if we crash the go code, we get the file name and line number
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
@@ -165,6 +191,7 @@ func main() {
 
 	fmt.Println("Planet Service Started")
 	collection = client.Database("celestial-body-info").Collection("planet")
+	insertTestData(context.Background())
 
 	port := os.Getenv("PORT")
 	if port == "" {
