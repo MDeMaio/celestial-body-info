@@ -127,7 +127,6 @@ export default {
         searchName() {
             if (this.name === "") {
                 alert("Please enter a planet to search for.");
-                //this.name = "";
                 this.$refs.name.focus();
                 return;
             }
