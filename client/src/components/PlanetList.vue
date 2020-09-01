@@ -2,10 +2,11 @@
 <div>
     <div class="row justify-content-center">
         <div class="col-md-6 list">
+            <form v-on:submit.prevent @submit="searchName">
             <div class="input-group mb-3">
                 <input ref="name" type="text" class="form-control" placeholder="Search by name" v-model="name" />
                 <div class="input-group-append">
-                    <button class="btn btn-outline-primary" type="button" @click="searchName">
+                    <button class="btn btn-outline-primary ml-1" type="submit">
                         Search
                     </button>
                     <button class="btn btn-outline-secondary" type="button" @click="refreshList">
@@ -13,6 +14,7 @@
                     </button>
                 </div>
             </div>
+            </form>
         </div>
     </div>
     <div class="row justify-content-center">
