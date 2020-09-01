@@ -1,12 +1,12 @@
 import http from "../http-common";
 
 class PlanetService {
-  getAll() {
-    return http.get("/planet");
+  getAll(page) {
+    return http.get("/planet?page=" + page);
   }
 
-  get(id) {
-    return http.get(`/planet/${id}`);
+  get(name) {
+    return http.get(`/planet/${name}`);
   }
 
 }

@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -15,6 +16,11 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
+
+type planetListResponse struct {
+	Planets           []*planetpb.Planet `json:"planets"`
+	NumberOfDocuments int64              `json:"number_of_documents"`
+}
 
 // Change logic for closing cc later, we only need it when a request is made to be open, otherwise closed.
 func connectToGRPCPlanet() (*grpc.ClientConn, planetpb.PlanetServiceClient) {
@@ -64,7 +70,14 @@ func listPlanetHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	resList, err := c.ListPlanet(context.Background(), &planetpb.ListPlanetRequest{})
+	page, err := strconv.Atoi(r.URL.Query().Get("page"))
+	if err != nil {
+		fmt.Printf("Error happened while converting: %v \n", err)
+	}
+
+	resList, err := c.ListPlanet(context.Background(), &planetpb.ListPlanetRequest{
+		Skip: int64((page * 5) - 5),
+	})
 	if err != nil { // Handle our gRPC errors.
 		fmt.Printf("Error happened while listing: %v \n", err)
 		code, errJSON := handleGRPCErrors(err)
@@ -73,7 +86,11 @@ func listPlanetHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Printf("Planets were listed: %v \n", resList)
-	slcB, err := json.Marshal(resList.GetPlanet())
+	res := planetListResponse{
+		Planets:           resList.GetPlanet(),
+		NumberOfDocuments: resList.GetNumberOfDocuments(),
+	}
+	slcB, err := json.Marshal(res)
 	if err != nil {
 		fmt.Printf("Error happened while marshalling: %v \n", err)
 	}
@@ -91,7 +108,7 @@ func readPlanetHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	vars := mux.Vars(r)
-	resRead, err := c.ReadPlanet(context.Background(), &planetpb.ReadPlanetRequest{PlanetId: vars["id"]})
+	resRead, err := c.ReadPlanet(context.Background(), &planetpb.ReadPlanetRequest{Name: vars["name"]})
 	if err != nil { // Handle our gRPC errors.
 		fmt.Printf("Error happened while reading: %v \n", err)
 		code, errJSON := handleGRPCErrors(err)
@@ -113,7 +130,7 @@ func readPlanetHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/planet", listPlanetHandler).Methods(http.MethodGet)
-	r.HandleFunc("/planet/{id}", readPlanetHandler).Methods(http.MethodGet)
+	r.HandleFunc("/planet/{name}", readPlanetHandler).Methods(http.MethodGet)
 	r.Use(mux.CORSMethodMiddleware(r))
 
 	log.Println("Listening for http requests.")

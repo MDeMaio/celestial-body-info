@@ -23,10 +23,11 @@ message BasicInformation{
     int32 number_of_satelites = 2;
     string star_system = 3;
     string most_abundant_resource = 4;
+    double surface_gravity = 5;
 }
 
 message ReadPlanetRequest {
-    string planet_id = 1;   // We can fetch by the mongodb ID, which we will have on the frontend Vue app.
+    string name = 1;  
 }
 
 message ReadPlanetResponse {
@@ -34,10 +35,12 @@ message ReadPlanetResponse {
 }
 
 message ListPlanetRequest {
+    int64 skip = 1;
 }
 
 message ListPlanetResponse {
     repeated Planet planet = 1; // List of planets
+    int64 number_of_documents = 2;
 }
 
 service PlanetService {

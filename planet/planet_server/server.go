@@ -33,10 +33,11 @@ type facts struct {
 }
 
 type basicInformation struct {
-	AlternateName        string `bson:"alternate_name"`
-	NumberOfSatelites    int32  `bson:"number_of_satelites"`
-	StarSystem           string `bson:"star_system"`
-	MostAbundantResource string `bson:"most_abundant_resource"`
+	AlternateName        string  `bson:"alternate_name"`
+	NumberOfSatelites    int32   `bson:"number_of_satelites"`
+	StarSystem           string  `bson:"star_system"`
+	MostAbundantResource string  `bson:"most_abundant_resource"`
+	SurfaceGravity       float64 `bson:"surface_gravity"`
 }
 
 type planetItem struct {
@@ -50,24 +51,17 @@ type planetItem struct {
 func (*server) ReadPlanet(ctx context.Context, req *planetpb.ReadPlanetRequest) (*planetpb.ReadPlanetResponse, error) {
 	fmt.Println("Read planet request")
 
-	planetID := req.GetPlanetId()
-	oid, err := primitive.ObjectIDFromHex(planetID)
-	if err != nil {
-		return nil, status.Errorf(
-			codes.InvalidArgument,
-			fmt.Sprintf("Cannot parse ID"),
-		)
-	}
+	planetName := req.GetName()
 
 	// create an empty struct
 	data := &planetItem{}
-	filter := bson.M{"_id": oid}
+	filter := bson.M{"name": planetName}
 
 	res := collection.FindOne(context.Background(), filter)
 	if err := res.Decode(data); err != nil {
 		return nil, status.Errorf(
 			codes.NotFound,
-			fmt.Sprintf("Cannot find planet with specified ID: %v", err),
+			fmt.Sprintf("Cannot find planet with specified Name: %v", err),
 		)
 	}
 
@@ -80,9 +74,21 @@ func (*server) ListPlanet(ctx context.Context, req *planetpb.ListPlanetRequest) 
 	fmt.Println("List planet request")
 
 	filter := bson.M{}
+	options := options.Find()
 	planets := []*planetpb.Planet{}
 
-	cursor, err := collection.Find(context.Background(), filter)
+	// Fetch total documents for pagination.
+	itemCount, err := collection.CountDocuments(ctx, filter)
+	if err != nil {
+		return nil, status.Errorf(
+			codes.Internal,
+			fmt.Sprintf("Unknown internal error: %v", err),
+		)
+	}
+
+	options.SetLimit(5)
+	options.SetSkip(req.GetSkip())
+	cursor, err := collection.Find(context.Background(), filter, options)
 	if err != nil {
 		return nil, status.Errorf(
 			codes.Internal,
@@ -103,7 +109,8 @@ func (*server) ListPlanet(ctx context.Context, req *planetpb.ListPlanetRequest) 
 	}
 
 	return &planetpb.ListPlanetResponse{
-		Planet: planets,
+		Planet:            planets,
+		NumberOfDocuments: itemCount,
 	}, nil
 }
 
@@ -123,6 +130,7 @@ func dataToPlanetPb(data *planetItem) *planetpb.Planet {
 		NumberOfSatelites:    data.BasicInformation.NumberOfSatelites,
 		StarSystem:           data.BasicInformation.StarSystem,
 		MostAbundantResource: data.BasicInformation.MostAbundantResource,
+		SurfaceGravity:       data.BasicInformation.SurfaceGravity,
 	}
 
 	return &planetpb.Planet{
