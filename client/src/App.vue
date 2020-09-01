@@ -1,5 +1,5 @@
 <template>
-<div id="app">
+<div id="app" class="app">
     <nav class="navbar navbar-expand navbar-dark bg-dark">
         <a href="/" class="navbar-brand">Celestial Body Info</a>
         <div class="navbar-nav mr-auto">
@@ -25,7 +25,8 @@ export default {
 </script>
 
 <style>
-.container {
-    margin-left: 100px;
+.app {
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size: 20px;
 }
 </style>

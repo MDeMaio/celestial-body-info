@@ -45,19 +45,19 @@
         <div class="col-md-4" v-if="currentPlanet">
             <h1>Basic Information</h1>
             <ul class="list-group">
-                <li class="list-group-item">
+                <li class="list-group-item lgi-colored-space">
                     <p style="font-size: 22px;"><strong>Alternate Name(s):</strong> {{currentPlanet.basic_information.alternate_name}}</p>
                 </li>
-                <li class="list-group-item">
+                <li class="list-group-item lgi-colored-space">
                     <p style="font-size: 22px;"><strong>Number of Satelites:</strong> {{currentPlanet.basic_information.number_of_satelites > 0 ? currentPlanet.basic_information.number_of_satelites : 0}}</p>
                 </li>
-                <li class="list-group-item">
+                <li class="list-group-item lgi-colored-space">
                     <p style="font-size: 22px;"><strong>Star System:</strong> {{currentPlanet.basic_information.star_system}}</p>
                 </li>
-                <li class="list-group-item">
+                <li class="list-group-item lgi-colored-space">
                     <p style="font-size: 22px;"><strong>Most Abundant Resource:</strong> {{currentPlanet.basic_information.most_abundant_resource}}</p>
                 </li>
-                <li class="list-group-item">
+                <li class="list-group-item lgi-colored-space">
                     <p style="font-size: 22px;"><strong>Surface Gravity:</strong> {{currentPlanet.basic_information.surface_gravity}}m/s<sup>2</sup></p>
                 </li>
             </ul>
@@ -156,7 +156,7 @@ export default {
             const pages = Math.ceil(numOfDocuments / 5); // Round up for pages.
             this.totalPages = pages;
             const pageArray = [];
-            for (var i = 1; i <= pages; i++) {
+            for (let i = 1; i <= pages; i++) {
                 pageArray.push(i);
             }
 
@@ -196,6 +196,12 @@ export default {
 
 .lgi-pointer:hover {
     background-color: #53a5fc;
+}
+
+.lgi-colored-space{
+    background-color: #fcfbfe;
+    color: #1d1135;
+    /* style="background-color: fcfbfe; color: 0c164f;" */
 }
 
 .img-center {
