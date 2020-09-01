@@ -32,11 +32,19 @@ type facts struct {
 	Fact  string `bson:"fact"`
 }
 
+type basicInformation struct {
+	AlternateName        string `bson:"alternate_name"`
+	NumberOfSatelites    int32  `bson:"number_of_satelites"`
+	StarSystem           string `bson:"star_system"`
+	MostAbundantResource string `bson:"most_abundant_resource"`
+}
+
 type planetItem struct {
-	ID    primitive.ObjectID `bson:"_id,omitempty"`
-	Name  string             `bson:"name"`
-	Facts []facts            `bson:"facts"`
-	Image string             `bson:"image"`
+	ID               primitive.ObjectID `bson:"_id,omitempty"`
+	Name             string             `bson:"name"`
+	Facts            []facts            `bson:"facts"`
+	Image            string             `bson:"image"`
+	BasicInformation basicInformation   `bson:"basic_information"`
 }
 
 func (*server) ReadPlanet(ctx context.Context, req *planetpb.ReadPlanetRequest) (*planetpb.ReadPlanetResponse, error) {
@@ -110,11 +118,19 @@ func dataToPlanetPb(data *planetItem) *planetpb.Planet {
 		facts = append(facts, fact)
 	}
 
+	basicInformation := &planetpb.BasicInformation{
+		AlternateName:        data.BasicInformation.AlternateName,
+		NumberOfSatelites:    data.BasicInformation.NumberOfSatelites,
+		StarSystem:           data.BasicInformation.StarSystem,
+		MostAbundantResource: data.BasicInformation.MostAbundantResource,
+	}
+
 	return &planetpb.Planet{
-		PlanetId: data.ID.Hex(),
-		Name:     data.Name,
-		Facts:    facts,
-		Image:    data.Image,
+		PlanetId:         data.ID.Hex(),
+		Name:             data.Name,
+		Facts:            facts,
+		Image:            data.Image,
+		BasicInformation: basicInformation,
 	}
 }
 

@@ -37,7 +37,28 @@
         </div>
     </div>
     <h1 style="text-align: center; margin-top: 2%; font-size: 50px;" v-if="currentPlanet">{{ currentPlanet.name }}</h1>
-    <img class="img-center" v-if="currentPlanet" v-bind:src="currentPlanet.image">
+    <div class="row">
+        <div class="col-md-4" v-if="currentPlanet"> 
+            <h1>Basic Information</h1>
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <p style="font-size: 22px;"><strong>Alternate Name(s):</strong> {{currentPlanet.basic_information.alternate_name}}</p>
+                </li>
+                <li class="list-group-item">
+                    <p style="font-size: 22px;"><strong>Number of Satelites:</strong> {{currentPlanet.basic_information.number_of_satelites > 0 ? currentPlanet.basic_information.number_of_satelites : 0}}</p>
+                </li>
+                <li class="list-group-item">
+                    <p style="font-size: 22px;"><strong>Star System:</strong> {{currentPlanet.basic_information.star_system}}</p>
+                </li>
+                <li class="list-group-item">
+                    <p style="font-size: 22px;"><strong>Most Abundant Resource:</strong> {{currentPlanet.basic_information.most_abundant_resource}}</p>
+                </li>
+            </ul>
+        </div>
+        <img class="img-center col-md-4 justify-content-right" v-if="currentPlanet" v-bind:src="currentPlanet.image">
+        <div class="col-md-4">
+        </div>
+    </div>
     <div class="row mt-3 justify-content-center">
         <div class="col-md-8">
             <div v-if="currentPlanet">

@@ -10,11 +10,19 @@ message Planet {
     string name = 2;
     repeated Facts facts = 3;
     string image = 4;
+    BasicInformation basic_information = 5;
 }
 
 message Facts {
     string title = 1;
     string fact = 2; 
+}
+
+message BasicInformation{
+    string alternate_name = 1;
+    int32 number_of_satelites = 2;
+    string star_system = 3;
+    string most_abundant_resource = 4;
 }
 
 message ReadPlanetRequest {
