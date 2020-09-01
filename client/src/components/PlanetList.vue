@@ -93,18 +93,21 @@ export default {
             currentIndex: -1,
             name: "",
             pageArray: [],
-            currentPage: 1,
+            currentPage: 0,
             totalPages: 0
         };
     },
     methods: {
-        retrievePlanets() {
-            PlanetService.getAll(this.currentPage)
+        retrievePlanets(page) {
+            PlanetService.getAll(page)
                 .then(response => {
                     this.planets = response.data.planets;
                     console.log(response.data);
                     this.pageArray = this.generatePaginationPageArray(response.data.number_of_documents);
                     console.log(this.pageArray);
+                    this.currentPage = page;
+                    this.currentPlanet = null;
+                    this.currentIndex = -1;
                 })
                 .catch(e => {
                     console.log(e);
@@ -112,7 +115,7 @@ export default {
         },
 
         refreshList() {
-            this.retrievePlanets();
+            this.retrievePlanets(this.currentPage);
             this.currentPlanet = null;
             this.currentIndex = -1;
             this.name = "";
@@ -169,22 +172,12 @@ export default {
             handler(page) {
                 page = parseInt(page) || 1;
                 if (page !== this.currentPage) {
-                    PlanetService.getAll(page)
-                        .then(response => {
-                            this.planets = response.data.planets;
-                            this.currentPage = page;
-                            this.currentPlanet = null;
-                            this.currentIndex = -1;
-                        })
-                        .catch(e => {
-                            console.log(e);
-                        });
+                    this.retrievePlanets(page);
                 }
             }
         }
     },
     mounted() {
-        this.retrievePlanets();
     }
 };
 </script>
@@ -198,10 +191,9 @@ export default {
     background-color: #53a5fc;
 }
 
-.lgi-colored-space{
+.lgi-colored-space {
     background-color: #fcfbfe;
     color: #1d1135;
-    /* style="background-color: fcfbfe; color: 0c164f;" */
 }
 
 .img-center {
