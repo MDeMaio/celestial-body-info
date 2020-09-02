@@ -4,12 +4,12 @@
         <div class="col-md-6 list">
             <form v-on:submit.prevent @submit="searchName">
                 <div class="input-group mb-3">
-                    <input ref="name" type="text" class="form-control" placeholder="Search by name" v-model="name" />
+                    <input ref="name" type="text" class="form-control fs-20" placeholder="Search by name" v-model="name" />
                     <div class="input-group-append">
-                        <button class="btn btn-outline-primary ml-1" type="submit">
+                        <button class="btn btn-outline-primary ml-1 fs-20" type="submit">
                             Search
                         </button>
-                        <button class="btn btn-outline-secondary" type="button" @click="refreshList">
+                        <button class="btn btn-outline-secondary fs-20" type="button" @click="refreshList">
                             Reset
                         </button>
                     </div>
@@ -228,5 +228,9 @@ export default {
     margin-left: auto;
     margin-right: auto;
     width: 50%;
+}
+
+.fs-20{
+    font-size: 20px;
 }
 </style>
