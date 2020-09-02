@@ -67,10 +67,10 @@
         </div>
     </div>
     <div class="row mt-3 justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-10">
             <div v-if="currentPlanet">
-                <ul class="list-group">
-                    <li class="list-group-item" v-for="(val, index) in currentPlanet.facts" :key="index">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item mt-2" v-for="(val, index) in currentPlanet.facts" :key="index">
                         <h1 style="font-size: 40px; text-align: center;">{{val.title}}</h1>
                         <p style="font-size: 22px;">{{val.fact}}</p>
                     </li>
