@@ -12,6 +12,7 @@
 - [X] Update http server to implement Read method along with existing list method.
 - [X] Update http server to use timeouts.
 - [] Update http server by adding logging.
+- [] Add Docker to make local building and testing easier -> Require only 1 terminal :)
 
 ---- Frontend ----
 - [X] Set up boiler plate frontend project(Vue!)
@@ -20,9 +21,10 @@
 - [X] Test load data onto the page and listing it.
 - [X] Add some styling and formatting to the data.
 - [X] Ability to click planet in the list and view it by itself with full details.
-- [] Update styles and formatting.
+- [X] Update styles and formatting.
 - [] Add tooltip from NPM to put tips each property to explain what it is.
-- [] Research routing/rerendering of the page to handle viewing one planet at a time.
+- [X] Research routing/rerendering of the page to handle viewing one planet at a time.
+- [] Update the README.md
 
 ---- Future Ideas -----
 - [] Real time distance from tracker. (Track planets distance from earth in realtime updated every x seconds)
