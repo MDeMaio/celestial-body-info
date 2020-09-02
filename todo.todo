@@ -25,6 +25,7 @@
 - [] Add tooltip from NPM to put tips each property to explain what it is.
 - [X] Research routing/rerendering of the page to handle viewing one planet at a time.
 - [] Update the README.md
+- [] Only show certain # of pages.
 
 ---- Future Ideas -----
 - [] Real time distance from tracker. (Track planets distance from earth in realtime updated every x seconds)

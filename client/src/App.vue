@@ -27,6 +27,6 @@ export default {
 <style>
 .app {
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-    font-size: 20px;
+    font-size: 22px;
 }
 </style>

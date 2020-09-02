@@ -30,7 +30,8 @@
                     <li :class="{'disabled':currentPage === 1}" class="page-item previous-item">
                         <router-link :to="{ query: { page: currentPage - 1 }}" class="page-link">Previous</router-link>
                     </li>
-                    <li v-for="page in pageArray" :key="page" class="page-item" :class="{'active':currentPage === page}">
+                    <li v-for="page in pageArray" :key="page" class="page-item" :class="{'active':(currentPage === page)}">
+                        <!-- , 'd-none': (page >= (currentPage + 5)) || (page <= (currentPage - 5)) -->
                         <router-link :to="{ query: { page: page }}" class="page-link">{{page}}</router-link>
                     </li>
                     <li :class="{'disabled':currentPage === totalPages}" class="page-item next-item">
@@ -103,9 +104,9 @@ export default {
                 .then(response => {
                     this.planets = response.data.planets;
                     console.log(response.data);
-                    this.pageArray = this.generatePaginationPageArray(response.data.number_of_documents);
                     console.log(this.pageArray);
                     this.currentPage = page;
+                    this.pageArray = this.generatePaginationPageArray(response.data.number_of_documents);
                     this.currentPlanet = null;
                     this.currentIndex = -1;
                 })
@@ -122,12 +123,12 @@ export default {
             document.getElementsByClassName("pagination")[0].style.visibility = "visible";
         },
 
-        setActivePlanet(planet, index) {    // Updates currently viewed planet.
+        setActivePlanet(planet, index) { // Updates currently viewed planet.
             this.currentPlanet = planet;
             this.currentIndex = index;
         },
 
-        searchName() {  // This will search for a planet by name and return it, caps specific as of now.
+        searchName() { // This will search for a planet by name and return it, caps specific as of now.
             if (this.name === "") {
                 alert("Please enter a planet to search for.");
                 this.$refs.name.focus();
@@ -151,7 +152,7 @@ export default {
                 });
         },
 
-        generatePaginationPageArray(numOfDocuments) {   // Fetch our pages in an array so we can iterate over it later to create the pagination list items.
+        generatePaginationPageArray(numOfDocuments) { // Fetch our pages in an array so we can iterate over it later to create the pagination list items.
             if (numOfDocuments == 0) { // No paging if no records.
                 return;
             }
@@ -159,14 +160,25 @@ export default {
             const pages = Math.ceil(numOfDocuments / 5); // Round up for pages.
             this.totalPages = pages;
             const pageArray = [];
+            const pageDiff = this.totalPages - this.currentPage
+
+            console.log("Total Pages:" + this.totalPages + " Current Page:" + this.currentPage);
             for (let i = 1; i <= pages; i++) {
-                pageArray.push(i);
+                if (this.totalPages <= 5) { // Show all if 5 or less.
+                    pageArray.push(i);
+                } else {
+                    if ((i >= this.currentPage - 1 && i <= this.currentPage + 4)) {
+                        pageArray.push(i);
+                    } else if(i >= this.totalPages -4 && pageDiff <= 4){
+                        pageArray.push(i);
+                    }
+                }
             }
 
             return pageArray;
         }
     },
-    watch: {    // Watch for data change in which page the user is currently on, call API to get new data when it changes.
+    watch: { // Watch for data change in which page the user is currently on, call API to get new data when it changes.
         '$route.query.page': {
             immediate: true,
             handler(page) {
@@ -177,8 +189,7 @@ export default {
             }
         }
     },
-    mounted() {
-    }
+    mounted() {}
 };
 </script>
 
