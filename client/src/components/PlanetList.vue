@@ -156,21 +156,38 @@ export default {
                 return;
             }
 
-            const pages = Math.ceil(numOfDocuments / 5); // Round up for pages.
+            const pages = Math.ceil(numOfDocuments /1); // Round up for pages.
             this.totalPages = pages;
             const pageArray = [];
-            const pageDiff = this.totalPages - this.currentPage
+            //const pageDiff = this.totalPages - this.currentPage
 
             console.log("Total Pages:" + this.totalPages + " Current Page:" + this.currentPage);
             for (let i = 1; i <= pages; i++) {
                 if (this.totalPages <= 5) { // Show all if 5 or less.
                     pageArray.push(i);
                 } else {
-                    if ((i >= this.currentPage - 1 && i <= this.currentPage + 4)) {
-                        pageArray.push(i);
-                    } else if(i >= this.totalPages -4 && pageDiff <= 4){
-                        pageArray.push(i);
+                    if(this.currentPage == 1 || this.currentPage ==2){
+                        if(i <= 5){
+                            pageArray.push(i);
+                        }
+                    } 
+                    // else if(pageDiff <= 4){
+                    //     if(i >= this.totalPages - 4){
+                    //         pageArray.push(i);
+                    //     }
+                    // } 
+                    else{
+                        if(i >= this.currentPage - 2 && i <= this.currentPage + 2){
+                            pageArray.push(i);
+                        }
                     }
+                    
+                    
+                    // else if ((i >= this.currentPage - 1 && i <= this.currentPage + 4)) {
+                    //     pageArray.push(i);
+                    // } else if(i >= this.totalPages -4 && pageDiff <= 4){
+                    //     pageArray.push(i);
+                    // }
                 }
             }
 
