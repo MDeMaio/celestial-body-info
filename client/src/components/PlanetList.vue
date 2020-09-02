@@ -31,7 +31,6 @@
                         <router-link :to="{ query: { page: currentPage - 1 }}" class="page-link">Previous</router-link>
                     </li>
                     <li v-for="page in pageArray" :key="page" class="page-item" :class="{'active':(currentPage === page)}">
-                        <!-- , 'd-none': (page >= (currentPage + 5)) || (page <= (currentPage - 5)) -->
                         <router-link :to="{ query: { page: page }}" class="page-link">{{page}}</router-link>
                     </li>
                     <li :class="{'disabled':currentPage === totalPages}" class="page-item next-item">
