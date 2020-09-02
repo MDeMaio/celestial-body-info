@@ -89,6 +89,7 @@ func (*server) ListPlanet(ctx context.Context, req *planetpb.ListPlanetRequest) 
 	}
 
 	options.SetLimit(5)
+	options.SetSort(bson.M{"name": 1})
 	options.SetSkip(req.GetSkip())
 	cursor, err := collection.Find(context.Background(), filter, options)
 	if err != nil {

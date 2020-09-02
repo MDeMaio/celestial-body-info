@@ -25,7 +25,7 @@
                     {{ planet.name }}
                 </li>
             </ul>
-            <nav aria-label="Page navigation example">
+            <nav aria-label="Pagination">
                 <ul class="pagination mt-2 justify-content-center">
                     <li :class="{'disabled':currentPage === 1}" class="page-item previous-item">
                         <router-link :to="{ query: { page: currentPage - 1 }}" class="page-link">Previous</router-link>
@@ -98,7 +98,7 @@ export default {
         };
     },
     methods: {
-        retrievePlanets(page) {
+        retrievePlanets(page) { // Fetchs all of our planets for the current page.
             PlanetService.getAll(page)
                 .then(response => {
                     this.planets = response.data.planets;
@@ -114,7 +114,7 @@ export default {
                 });
         },
 
-        refreshList() {
+        refreshList() { // Refreshes the page to the default state.
             this.retrievePlanets(this.currentPage);
             this.currentPlanet = null;
             this.currentIndex = -1;
@@ -122,12 +122,12 @@ export default {
             document.getElementsByClassName("pagination")[0].style.visibility = "visible";
         },
 
-        setActivePlanet(planet, index) {
+        setActivePlanet(planet, index) {    // Updates currently viewed planet.
             this.currentPlanet = planet;
             this.currentIndex = index;
         },
 
-        searchName() {
+        searchName() {  // This will search for a planet by name and return it, caps specific as of now.
             if (this.name === "") {
                 alert("Please enter a planet to search for.");
                 this.$refs.name.focus();
@@ -151,7 +151,7 @@ export default {
                 });
         },
 
-        generatePaginationPageArray(numOfDocuments) {
+        generatePaginationPageArray(numOfDocuments) {   // Fetch our pages in an array so we can iterate over it later to create the pagination list items.
             if (numOfDocuments == 0) { // No paging if no records.
                 return;
             }
@@ -166,7 +166,7 @@ export default {
             return pageArray;
         }
     },
-    watch: {
+    watch: {    // Watch for data change in which page the user is currently on, call API to get new data when it changes.
         '$route.query.page': {
             immediate: true,
             handler(page) {
