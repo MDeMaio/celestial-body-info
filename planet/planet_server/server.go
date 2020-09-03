@@ -36,6 +36,7 @@ type facts struct {
 
 type basicInformation struct {
 	AlternateName        string  `bson:"alternate_name"`
+	Type                 string  `bson:"type"`
 	NumberOfSatelites    int32   `bson:"number_of_satelites"`
 	StarSystem           string  `bson:"star_system"`
 	MostAbundantResource string  `bson:"most_abundant_resource"`
@@ -75,7 +76,13 @@ func (*server) ReadPlanet(ctx context.Context, req *planetpb.ReadPlanetRequest) 
 func (*server) ListPlanet(ctx context.Context, req *planetpb.ListPlanetRequest) (*planetpb.ListPlanetResponse, error) {
 	fmt.Println("List planet request")
 
-	filter := bson.M{}
+	filter := bson.M{} // Nested filter.
+	planetaryType := req.GetType()
+	fmt.Println(planetaryType)
+	if planetaryType != "All" {
+		filter = bson.M{"basic_information.type": planetaryType}
+	}
+
 	options := options.Find()
 	planets := []*planetpb.Planet{}
 
@@ -130,6 +137,7 @@ func dataToPlanetPb(data *planetItem) *planetpb.Planet {
 
 	basicInformation := &planetpb.BasicInformation{
 		AlternateName:        data.BasicInformation.AlternateName,
+		Type:                 data.BasicInformation.Type,
 		NumberOfSatelites:    data.BasicInformation.NumberOfSatelites,
 		StarSystem:           data.BasicInformation.StarSystem,
 		MostAbundantResource: data.BasicInformation.MostAbundantResource,

@@ -20,6 +20,17 @@
     <div class="row justify-content-center">
         <div class="col-md-6">
             <h4 style="font-size: 35px;">Available Planets</h4>
+            <div class="btn-group dropleft mb-2">
+                <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Planet Type
+                </button>
+                <div class="dropdown-menu" @click="changePlanetaryType($event)">
+                    <button class="dropdown-item" type="button" value="All" :class="{'active':(type === 'All')}">All</button>
+                    <button class="dropdown-item" type="button" value="Inner Planet" :class="{'active':(type === 'Inner Planet')}">Inner Planet</button>
+                    <button class="dropdown-item" type="button" value="Outer Planet" :class="{'active':(type === 'Outer Planet')}">Outer Planet</button>
+                    <button class="dropdown-item" type="button" value="Exoplanet" :class="{'active':(type === 'Exoplanet')}">Exoplanet</button>
+                </div>
+            </div>
             <ul class="list-group">
                 <li class="list-group-item lgi-pointer py-1" :class="{ active: index == currentIndex }" v-for="(planet, index) in planets" :key="planet.planet_id" @click="setActivePlanet(planet, index)">
                     {{ planet.name }}
@@ -28,13 +39,13 @@
             <nav aria-label="Pagination">
                 <ul class="pagination mt-2 justify-content-center">
                     <li :class="{'disabled':currentPage === 1}" class="page-item previous-item">
-                        <router-link :to="{ query: { page: currentPage - 1 }}" class="page-link">Previous</router-link>
+                        <button class="page-link" type="button" @click="currentPage = currentPage - 1">Previous</button>
                     </li>
                     <li v-for="page in pageArray" :key="page" class="page-item" :class="{'active':(currentPage === page)}">
-                        <router-link :to="{ query: { page: page }}" class="page-link">{{page}}</router-link>
+                        <button class="page-link" type="button" @click="currentPage = page">{{page}}</button>
                     </li>
                     <li :class="{'disabled':currentPage === totalPages}" class="page-item next-item">
-                        <router-link :to="{ query: { page: currentPage + 1 }}" class="page-link">Next</router-link>
+                        <button class="page-link" type="button" @click="currentPage = currentPage + 1">Next</button>
                     </li>
                 </ul>
             </nav>
@@ -47,6 +58,9 @@
             <ul class="list-group">
                 <li class="list-group-item lgi-colored-space">
                     <p style="font-size: 22px;"><strong>Alternate Name(s):</strong> {{currentPlanet.basic_information.alternate_name}}</p>
+                </li>
+                <li class="list-group-item lgi-colored-space">
+                    <p style="font-size: 22px;"><strong>Planetary Type:</strong> {{currentPlanet.basic_information.type}}</p>
                 </li>
                 <li class="list-group-item lgi-colored-space">
                     <p style="font-size: 22px;"><strong>Number of Satelites:</strong> {{currentPlanet.basic_information.number_of_satelites > 0 ? currentPlanet.basic_information.number_of_satelites : 0}}</p>
@@ -93,13 +107,14 @@ export default {
             currentIndex: -1,
             name: "",
             pageArray: [],
-            currentPage: 0,
-            totalPages: 0
+            currentPage: 1,
+            totalPages: 0,
+            type: "All"
         };
     },
     methods: {
-        retrievePlanets(page) { // Fetchs all of our planets for the current page.
-            PlanetService.getAll(page)
+        retrievePlanets(page, type) { // Fetchs all of our planets for the current page.
+            PlanetService.getAll(page, type)
                 .then(response => {
                     this.planets = response.data.planets;
                     console.log(response.data);
@@ -115,7 +130,7 @@ export default {
         },
 
         refreshList() { // Refreshes the page to the default state.
-            this.retrievePlanets(this.currentPage);
+            this.retrievePlanets(this.currentPage, this.type);
             this.currentPlanet = null;
             this.currentIndex = -1;
             this.name = "";
@@ -156,56 +171,59 @@ export default {
                 return;
             }
 
-            const pages = Math.ceil(numOfDocuments /1); // Round up for pages.
+            const pages = Math.ceil(numOfDocuments / 5); // Round up for pages.
             this.totalPages = pages;
             const pageArray = [];
-            //const pageDiff = this.totalPages - this.currentPage
 
             console.log("Total Pages:" + this.totalPages + " Current Page:" + this.currentPage);
             for (let i = 1; i <= pages; i++) {
                 if (this.totalPages <= 5) { // Show all if 5 or less.
                     pageArray.push(i);
                 } else {
-                    if(this.currentPage == 1 || this.currentPage ==2){
-                        if(i <= 5){
+                    if (this.currentPage == 1 || this.currentPage == 2) {
+                        if (i <= 5) {
                             pageArray.push(i);
                         }
-                    } 
-                    // else if(pageDiff <= 4){
-                    //     if(i >= this.totalPages - 4){
-                    //         pageArray.push(i);
-                    //     }
-                    // } 
-                    else{
-                        if(i >= this.currentPage - 2 && i <= this.currentPage + 2){
+                    } else {
+                        if (i >= this.currentPage - 2 && i <= this.currentPage + 2) {
                             pageArray.push(i);
                         }
                     }
-                    
-                    
-                    // else if ((i >= this.currentPage - 1 && i <= this.currentPage + 4)) {
-                    //     pageArray.push(i);
-                    // } else if(i >= this.totalPages -4 && pageDiff <= 4){
-                    //     pageArray.push(i);
-                    // }
                 }
             }
 
             return pageArray;
+        },
+
+        changePlanetaryType(e){
+            const buttonValue = e.target.value;
+            this.type = buttonValue;
         }
     },
     watch: { // Watch for data change in which page the user is currently on, call API to get new data when it changes.
-        '$route.query.page': {
-            immediate: true,
-            handler(page) {
-                page = parseInt(page) || 1;
-                if (page !== this.currentPage) {
-                    this.retrievePlanets(page);
-                }
-            }
+        // '$route.query.page': {
+        //     immediate: true,
+        //     handler(page) {
+        //         page = parseInt(page) || 1;
+        //         if (page !== this.currentPage) {
+        //             this.retrievePlanets(page, this.type);
+        //         }
+        //     }
+        // },
+        "currentPage": function(val){
+            console.log(val);
+            this.refreshList();
+        },
+
+        "type": function(val){
+            console.log(val);
+            this.currentPage = 1;
+            this.refreshList();
         }
     },
-    mounted() {}
+    mounted() {
+        this.retrievePlanets(1, "All");
+    }
 };
 </script>
 
@@ -230,7 +248,7 @@ export default {
     width: 50%;
 }
 
-.fs-20{
+.fs-20 {
     font-size: 20px;
 }
 </style>

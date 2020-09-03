@@ -3,6 +3,7 @@
         "name": "Earth",
         "basic_information": {
             "alternate_name": "Terra, Tellus, Gaia, Gaea, the World, the Globe",
+            "type": "Inner Planet",
             "number_of_satelites": 1,
             "star_system": "Solar System",
             "most_abundant_resource": "Oxygen",
@@ -39,6 +40,7 @@
         "name": "Mars",
         "basic_information": {
             "alternate_name": "Red Planet",
+            "type": "Inner Planet",
             "number_of_satelites": 2,
             "star_system": "Solar System",
             "most_abundant_resource": "Carbon Dioxide",
@@ -75,6 +77,7 @@
         "name": "Mercury",
         "basic_information": {
             "alternate_name": "Nabu, Hermes",
+            "type": "Inner Planet",
             "number_of_satelites": 0,
             "star_system": "Solar System",
             "most_abundant_resource": "Oxygen",
@@ -111,6 +114,7 @@
         "name": "Venus",
         "basic_information": {
             "alternate_name": "Phosphorus, Hesperus",
+            "type": "Inner Planet",
             "number_of_satelites": 0,
             "star_system": "Solar System",
             "most_abundant_resource": "Carbon Dioxide",
@@ -147,6 +151,7 @@
         "name": "Jupiter",
         "basic_information": {
             "alternate_name": "Jove, Luppiter, Lovis",
+            "type": "Outer Planet",
             "number_of_satelites": 79,
             "star_system": "Solar System",
             "most_abundant_resource": "Hydrogen",
@@ -183,6 +188,7 @@
         "name": "Saturn",
         "basic_information": {
             "alternate_name": "Phainon, Star of Saturn, Shabbathai",
+            "type": "Outer Planet",
             "number_of_satelites": 82,
             "star_system": "Solar System",
             "most_abundant_resource": "Hydrogen",
@@ -219,6 +225,7 @@
         "name": "Uranus",
         "basic_information": {
             "alternate_name": "Georgium Sidus",
+            "type": "Outer Planet",
             "number_of_satelites": 27,
             "star_system": "Solar System",
             "most_abundant_resource": "Hydrogen",
@@ -255,6 +262,7 @@
         "name": "Neptune",
         "basic_information": {
             "alternate_name": "Poseidon, Tangaroa",
+            "type": "Outer Planet",
             "number_of_satelites": 14,
             "star_system": "Solar System",
             "most_abundant_resource": "Hydrogen",
@@ -291,6 +299,7 @@
         "name": "Proxima Centauri b",
         "basic_information": {
             "alternate_name": "Proxima b, Alpha Centauri Cb",
+            "type": "Exoplanet",
             "number_of_satelites": 0,
             "star_system": "Alpha Centauri",
             "most_abundant_resource": "Unknown",
@@ -323,6 +332,7 @@
         "name": "55 Cancri e",
         "basic_information": {
             "alternate_name": "55 Cnc e, Janssen",
+            "type": "Exoplanet",
             "number_of_satelites": 0,
             "star_system": "55 Cancri",
             "most_abundant_resource": "Unknown",

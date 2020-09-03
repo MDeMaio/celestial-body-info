@@ -1,8 +1,8 @@
 import http from "../http-common";
 
 class PlanetService {
-  getAll(page) {
-    return http.get("/planet?page=" + page);
+  getAll(page, type) {
+    return http.get("/planet?page=" + page + "&type=" + type);
   }
 
   get(name) {
