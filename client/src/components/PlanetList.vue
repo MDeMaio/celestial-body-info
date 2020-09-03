@@ -125,7 +125,7 @@ export default {
                     console.log(response.data);
                     console.log(this.pageArray);
                     this.currentPage = page;
-                    this.pageArray = this.generatePaginationPageArray(response.data.number_of_documents);
+                    this.pageArray = this.generatePaginationPageArray(response.data.number_of_documents, 5);
                     this.currentPlanet = null;
                     this.currentIndex = -1;
                 })
@@ -179,18 +179,22 @@ export default {
             }
             return count;
         },
-        generatePaginationPageArray(numOfDocuments) { // Fetch our pages in an array so we can iterate over it later to create the pagination list items.
+        generatePaginationPageArray(numOfDocuments, recordsPerPage) { // Fetch our pages in an array so we can iterate over it later to create the pagination list items.
              if (numOfDocuments == 0) { // No paging if no records.
                 return;
             }
 
             const pageArray = [];
-            this.totalPages = Math.ceil(numOfDocuments / 1); // sets total page count for data
+            this.totalPages = Math.ceil(numOfDocuments / recordsPerPage); // sets total page count for data
             let pageDisplayCount = this.validatePageCount(5, this.totalPages);
             const mid = Math.ceil(pageDisplayCount / 2); // sets mid of displayed pages
             let startIndex = (this.currentPage + 1) - mid; // set first page to be displayed
 
-            if (this.currentPage < mid) { // account for front half
+            if(this.totalPages <= recordsPerPage){
+                startIndex = 1;
+                pageDisplayCount = this.totalPages;
+            }
+            else if (this.currentPage < mid) { // account for front half
                 startIndex = 1;
             } else if ((this.currentPage + (mid-1)) > this.totalPages) { //account for back half
                 startIndex = this.totalPages - pageDisplayCount+1;
