@@ -70,12 +70,13 @@ func listPlanetHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	page, err := strconv.Atoi(r.URL.Query().Get("page"))
+	vars := mux.Vars(r)
+	page, err := strconv.Atoi(vars["page"])
 	if err != nil {
 		fmt.Printf("Error happened while converting: %v \n", err)
 	}
 
-	planetaryType := r.URL.Query().Get("type")
+	planetaryType := vars["type"]
 	fmt.Println(planetaryType, page)
 
 	resList, err := c.ListPlanet(context.Background(), &planetpb.ListPlanetRequest{
@@ -133,7 +134,7 @@ func readPlanetHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	r := mux.NewRouter()
-	r.HandleFunc("/planet", listPlanetHandler).Methods(http.MethodGet)
+	r.HandleFunc("/planet/{page}/{type}", listPlanetHandler).Methods(http.MethodGet)
 	r.HandleFunc("/planet/{name}", readPlanetHandler).Methods(http.MethodGet)
 	r.Use(mux.CORSMethodMiddleware(r))
 

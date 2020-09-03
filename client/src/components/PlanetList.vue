@@ -25,8 +25,8 @@
                     Planet Type
                 </button>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item" v-bind:href="'/planets?page=1&type=All'" :class="{'active':(type === 'All')}">All</a>
-                    <a class="dropdown-item" v-bind:href="'/planets?page=1&type=Inner Planet'" :class="{'active':(type === 'Inner Planet')}">Inner Planet</a>
+                    <button class="dropdown-item" @click="type = 'All'" :class="{'active':(type === 'All')}">All</button>
+                    <button class="dropdown-item" @click="type = 'Inner Planet'" :class="{'active':(type === 'Inner Planet')}">Inner Planet</button>
                     <a class="dropdown-item" v-bind:href="'/planets?page=1&type=Outer Planet'" :class="{'active':(type === 'Outer Planet')}">Outer Planet</a>
                     <a class="dropdown-item" v-bind:href="'/planets?page=1&type=Exoplanet'" :class="{'active':(type === 'Exoplanet')}">Exoplanet</a>
                 </div>
@@ -39,13 +39,13 @@
             <nav aria-label="Pagination">
                 <ul class="pagination mt-2 justify-content-center">
                     <li v-if="loaded" :key="'prev'" :class="{'disabled':currentPage === 1}" class="page-item previous-item">
-                        <a class="page-link" v-bind:href="'/planets?page='+ (currentPage-1) + '&type=' + type">Prev</a>
+                        <button class="page-link" @click="currentPage--">Prev</button>
                     </li>
                     <li v-for="page in pageArray" :key="page" class="page-item" :class="{'active':(currentPage === page)}">
-                        <a class="page-link" v-bind:href="'/planets?page='+ page + '&type=' + type">{{page}}</a>
+                        <button class="page-link" @click="currentPage = page">{{page}}</button>
                     </li>
                     <li v-if="loaded" :key="'next'" :class="{'disabled':currentPage === totalPages}" class="page-item next-item">
-                        <a class="page-link" v-bind:href="'/planets?page='+ (currentPage+1) + '&type=' + type">Next</a>
+                        <button class="page-link" @click="currentPage++">Next</button>
                     </li>
                 </ul>
             </nav>
@@ -111,9 +111,9 @@ export default {
             currentIndex: -1,
             name: "",
             pageArray: [],
-            currentPage: parseInt(this.$route.query.page),
+            currentPage: 1,
             totalPages: 0,
-            type: this.$route.query.type,
+            type: "All",
             loaded: false
         };
     },
@@ -136,10 +136,12 @@ export default {
 
         refreshList() { // Refreshes the page to the default state.
             this.retrievePlanets(this.currentPage, this.type);
-            this.currentPlanet = null;
             this.currentIndex = -1;
             this.name = "";
             document.getElementsByClassName("pagination")[0].style.visibility = "visible";
+            setTimeout(function () {
+                this.currentPlanet = null;
+            }, 600); // Give it time to fade out or else it looks abrupt.
         },
 
         setActivePlanet(planet, index) { // Updates currently viewed planet.
@@ -205,25 +207,16 @@ export default {
         }
     },
     watch: { // Watch for data change in which page the user is currently on, call API to get new data when it changes.
-        // '$route.query.page': {
-        //     immediate: true,
-        //     handler(page) {
-        //         page = parseInt(page) || 1;
-        //         if (page !== this.currentPage) {
-        //             this.retrievePlanets(page, this.type);
-        //         }
-        //     }
-        // },
-        // "currentPage": function () {
-        //     this.refreshList();
-        // },
+        "currentPage": function () {
+            this.refreshList();
+        },
 
-        // "type": function () {
-        //      if (this.currentPage === 1) {   // Otherwise changing current page will take care of the refresh for us.
-        //         this.refreshList();
-        //     }
-        //     this.currentPage = 1;
-        // }
+        "type": function () {
+            if (this.currentPage === 1) { // Otherwise changing current page will take care of the refresh for us.
+                this.refreshList();
+            }
+            this.currentPage = 1;
+        }
     },
     mounted() {
         this.retrievePlanets(this.currentPage, this.type);
@@ -260,11 +253,11 @@ export default {
 /* Enter and leave animations can use different */
 /* durations and timing functions.              */
 .slide-fade-enter-active {
-    transition: all 2s ease;
+    transition: all 1s ease;
 }
 
 .slide-fade-leave-active {
-    transition: all 1.5s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+    transition: all .5s cubic-bezier(1.0, 0.5, 0.8, 1.0);
 }
 
 .slide-fade-enter,
