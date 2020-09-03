@@ -195,7 +195,7 @@ export default {
             return pageArray;
         },
 
-        changePlanetaryType(e){
+        changePlanetaryType(e) {
             const buttonValue = e.target.value;
             this.type = buttonValue;
         }
@@ -210,15 +210,15 @@ export default {
         //         }
         //     }
         // },
-        "currentPage": function(val){
-            console.log(val);
+        "currentPage": function () {
             this.refreshList();
         },
 
-        "type": function(val){
-            console.log(val);
+        "type": function () {
+             if (this.currentPage === 1) {   // Otherwise changing current page will take care of the refresh for us.
+                this.refreshList();
+            }
             this.currentPage = 1;
-            this.refreshList();
         }
     },
     mounted() {
