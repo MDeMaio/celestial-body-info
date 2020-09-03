@@ -170,33 +170,34 @@ export default {
                     }
                 });
         },
-
+        validatePageCount(count, total) {
+            if (count > total) { 
+                count = total;
+            }
+            if (count % 2 == 0) { //ensure odd number
+                count--;
+            }
+            return count;
+        },
         generatePaginationPageArray(numOfDocuments) { // Fetch our pages in an array so we can iterate over it later to create the pagination list items.
-            if (numOfDocuments == 0) { // No paging if no records.
+             if (numOfDocuments == 0) { // No paging if no records.
                 return;
             }
 
-            const pages = Math.ceil(numOfDocuments / 5); // Round up for pages.
-            this.totalPages = pages;
             const pageArray = [];
+            this.totalPages = Math.ceil(numOfDocuments / 1); // sets total page count for data
+            let pageDisplayCount = this.validatePageCount(5, this.totalPages);
+            const mid = Math.ceil(pageDisplayCount / 2); // sets mid of displayed pages
+            let startIndex = (this.currentPage + 1) - mid; // set first page to be displayed
 
-            console.log("Total Pages:" + this.totalPages + " Current Page:" + this.currentPage);
-            for (let i = 1; i <= pages; i++) {
-                if (this.totalPages <= 5) { // Show all if 5 or less.
-                    pageArray.push(i);
-                } else {
-                    if (this.currentPage == 1 || this.currentPage == 2) {
-                        if (i <= 5) {
-                            pageArray.push(i);
-                        }
-                    } else {
-                        if (i >= this.currentPage - 2 && i <= this.currentPage + 2) {
-                            pageArray.push(i);
-                        }
-                    }
-                }
+            if (this.currentPage < mid) { // account for front half
+                startIndex = 1;
+            } else if ((this.currentPage + (mid-1)) > this.totalPages) { //account for back half
+                startIndex = this.totalPages - pageDisplayCount+1;
             }
-
+            for (let i = startIndex; i < startIndex + pageDisplayCount; i++) {
+                pageArray.push(i);
+            }
             return pageArray;
         }
     },
