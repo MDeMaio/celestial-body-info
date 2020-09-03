@@ -27,8 +27,8 @@
                 <div class="dropdown-menu">
                     <button class="dropdown-item" @click="type = 'All'" :class="{'active':(type === 'All')}">All</button>
                     <button class="dropdown-item" @click="type = 'Inner Planet'" :class="{'active':(type === 'Inner Planet')}">Inner Planet</button>
-                    <a class="dropdown-item" v-bind:href="'/planets?page=1&type=Outer Planet'" :class="{'active':(type === 'Outer Planet')}">Outer Planet</a>
-                    <a class="dropdown-item" v-bind:href="'/planets?page=1&type=Exoplanet'" :class="{'active':(type === 'Exoplanet')}">Exoplanet</a>
+                    <button class="dropdown-item" @click="type = 'Outer Planet'" :class="{'active':(type === 'Outer Planet')}">Outer Planet</button>
+                    <button class="dropdown-item" @click="type = 'Exoplanet'" :class="{'active':(type === 'Exoplanet')}">Exoplanet</button>
                 </div>
             </div>
             <transition-group name="slide-fade" tag="ul" class="list-group">

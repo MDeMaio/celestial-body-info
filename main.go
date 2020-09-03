@@ -76,12 +76,16 @@ func listPlanetHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("Error happened while converting: %v \n", err)
 	}
 
-	planetaryType := vars["type"]
-	fmt.Println(planetaryType, page)
+	filters := []*planetpb.ListPlanetRequestFilter{
+		&planetpb.ListPlanetRequestFilter{
+			Column: "basic_information.type",
+			Value:  vars["type"],
+		},
+	}
 
 	resList, err := c.ListPlanet(context.Background(), &planetpb.ListPlanetRequest{
-		Skip: int64((page * 5) - 5),
-		Type: planetaryType,
+		Skip:                    int64((page * 5) - 5),
+		ListPlanetRequestFilter: filters,
 	})
 	if err != nil { // Handle our gRPC errors.
 		fmt.Printf("Error happened while listing: %v \n", err)
