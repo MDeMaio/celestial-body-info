@@ -58,7 +58,7 @@ func (*server) ReadPlanet(ctx context.Context, req *planetpb.ReadPlanetRequest) 
 
 	// create an empty struct
 	data := &planetItem{}
-	filter := bson.M{"name": planetName}
+	filter := bson.M{"name": primitive.Regex{Pattern: fmt.Sprintf("^.*%s.*", planetName), Options: "i"}} // i for case insensitive.
 
 	res := collection.FindOne(context.Background(), filter)
 	if err := res.Decode(data); err != nil {
