@@ -53,30 +53,34 @@
     </div>
     <h1 style="text-align: center; margin-top: 2%; font-size: 50px;" v-if="currentPlanet">{{ currentPlanet.name }}</h1>
     <div class="row">
-        <div class="col-md-4" v-if="currentPlanet">
-            <h1>Basic Information</h1>
-            <ul class="list-group">
-                <li :key="'alternate_name'" class="list-group-item lgi-colored-space">
-                    <p style="font-size: 22px;"><strong>Alternate Name(s):</strong> {{currentPlanet.basic_information.alternate_name}}</p>
-                </li>
-                <li :key="'type'" class="list-group-item lgi-colored-space">
-                    <p style="font-size: 22px;"><strong>Planetary Type:</strong> {{currentPlanet.basic_information.type}}</p>
-                </li>
-                <li :key="'number_of_satelites'" class="list-group-item lgi-colored-space">
-                    <p style="font-size: 22px;"><strong>Number of Satelites:</strong> {{currentPlanet.basic_information.number_of_satelites > 0 ? currentPlanet.basic_information.number_of_satelites : 0}}</p>
-                </li>
-                <li :key="'star_system'" class="list-group-item lgi-colored-space">
-                    <p style="font-size: 22px;"><strong>Star System:</strong> {{currentPlanet.basic_information.star_system}}</p>
-                </li>
-                <li :key="'most_abundant_resource'" class="list-group-item lgi-colored-space">
-                    <p style="font-size: 22px;"><strong>Most Abundant Resource:</strong> {{currentPlanet.basic_information.most_abundant_resource}}</p>
-                </li>
-                <li :key="'surface_gravity'" class="list-group-item lgi-colored-space">
-                    <p style="font-size: 22px;"><strong>Surface Gravity:</strong> {{currentPlanet.basic_information.surface_gravity}}m/s<sup>2</sup></p>
-                </li>
-            </ul>
-        </div>
-        <img class="img-center col-md-4 justify-content-right" v-if="currentPlanet" v-bind:src="currentPlanet.image">
+        <transition name="slide-fade">
+            <div class="col-md-4" v-if="currentPlanet">
+                <h1>Basic Information</h1>
+                <ul class="list-group">
+                    <li :key="'alternate_name'" class="list-group-item lgi-colored-space">
+                        <p style="font-size: 22px;"><strong>Alternate Name(s):</strong> {{currentPlanet.basic_information.alternate_name}}</p>
+                    </li>
+                    <li :key="'type'" class="list-group-item lgi-colored-space">
+                        <p style="font-size: 22px;"><strong>Planetary Type:</strong> {{currentPlanet.basic_information.type}}</p>
+                    </li>
+                    <li :key="'number_of_satelites'" class="list-group-item lgi-colored-space">
+                        <p style="font-size: 22px;"><strong>Number of Satelites:</strong> {{currentPlanet.basic_information.number_of_satelites > 0 ? currentPlanet.basic_information.number_of_satelites : 0}}</p>
+                    </li>
+                    <li :key="'star_system'" class="list-group-item lgi-colored-space">
+                        <p style="font-size: 22px;"><strong>Star System:</strong> {{currentPlanet.basic_information.star_system}}</p>
+                    </li>
+                    <li :key="'most_abundant_resource'" class="list-group-item lgi-colored-space">
+                        <p style="font-size: 22px;"><strong>Most Abundant Resource:</strong> {{currentPlanet.basic_information.most_abundant_resource}}</p>
+                    </li>
+                    <li :key="'surface_gravity'" class="list-group-item lgi-colored-space">
+                        <p style="font-size: 22px;"><strong>Surface Gravity:</strong> {{currentPlanet.basic_information.surface_gravity}}m/s<sup>2</sup></p>
+                    </li>
+                </ul>
+            </div>
+        </transition>
+        <transition name="slide-fade">
+            <img class="img-center col-md-4 justify-content-right" v-if="currentPlanet" v-bind:src="currentPlanet.image">
+        </transition>
         <div class="col-md-4">
         </div>
     </div>
