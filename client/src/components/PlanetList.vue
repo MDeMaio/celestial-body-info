@@ -31,23 +31,23 @@
                     <a class="dropdown-item" v-bind:href="'/planets?page=1&type=Exoplanet'" :class="{'active':(type === 'Exoplanet')}">Exoplanet</a>
                 </div>
             </div>
-            <ul class="list-group">
+            <transition-group name="slide-fade" tag="ul" class="list-group">
                 <li class="list-group-item lgi-pointer py-1" :class="{ active: index == currentIndex }" v-for="(planet, index) in planets" :key="planet.planet_id" @click="setActivePlanet(planet, index)">
                     {{ planet.name }}
                 </li>
-            </ul>
+            </transition-group>
             <nav aria-label="Pagination">
-                <ul class="pagination mt-2 justify-content-center">
-                    <li :class="{'disabled':currentPage === 1}" class="page-item previous-item">
+                <transition-group name="slide-fade" tag="ul" class="pagination mt-2 justify-content-center">
+                    <li v-if="loaded" :key="'prev'" :class="{'disabled':currentPage === 1}" class="page-item previous-item">
                         <a class="page-link" v-bind:href="'/planets?page='+ (currentPage-1) + '&type=' + type">Prev</a>
                     </li>
                     <li v-for="page in pageArray" :key="page" class="page-item" :class="{'active':(currentPage === page)}">
                         <a class="page-link" v-bind:href="'/planets?page='+ page + '&type=' + type">{{page}}</a>
                     </li>
-                    <li :class="{'disabled':currentPage === totalPages}" class="page-item next-item">
+                    <li v-if="loaded" :key="'next'" :class="{'disabled':currentPage === totalPages}" class="page-item next-item">
                         <a class="page-link" v-bind:href="'/planets?page='+ (currentPage+1) + '&type=' + type">Next</a>
                     </li>
-                </ul>
+                </transition-group>
             </nav>
         </div>
     </div>
@@ -56,22 +56,22 @@
         <div class="col-md-4" v-if="currentPlanet">
             <h1>Basic Information</h1>
             <ul class="list-group">
-                <li class="list-group-item lgi-colored-space">
+                <li :key="'alternate_name'" class="list-group-item lgi-colored-space">
                     <p style="font-size: 22px;"><strong>Alternate Name(s):</strong> {{currentPlanet.basic_information.alternate_name}}</p>
                 </li>
-                <li class="list-group-item lgi-colored-space">
+                <li :key="'type'" class="list-group-item lgi-colored-space">
                     <p style="font-size: 22px;"><strong>Planetary Type:</strong> {{currentPlanet.basic_information.type}}</p>
                 </li>
-                <li class="list-group-item lgi-colored-space">
+                <li :key="'number_of_satelites'" class="list-group-item lgi-colored-space">
                     <p style="font-size: 22px;"><strong>Number of Satelites:</strong> {{currentPlanet.basic_information.number_of_satelites > 0 ? currentPlanet.basic_information.number_of_satelites : 0}}</p>
                 </li>
-                <li class="list-group-item lgi-colored-space">
+                <li :key="'star_system'" class="list-group-item lgi-colored-space">
                     <p style="font-size: 22px;"><strong>Star System:</strong> {{currentPlanet.basic_information.star_system}}</p>
                 </li>
-                <li class="list-group-item lgi-colored-space">
+                <li :key="'most_abundant_resource'" class="list-group-item lgi-colored-space">
                     <p style="font-size: 22px;"><strong>Most Abundant Resource:</strong> {{currentPlanet.basic_information.most_abundant_resource}}</p>
                 </li>
-                <li class="list-group-item lgi-colored-space">
+                <li :key="'surface_gravity'" class="list-group-item lgi-colored-space">
                     <p style="font-size: 22px;"><strong>Surface Gravity:</strong> {{currentPlanet.basic_information.surface_gravity}}m/s<sup>2</sup></p>
                 </li>
             </ul>
@@ -109,7 +109,8 @@ export default {
             pageArray: [],
             currentPage: parseInt(this.$route.query.page),
             totalPages: 0,
-            type: this.$route.query.type
+            type: this.$route.query.type,
+            loaded: false
         };
     },
     methods: {
@@ -218,6 +219,7 @@ export default {
     },
     mounted() {
         this.retrievePlanets(this.currentPage, this.type);
+        this.loaded = true;
     }
 };
 </script>
@@ -245,5 +247,24 @@ export default {
 
 .fs-20 {
     font-size: 20px;
+}
+
+/* Enter and leave animations can use different */
+/* durations and timing functions.              */
+.slide-fade-enter-active {
+    transition: all 2s ease;
+}
+
+.slide-fade-leave-active {
+    transition: all 1.5s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+
+.slide-fade-enter,
+.slide-fade-leave-to
+
+/* .slide-fade-leave-active below version 2.1.8 */
+    {
+    transform: translateX(40px);
+    opacity: 0;
 }
 </style>

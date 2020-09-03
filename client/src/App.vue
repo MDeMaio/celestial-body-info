@@ -13,7 +13,9 @@
     </nav>
 
     <div class="container-fluid mt-3">
-        <router-view />
+        <transition name="fade" mode="out-in">
+            <router-view />
+        </transition>
     </div>
 </div>
 </template>
@@ -28,5 +30,17 @@ export default {
 .app {
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     font-size: 22px;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+    transition-duration: 2s;
+    transition-property: opacity;
+    transition-timing-function: ease;
+}
+
+.fade-enter,
+.fade-leave-active {
+    opacity: 0
 }
 </style>
