@@ -4,7 +4,7 @@
         <a href="/" class="navbar-brand">Celestial Body Info</a>
         <div class="navbar-nav mr-auto">
             <li class="nav-item" :class="{'active':($route.name == 'planets-list')}">
-                <a href="/planets" class="nav-link">Planets</a>
+                <a href="/planets?page=1&type=All" class="nav-link">Planets</a>
             </li>
             <li class="nav-item" :class="{'active':($route.name == 'stars-list')}">
                 <a href="/stars" class="nav-link">Stars</a>

@@ -24,11 +24,11 @@
                 <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Planet Type
                 </button>
-                <div class="dropdown-menu" @click="changePlanetaryType($event)">
-                    <button class="dropdown-item" type="button" value="All" :class="{'active':(type === 'All')}">All</button>
-                    <button class="dropdown-item" type="button" value="Inner Planet" :class="{'active':(type === 'Inner Planet')}">Inner Planet</button>
-                    <button class="dropdown-item" type="button" value="Outer Planet" :class="{'active':(type === 'Outer Planet')}">Outer Planet</button>
-                    <button class="dropdown-item" type="button" value="Exoplanet" :class="{'active':(type === 'Exoplanet')}">Exoplanet</button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" v-bind:href="'/planets?page=1&type=All'" :class="{'active':(type === 'All')}">All</a>
+                    <a class="dropdown-item" v-bind:href="'/planets?page=1&type=Inner Planet'" :class="{'active':(type === 'Inner Planet')}">Inner Planet</a>
+                    <a class="dropdown-item" v-bind:href="'/planets?page=1&type=Outer Planet'" :class="{'active':(type === 'Outer Planet')}">Outer Planet</a>
+                    <a class="dropdown-item" v-bind:href="'/planets?page=1&type=Exoplanet'" :class="{'active':(type === 'Exoplanet')}">Exoplanet</a>
                 </div>
             </div>
             <ul class="list-group">
@@ -39,13 +39,13 @@
             <nav aria-label="Pagination">
                 <ul class="pagination mt-2 justify-content-center">
                     <li :class="{'disabled':currentPage === 1}" class="page-item previous-item">
-                        <button class="page-link" type="button" @click="currentPage = currentPage - 1">Previous</button>
+                        <a class="page-link" v-bind:href="'/planets?page='+ (currentPage-1) + '&type=' + type">Prev</a>
                     </li>
                     <li v-for="page in pageArray" :key="page" class="page-item" :class="{'active':(currentPage === page)}">
-                        <button class="page-link" type="button" @click="currentPage = page">{{page}}</button>
+                        <a class="page-link" v-bind:href="'/planets?page='+ page + '&type=' + type">{{page}}</a>
                     </li>
                     <li :class="{'disabled':currentPage === totalPages}" class="page-item next-item">
-                        <button class="page-link" type="button" @click="currentPage = currentPage + 1">Next</button>
+                        <a class="page-link" v-bind:href="'/planets?page='+ (currentPage+1) + '&type=' + type">Next</a>
                     </li>
                 </ul>
             </nav>
@@ -107,9 +107,9 @@ export default {
             currentIndex: -1,
             name: "",
             pageArray: [],
-            currentPage: 1,
+            currentPage: parseInt(this.$route.query.page),
             totalPages: 0,
-            type: "All"
+            type: this.$route.query.type
         };
     },
     methods: {
@@ -193,11 +193,6 @@ export default {
             }
 
             return pageArray;
-        },
-
-        changePlanetaryType(e) {
-            const buttonValue = e.target.value;
-            this.type = buttonValue;
         }
     },
     watch: { // Watch for data change in which page the user is currently on, call API to get new data when it changes.
@@ -210,19 +205,19 @@ export default {
         //         }
         //     }
         // },
-        "currentPage": function () {
-            this.refreshList();
-        },
+        // "currentPage": function () {
+        //     this.refreshList();
+        // },
 
-        "type": function () {
-             if (this.currentPage === 1) {   // Otherwise changing current page will take care of the refresh for us.
-                this.refreshList();
-            }
-            this.currentPage = 1;
-        }
+        // "type": function () {
+        //      if (this.currentPage === 1) {   // Otherwise changing current page will take care of the refresh for us.
+        //         this.refreshList();
+        //     }
+        //     this.currentPage = 1;
+        // }
     },
     mounted() {
-        this.retrievePlanets(1, "All");
+        this.retrievePlanets(this.currentPage, this.type);
     }
 };
 </script>
