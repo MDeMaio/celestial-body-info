@@ -1,4 +1,7 @@
 # celestial-body-info
+![Load Planet Page](https://s8.gifyu.com/images/LoadPlanetPage.gif)</br>
+![Select Planet](https://s8.gifyu.com/images/SelectPage.gif)</br>
+![Search Planet](https://s8.gifyu.com/images/SearchPlanet.gif)</br>
 
 ## About:
 This application was created in order to track data related to objects in space for educational and recreational reasons. <br/>
