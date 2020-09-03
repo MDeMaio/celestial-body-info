@@ -37,7 +37,7 @@
                 </li>
             </transition-group>
             <nav aria-label="Pagination">
-                <transition-group name="slide-fade" tag="ul" class="pagination mt-2 justify-content-center">
+                <ul class="pagination mt-2 justify-content-center">
                     <li v-if="loaded" :key="'prev'" :class="{'disabled':currentPage === 1}" class="page-item previous-item">
                         <a class="page-link" v-bind:href="'/planets?page='+ (currentPage-1) + '&type=' + type">Prev</a>
                     </li>
@@ -47,7 +47,7 @@
                     <li v-if="loaded" :key="'next'" :class="{'disabled':currentPage === totalPages}" class="page-item next-item">
                         <a class="page-link" v-bind:href="'/planets?page='+ (currentPage+1) + '&type=' + type">Next</a>
                     </li>
-                </transition-group>
+                </ul>
             </nav>
         </div>
     </div>
@@ -171,7 +171,7 @@ export default {
                 });
         },
         validatePageCount(count, total) {
-            if (count > total) { 
+            if (count > total) {
                 count = total;
             }
             if (count % 2 == 0) { //ensure odd number
@@ -180,7 +180,7 @@ export default {
             return count;
         },
         generatePaginationPageArray(numOfDocuments, recordsPerPage) { // Fetch our pages in an array so we can iterate over it later to create the pagination list items.
-             if (numOfDocuments == 0) { // No paging if no records.
+            if (numOfDocuments == 0) { // No paging if no records.
                 return;
             }
 
@@ -190,14 +190,13 @@ export default {
             const mid = Math.ceil(pageDisplayCount / 2); // sets mid of displayed pages
             let startIndex = (this.currentPage + 1) - mid; // set first page to be displayed
 
-            if(this.totalPages <= recordsPerPage){
+            if (this.totalPages <= recordsPerPage) {
                 startIndex = 1;
                 pageDisplayCount = this.totalPages;
-            }
-            else if (this.currentPage < mid) { // account for front half
+            } else if (this.currentPage < mid) { // account for front half
                 startIndex = 1;
-            } else if ((this.currentPage + (mid-1)) > this.totalPages) { //account for back half
-                startIndex = this.totalPages - pageDisplayCount+1;
+            } else if ((this.currentPage + (mid - 1)) > this.totalPages) { //account for back half
+                startIndex = this.totalPages - pageDisplayCount + 1;
             }
             for (let i = startIndex; i < startIndex + pageDisplayCount; i++) {
                 pageArray.push(i);
