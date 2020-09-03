@@ -170,23 +170,30 @@ export default {
                     }
                 });
         },
-
+        validatePageCount(count, total) {
+            if (count > total) { 
+                count = total;
+            }
+            if (count % 2 == 0) { //ensure odd number
+                count--;
+            }
+            return count;
+        },
         generatePaginationPageArray(numOfDocuments) { // Fetch our pages in an array so we can iterate over it later to create the pagination list items.
              if (numOfDocuments == 0) { // No paging if no records.
                 return;
             }
 
             const pageArray = [];
-            let pageDisplayCount = 5; // number of displayed pages
-            pageDisplayCount = pageDisplayCount % 2 == 0 ? pageDisplayCount + 1: pageDisplayCount; //ensure odd number
-            const mid = Math.ceil(pageDisplayCount / 2); // sets mid of displayed pages
             this.totalPages = Math.ceil(numOfDocuments / 1); // sets total page count for data
+            let pageDisplayCount = this.validatePageCount(5, this.totalPages);
+            const mid = Math.ceil(pageDisplayCount / 2); // sets mid of displayed pages
             let startIndex = (this.currentPage + 1) - mid; // set first page to be displayed
 
             if (this.currentPage < mid) { // account for front half
                 startIndex = 1;
-            } else if ((this.currentPage + pageDisplayCount) >= this.totalPages) { //account for back half
-                startIndex = this.totalPages - pageDisplayCount;
+            } else if ((this.currentPage + (mid-1)) > this.totalPages) { //account for back half
+                startIndex = this.totalPages - pageDisplayCount+1;
             }
             for (let i = startIndex; i < startIndex + pageDisplayCount; i++) {
                 pageArray.push(i);
