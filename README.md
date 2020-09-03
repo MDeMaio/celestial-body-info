@@ -1,5 +1,5 @@
 # celestial-body-info
-![Load Planet Page](https://s8.gifyu.com/images/LoadPlanetPage.gif)</br>
+![Load Planet Page](https://s8.gifyu.com/images/LoadPlanetPage.gif)</br></br>
 ![Search Planet](https://s8.gifyu.com/images/SearchPlanet.gif)</br>
 
 ## About:
