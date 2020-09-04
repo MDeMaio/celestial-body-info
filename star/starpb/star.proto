@@ -8,18 +8,44 @@ option go_package = "planetpb";
 message Planet {
     string planet_id = 1;
     string name = 2;
-    float aphelion = 3; // golang float32
-    float perihelion = 4; // golang float32
+    repeated Facts facts = 3;
+    string image = 4;
+    BasicInformation basic_information = 5;
+}
+
+message Facts {
+    string title = 1;
+    string fact = 2; 
+}
+
+message BasicInformation{
+    string alternate_name = 1;
+    string type = 2;
+    int32 number_of_satelites = 3;
+    string star_system = 4;
+    string most_abundant_resource = 5;
+    double surface_gravity = 6;
 }
 
 message ReadPlanetRequest {
-    string planet_id = 1;
+    string name = 1;  
 }
 
 message ReadPlanetResponse {
-    repeated Planet planet = 1;
+    Planet planet = 1; // List of planets
 }
 
-service BlogService {
-    rpc ListPlanet (ReadPlanetRequest) returns (ReadPlanetResponse); // return NOT_FOUND if not found
+message ListPlanetRequest {
+    int64 skip = 1;
+    string type = 2;
+}
+
+message ListPlanetResponse {
+    repeated Planet planet = 1; // List of planets
+    int64 number_of_documents = 2;
+}
+
+service PlanetService {
+    rpc ReadPlanet (ReadPlanetRequest) returns (ReadPlanetResponse); // return NOT_FOUND if not found
+    rpc ListPlanet (ListPlanetRequest) returns (ListPlanetResponse); // return NOT_FOUND if not found
 }
