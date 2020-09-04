@@ -193,6 +193,7 @@ export default {
             this.name = "";
             if (this.currentPage === 1) { // Otherwise changing current page will take care of the refresh for us.
                 this.retrievePlanets(this.currentPage, this.type, this.name);
+                return;
             }
             this.currentPage = 1;
         }
