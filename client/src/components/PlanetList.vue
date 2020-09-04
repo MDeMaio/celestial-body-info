@@ -199,7 +199,6 @@ export default {
                 return;
             }
 
-            console.log("Page watcher continued");
             this.retrievePlanets(this.currentPage, this.type, this.name);
         },
 
