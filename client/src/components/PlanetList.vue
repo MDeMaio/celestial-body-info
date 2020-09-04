@@ -111,11 +111,11 @@ export default {
             planets: [],
             currentPlanet: null,
             currentIndex: -1,
-            name: "",
+            name: typeof this.$route.query.name == "undefined" || this.$route.query.name == "All" ? "" : this.$route.query.name,
             pageArray: [],
-            currentPage: 1,
+            currentPage: typeof this.$route.query.page == "undefined" ? 1 : parseInt(this.$route.query.page),
             totalPages: 0,
-            type: "All",
+            type: typeof this.$route.query.page == "undefined" ? "All" : this.$route.query.type,
             loaded: false,
             resetting: false,
             searching: false
@@ -158,6 +158,8 @@ export default {
 
             this.searching = true;
             this.retrievePlanets(1, "All", this.name);
+            this.$router.push({ query: Object.assign({}, this.$route.query, { page: 1, type: "All", name: this.name}) });
+
         },
         validatePageCount(count, total) {
             if (count > total) {
@@ -197,6 +199,7 @@ export default {
             this.name = '';
             this.resetting = true;
             this.retrievePlanets(1, 'All', 'All');
+            this.$router.push(this.$route.path)
         }
     },
     watch: { // Watch for data change in which page the user is currently on, call API to get new data when it changes.
@@ -205,6 +208,7 @@ export default {
                 return;
             }
 
+            this.$router.push({ query: Object.assign({}, this.$route.query, { page: this.currentPage, type: this.type, name: this.name == "" ? "All" : this.name }) });
             this.retrievePlanets(this.currentPage, this.type, this.name);
         },
 
@@ -213,6 +217,7 @@ export default {
                 return;
             }
 
+            this.$router.push({ query: Object.assign({}, this.$route.query, { page: this.currentPage, type: this.type, name: this.name == "" ? "All" : this.name }) });
             this.name = "";
             if (this.currentPage === 1) { // Otherwise changing current page will take care of the refresh for us.
                 this.retrievePlanets(this.currentPage, this.type, this.name);
