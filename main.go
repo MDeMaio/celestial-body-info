@@ -81,6 +81,10 @@ func listPlanetHandler(w http.ResponseWriter, r *http.Request) {
 			Column: "basic_information.type",
 			Value:  vars["type"],
 		},
+		&planetpb.ListPlanetRequestFilter{
+			Column: "name",
+			Value:  vars["name"],
+		},
 	}
 
 	resList, err := c.ListPlanet(context.Background(), &planetpb.ListPlanetRequest{
@@ -138,7 +142,7 @@ func readPlanetHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	r := mux.NewRouter()
-	r.HandleFunc("/planet/{page}/{type}", listPlanetHandler).Methods(http.MethodGet)
+	r.HandleFunc("/planet/{page}/{type}/{name}", listPlanetHandler).Methods(http.MethodGet)
 	r.HandleFunc("/planet/{name}", readPlanetHandler).Methods(http.MethodGet)
 	r.Use(mux.CORSMethodMiddleware(r))
 

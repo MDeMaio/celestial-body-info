@@ -1,9 +1,9 @@
 import http from "../http-common";
 
 class PlanetService {
-  getAll(page, type) {
+  getAll(page, type, name) {
     //return http.get("/planet?page=" + encodeURIComponent(page) + "&type=" + encodeURIComponent(type));
-    return http.get(`/planet/${page}/${type}`);
+    return http.get(`/planet/${page}/${type}/${name}`);
   }
 
   get(name) {

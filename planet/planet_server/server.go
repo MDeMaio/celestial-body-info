@@ -82,8 +82,13 @@ func (*server) ListPlanet(ctx context.Context, req *planetpb.ListPlanetRequest) 
 	filter := bson.M{} // Nested filter.
 	for _, v := range req.GetListPlanetRequestFilter() {
 		if v.GetValue() != "All" {
-			filter[v.GetColumn()] = v.GetValue()
+			if v.GetColumn() == "name" { // Need a better way to handle regex.
+				filter["name"] = primitive.Regex{Pattern: fmt.Sprintf("^.*%s.*", v.GetValue()), Options: "i"}
+			} else {
+				filter[v.GetColumn()] = v.GetValue()
+			}
 		}
+
 	}
 
 	options := options.Find()

@@ -9,7 +9,7 @@
                         <button class="btn btn-outline-primary ml-1 fs-20" type="submit">
                             Search
                         </button>
-                        <button class="btn btn-outline-secondary fs-20" type="button" @click="refreshList">
+                        <button class="btn btn-outline-secondary fs-20" type="button" @click="retrievePlanets(1, 'All', 'All')">
                             Reset
                         </button>
                     </div>
@@ -118,30 +118,24 @@ export default {
         };
     },
     methods: {
-        retrievePlanets(page, type) { // Fetchs all of our planets for the current page.
-            PlanetService.getAll(page, type)
+        retrievePlanets(page, type, name) { // Fetchs all of our planets for the current page.
+            PlanetService.getAll(page, type, name == "" ? "All" : name)
                 .then(response => {
                     this.planets = response.data.planets;
-                    console.log(response.data);
-                    console.log(this.pageArray);
                     this.currentPage = page;
+                    this.type = type;
                     this.pageArray = this.generatePaginationPageArray(response.data.number_of_documents, 5);
-                    this.currentPlanet = null;
-                    this.currentIndex = -1;
+                    this.clearPlanetView();
                 })
                 .catch(e => {
                     console.log(e);
                 });
         },
 
-        refreshList() { // Refreshes the page to the default state.
-            this.retrievePlanets(this.currentPage, this.type);
-            this.currentIndex = -1;
+        clearPlanetView() { // Refreshes the page to the default state.
             this.name = "";
-            document.getElementsByClassName("pagination")[0].style.visibility = "visible";
-            setTimeout(function () {
-                this.currentPlanet = null;
-            }, 600); // Give it time to fade out or else it looks abrupt.
+            this.currentIndex = -1;
+            this.currentPlanet = null;
         },
 
         setActivePlanet(planet, index) { // Updates currently viewed planet.
@@ -155,22 +149,7 @@ export default {
                 this.$refs.name.focus();
                 return;
             }
-
-            PlanetService.get(this.name)
-                .then(response => {
-                    this.planets = [];
-                    this.planets.push(response.data);
-                    this.currentPlanet = null;
-                    this.currentIndex = -1;
-                    document.getElementsByClassName("pagination")[0].style.visibility = "hidden";
-                })
-                .catch(e => {
-                    if (e.response.status == 404) {
-                        alert("No planet by that name exists in the database.");
-                        this.name = "";
-                        this.$refs.name.focus();
-                    }
-                });
+            this.retrievePlanets(1, "All", this.name);
         },
         validatePageCount(count, total) {
             if (count > total) {
@@ -208,18 +187,18 @@ export default {
     },
     watch: { // Watch for data change in which page the user is currently on, call API to get new data when it changes.
         "currentPage": function () {
-            this.refreshList();
+            this.retrievePlanets(this.currentPage, this.type, this.name);
         },
 
         "type": function () {
             if (this.currentPage === 1) { // Otherwise changing current page will take care of the refresh for us.
-                this.refreshList();
+                this.retrievePlanets();
             }
             this.currentPage = 1;
         }
     },
     mounted() {
-        this.retrievePlanets(this.currentPage, this.type);
+        this.retrievePlanets(this.currentPage, this.type, this.name);
         this.loaded = true;
     }
 };
