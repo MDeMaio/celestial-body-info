@@ -9,7 +9,7 @@
                         <button class="btn btn-outline-primary ml-1 fs-20" type="submit">
                             Search
                         </button>
-                        <button class="btn btn-outline-secondary fs-20" type="button" @click="retrievePlanets(1, 'All', 'All')">
+                        <button class="btn btn-outline-secondary fs-20" type="button" @click="retrievePlanets(1, 'All', 'All'); name='';">
                             Reset
                         </button>
                     </div>
@@ -133,7 +133,6 @@ export default {
         },
 
         clearPlanetView() { // Refreshes the page to the default state.
-            this.name = "";
             this.currentIndex = -1;
             this.currentPlanet = null;
         },
@@ -191,8 +190,9 @@ export default {
         },
 
         "type": function () {
+            this.name = "";
             if (this.currentPage === 1) { // Otherwise changing current page will take care of the refresh for us.
-                this.retrievePlanets();
+                this.retrievePlanets(this.currentPage, this.type, this.name);
             }
             this.currentPage = 1;
         }
