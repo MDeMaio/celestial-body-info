@@ -117,7 +117,8 @@ export default {
             totalPages: 0,
             type: "All",
             loaded: false,
-            resetting: false
+            resetting: false,
+            searching: false
         };
     },
     methods: {
@@ -134,6 +135,7 @@ export default {
                     console.log(e);
                 }).finally(() => {
                     this.resetting = false; // why here????
+                    this.searching = false; // ???????????
                 });
         },
 
@@ -153,6 +155,8 @@ export default {
                 this.$refs.name.focus();
                 return;
             }
+
+            this.searching = true;
             this.retrievePlanets(1, "All", this.name);
         },
         validatePageCount(count, total) {
@@ -197,7 +201,7 @@ export default {
     },
     watch: { // Watch for data change in which page the user is currently on, call API to get new data when it changes.
         "currentPage": function () {
-            if (this.resetting) {
+            if (this.resetting || this.searching) {
                 return;
             }
 
@@ -205,7 +209,7 @@ export default {
         },
 
         "type": function () {
-            if (this.resetting) {
+            if (this.resetting || this.searching) {
                 return;
             }
 
@@ -215,6 +219,13 @@ export default {
                 return;
             }
             this.currentPage = 1;
+        },
+
+        "planets": function (val) {
+            if(val.length === 1){
+                this.currentPlanet = val[0];
+                this.currentIndex = 0;
+            }
         }
     },
     mounted() {
