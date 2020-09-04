@@ -32,6 +32,10 @@ export default {
     font-size: 22px;
 }
 
+html {
+  overflow-y: scroll;
+}
+
 .fade-enter-active,
 .fade-leave-active {
     transition-duration: 2s;

@@ -51,7 +51,9 @@
             </nav>
         </div>
     </div>
-    <h1 style="text-align: center; margin-top: 2%; font-size: 50px;" v-if="currentPlanet">{{ currentPlanet.name }}</h1>
+    <transition name="slide-fade">
+        <h1 style="text-align: center; margin-top: 2%; font-size: 50px;" v-if="currentPlanet">{{ currentPlanet.name }}</h1>
+    </transition>
     <div class="row">
         <transition name="slide-fade">
             <div class="col-md-4" v-if="currentPlanet">
@@ -254,7 +256,7 @@ export default {
 }
 
 .slide-fade-leave-active {
-    transition: all .5s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+    transition: all 1s ease;
 }
 
 .slide-fade-enter,
@@ -262,7 +264,7 @@ export default {
 
 /* .slide-fade-leave-active below version 2.1.8 */
     {
-    transform: translateX(40px);
+    transform: translatey(300px);
     opacity: 0;
 }
 </style>
