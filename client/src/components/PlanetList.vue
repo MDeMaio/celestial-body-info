@@ -31,11 +31,11 @@
                     <button class="dropdown-item" @click="type = 'Exoplanet'" :class="{'active':(type === 'Exoplanet')}">Exoplanet</button>
                 </div>
             </div>
-            <transition-group name="slide-fade" tag="ul" class="list-group">
+            <ul class="list-group">
                 <li class="list-group-item lgi-pointer py-1" :class="{ active: index == currentIndex }" v-for="(planet, index) in planets" :key="planet.planet_id" @click="setActivePlanet(planet, index)">
                     {{ planet.name }}
                 </li>
-            </transition-group>
+            </ul>
             <nav aria-label="Pagination">
                 <ul class="pagination mt-2 justify-content-center">
                     <li v-if="loaded" :key="'prev'" :class="{'disabled':currentPage === 1}" class="page-item previous-item">
