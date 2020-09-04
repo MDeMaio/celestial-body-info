@@ -9,7 +9,7 @@
                         <button class="btn btn-outline-primary ml-1 fs-20" type="submit">
                             Search
                         </button>
-                        <button class="btn btn-outline-secondary fs-20" type="button" @click="retrievePlanets(1, 'All', 'All'); name='';">
+                        <button class="btn btn-outline-secondary fs-20" type="button" @click="resetPage">
                             Reset
                         </button>
                     </div>
@@ -114,7 +114,8 @@ export default {
             currentPage: 1,
             totalPages: 0,
             type: "All",
-            loaded: false
+            loaded: false,
+            resetting: false
         };
     },
     methods: {
@@ -129,6 +130,8 @@ export default {
                 })
                 .catch(e => {
                     console.log(e);
+                }).finally(() => {
+                    this.resetting = false; // why here????
                 });
         },
 
@@ -182,14 +185,29 @@ export default {
                 pageArray.push(i);
             }
             return pageArray;
+        },
+
+        resetPage() {
+            this.name = '';
+            this.resetting = true;
+            this.retrievePlanets(1, 'All', 'All');
         }
     },
     watch: { // Watch for data change in which page the user is currently on, call API to get new data when it changes.
         "currentPage": function () {
+            if (this.resetting) {
+                return;
+            }
+
+            console.log("Page watcher continued");
             this.retrievePlanets(this.currentPage, this.type, this.name);
         },
 
         "type": function () {
+            if (this.resetting) {
+                return;
+            }
+
             this.name = "";
             if (this.currentPage === 1) { // Otherwise changing current page will take care of the refresh for us.
                 this.retrievePlanets(this.currentPage, this.type, this.name);
