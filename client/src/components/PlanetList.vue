@@ -9,7 +9,7 @@
                         <button class="btn btn-outline-primary ml-1 fs-20" type="submit">
                             Search
                         </button>
-                        <button class="btn btn-outline-secondary fs-20" type="button" @click="refreshList">
+                        <button class="btn btn-outline-secondary fs-20" type="button" @click="resetPage">
                             Reset
                         </button>
                     </div>
@@ -25,33 +25,35 @@
                     Planet Type
                 </button>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item" v-bind:href="'/planets?page=1&type=All'" :class="{'active':(type === 'All')}">All</a>
-                    <a class="dropdown-item" v-bind:href="'/planets?page=1&type=Inner Planet'" :class="{'active':(type === 'Inner Planet')}">Inner Planet</a>
-                    <a class="dropdown-item" v-bind:href="'/planets?page=1&type=Outer Planet'" :class="{'active':(type === 'Outer Planet')}">Outer Planet</a>
-                    <a class="dropdown-item" v-bind:href="'/planets?page=1&type=Exoplanet'" :class="{'active':(type === 'Exoplanet')}">Exoplanet</a>
+                    <button class="dropdown-item" @click="type = 'All'" :class="{'active':(type === 'All')}">All</button>
+                    <button class="dropdown-item" @click="type = 'Inner Planet'" :class="{'active':(type === 'Inner Planet')}">Inner Planet</button>
+                    <button class="dropdown-item" @click="type = 'Outer Planet'" :class="{'active':(type === 'Outer Planet')}">Outer Planet</button>
+                    <button class="dropdown-item" @click="type = 'Exoplanet'" :class="{'active':(type === 'Exoplanet')}">Exoplanet</button>
                 </div>
             </div>
-            <transition-group name="slide-fade" tag="ul" class="list-group">
+            <ul class="list-group">
                 <li class="list-group-item lgi-pointer py-1" :class="{ active: index == currentIndex }" v-for="(planet, index) in planets" :key="planet.planet_id" @click="setActivePlanet(planet, index)">
                     {{ planet.name }}
                 </li>
-            </transition-group>
+            </ul>
             <nav aria-label="Pagination">
                 <ul class="pagination mt-2 justify-content-center">
                     <li v-if="loaded" :key="'prev'" :class="{'disabled':currentPage === 1}" class="page-item previous-item">
-                        <a class="page-link" v-bind:href="'/planets?page='+ (currentPage-1) + '&type=' + type">Prev</a>
+                        <button class="page-link" @click="currentPage--">Prev</button>
                     </li>
                     <li v-for="page in pageArray" :key="page" class="page-item" :class="{'active':(currentPage === page)}">
-                        <a class="page-link" v-bind:href="'/planets?page='+ page + '&type=' + type">{{page}}</a>
+                        <button class="page-link" @click="currentPage = page">{{page}}</button>
                     </li>
                     <li v-if="loaded" :key="'next'" :class="{'disabled':currentPage === totalPages}" class="page-item next-item">
-                        <a class="page-link" v-bind:href="'/planets?page='+ (currentPage+1) + '&type=' + type">Next</a>
+                        <button class="page-link" @click="currentPage++">Next</button>
                     </li>
                 </ul>
             </nav>
         </div>
     </div>
-    <h1 style="text-align: center; margin-top: 2%; font-size: 50px;" v-if="currentPlanet">{{ currentPlanet.name }}</h1>
+    <transition name="slide-fade">
+        <h1 style="text-align: center; margin-top: 2%; font-size: 50px;" v-if="currentPlanet">{{ currentPlanet.name }}</h1>
+    </transition>
     <div class="row">
         <transition name="slide-fade">
             <div class="col-md-4" v-if="currentPlanet">
@@ -109,37 +111,37 @@ export default {
             planets: [],
             currentPlanet: null,
             currentIndex: -1,
-            name: "",
+            name: typeof this.$route.query.name == "undefined" || this.$route.query.name == "All" ? "" : this.$route.query.name,
             pageArray: [],
-            currentPage: parseInt(this.$route.query.page),
+            currentPage: typeof this.$route.query.page == "undefined" ? 1 : parseInt(this.$route.query.page),
             totalPages: 0,
-            type: this.$route.query.type,
-            loaded: false
+            type: typeof this.$route.query.page == "undefined" ? "All" : this.$route.query.type,
+            loaded: false,
+            resetting: false,
+            searching: false
         };
     },
     methods: {
-        retrievePlanets(page, type) { // Fetchs all of our planets for the current page.
-            PlanetService.getAll(page, type)
+        retrievePlanets(page, type, name) { // Fetchs all of our planets for the current page.
+            PlanetService.getAll(page, type, name == "" ? "All" : name)
                 .then(response => {
                     this.planets = response.data.planets;
-                    console.log(response.data);
-                    console.log(this.pageArray);
                     this.currentPage = page;
+                    this.type = type;
                     this.pageArray = this.generatePaginationPageArray(response.data.number_of_documents, 5);
-                    this.currentPlanet = null;
-                    this.currentIndex = -1;
+                    this.clearPlanetView();
                 })
                 .catch(e => {
                     console.log(e);
+                }).finally(() => {
+                    this.resetting = false; // why here????
+                    this.searching = false; // ???????????
                 });
         },
 
-        refreshList() { // Refreshes the page to the default state.
-            this.retrievePlanets(this.currentPage, this.type);
-            this.currentPlanet = null;
+        clearPlanetView() { // Refreshes the page to the default state.
             this.currentIndex = -1;
-            this.name = "";
-            document.getElementsByClassName("pagination")[0].style.visibility = "visible";
+            this.currentPlanet = null;
         },
 
         setActivePlanet(planet, index) { // Updates currently viewed planet.
@@ -154,21 +156,10 @@ export default {
                 return;
             }
 
-            PlanetService.get(this.name)
-                .then(response => {
-                    this.planets = [];
-                    this.planets.push(response.data);
-                    this.currentPlanet = null;
-                    this.currentIndex = -1;
-                    document.getElementsByClassName("pagination")[0].style.visibility = "hidden";
-                })
-                .catch(e => {
-                    if (e.response.status == 404) {
-                        alert("No planet by that name exists in the database.");
-                        this.name = "";
-                        this.$refs.name.focus();
-                    }
-                });
+            this.searching = true;
+            this.retrievePlanets(1, "All", this.name);
+            this.$router.push({ query: Object.assign({}, this.$route.query, { page: 1, type: "All", name: this.name}) });
+
         },
         validatePageCount(count, total) {
             if (count > total) {
@@ -202,31 +193,48 @@ export default {
                 pageArray.push(i);
             }
             return pageArray;
+        },
+
+        resetPage() {
+            this.name = '';
+            this.resetting = true;
+            this.retrievePlanets(1, 'All', 'All');
+            this.$router.push(this.$route.path)
         }
     },
     watch: { // Watch for data change in which page the user is currently on, call API to get new data when it changes.
-        // '$route.query.page': {
-        //     immediate: true,
-        //     handler(page) {
-        //         page = parseInt(page) || 1;
-        //         if (page !== this.currentPage) {
-        //             this.retrievePlanets(page, this.type);
-        //         }
-        //     }
-        // },
-        // "currentPage": function () {
-        //     this.refreshList();
-        // },
+        "currentPage": function () {
+            if (this.resetting || this.searching) {
+                return;
+            }
 
-        // "type": function () {
-        //      if (this.currentPage === 1) {   // Otherwise changing current page will take care of the refresh for us.
-        //         this.refreshList();
-        //     }
-        //     this.currentPage = 1;
-        // }
+            this.$router.push({ query: Object.assign({}, this.$route.query, { page: this.currentPage, type: this.type, name: this.name == "" ? "All" : this.name }) });
+            this.retrievePlanets(this.currentPage, this.type, this.name);
+        },
+
+        "type": function () {
+            if (this.resetting || this.searching) {
+                return;
+            }
+
+            this.$router.push({ query: Object.assign({}, this.$route.query, { page: this.currentPage, type: this.type, name: this.name == "" ? "All" : this.name }) });
+            this.name = "";
+            if (this.currentPage === 1) { // Otherwise changing current page will take care of the refresh for us.
+                this.retrievePlanets(this.currentPage, this.type, this.name);
+                return;
+            }
+            this.currentPage = 1;
+        },
+
+        "planets": function (val) {
+            if(val.length === 1){
+                this.currentPlanet = val[0];
+                this.currentIndex = 0;
+            }
+        }
     },
     mounted() {
-        this.retrievePlanets(this.currentPage, this.type);
+        this.retrievePlanets(this.currentPage, this.type, this.name);
         this.loaded = true;
     }
 };
@@ -260,11 +268,11 @@ export default {
 /* Enter and leave animations can use different */
 /* durations and timing functions.              */
 .slide-fade-enter-active {
-    transition: all 2s ease;
+    transition: all 1s ease;
 }
 
 .slide-fade-leave-active {
-    transition: all 1.5s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+    transition: all 1s ease;
 }
 
 .slide-fade-enter,
@@ -272,7 +280,7 @@ export default {
 
 /* .slide-fade-leave-active below version 2.1.8 */
     {
-    transform: translateX(40px);
+    transform: translatey(300px);
     opacity: 0;
 }
 </style>

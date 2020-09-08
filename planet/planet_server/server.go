@@ -58,7 +58,7 @@ func (*server) ReadPlanet(ctx context.Context, req *planetpb.ReadPlanetRequest) 
 
 	// create an empty struct
 	data := &planetItem{}
-	filter := bson.M{"name": planetName}
+	filter := bson.M{"name": primitive.Regex{Pattern: fmt.Sprintf("^.*%s.*", planetName), Options: "i"}} // i for case insensitive.
 
 	res := collection.FindOne(context.Background(), filter)
 	if err := res.Decode(data); err != nil {
@@ -73,14 +73,22 @@ func (*server) ReadPlanet(ctx context.Context, req *planetpb.ReadPlanetRequest) 
 	}, nil
 }
 
+// Update below to use newly created Filter from proto to pass any # of filters into the request, ignoring any filters with value of 'All'
+// Main.go will pass the array of object to the gRPC with values Column and Value.
+// See if way to push values to bson.M{} AFTER defining it.(filter["test"] = "Test")
 func (*server) ListPlanet(ctx context.Context, req *planetpb.ListPlanetRequest) (*planetpb.ListPlanetResponse, error) {
 	fmt.Println("List planet request")
 
 	filter := bson.M{} // Nested filter.
-	planetaryType := req.GetType()
-	fmt.Println(planetaryType)
-	if planetaryType != "All" {
-		filter = bson.M{"basic_information.type": planetaryType}
+	for _, v := range req.GetListPlanetRequestFilter() {
+		if v.GetValue() != "All" {
+			if v.GetColumn() == "name" { // Need a better way to handle regex.
+				filter["name"] = primitive.Regex{Pattern: fmt.Sprintf("^.*%s.*", v.GetValue()), Options: "i"}
+			} else {
+				filter[v.GetColumn()] = v.GetValue()
+			}
+		}
+
 	}
 
 	options := options.Find()

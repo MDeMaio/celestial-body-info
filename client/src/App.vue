@@ -4,7 +4,7 @@
         <a href="/" class="navbar-brand">Celestial Body Info</a>
         <div class="navbar-nav mr-auto">
             <li class="nav-item" :class="{'active':($route.name == 'planets-list')}">
-                <a href="/planets?page=1&type=All" class="nav-link">Planets</a>
+                <a href="/planets" class="nav-link">Planets</a>
             </li>
             <li class="nav-item" :class="{'active':($route.name == 'stars-list')}">
                 <a href="/stars" class="nav-link">Stars</a>
@@ -32,9 +32,13 @@ export default {
     font-size: 22px;
 }
 
+html {
+  overflow-y: scroll;
+}
+
 .fade-enter-active,
 .fade-leave-active {
-    transition-duration: 1.5s;
+    transition-duration: 2s;
     transition-property: opacity;
     transition-timing-function: ease;
 }
