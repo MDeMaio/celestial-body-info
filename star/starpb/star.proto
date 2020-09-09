@@ -1,12 +1,12 @@
 syntax = "proto3";
 
-package planet;
+package star;
 
-option go_package = "planetpb";
+option go_package = "starpb";
 
-// We can define our planet and all of its corresponding data here, we can split this up later if we want.
-message Planet {
-    string planet_id = 1;
+// We can define our star and all of its corresponding data here, we can split this up later if we want.
+message Star {
+    string star_id = 1;
     string name = 2;
     repeated Facts facts = 3;
     string image = 4;
@@ -19,33 +19,33 @@ message Facts {
 }
 
 message BasicInformation{
-    string alternate_name = 1;
-    string type = 2;
-    int32 number_of_satelites = 3;
-    string star_system = 4;
-    string most_abundant_resource = 5;
-    double surface_gravity = 6;
+    double mass = 1;
+    string class = 2;
+    double radius = 3;
+    string system = 4;
+    double temperature = 5;
+    double age = 6;
 }
 
-message ReadPlanetRequest {
-    string name = 1;  
+message ReadStarRequest {
+    string name = 1;
 }
 
-message ReadPlanetResponse {
-    Planet planet = 1; // List of planets
+message ReadStarResponse {
+    Star star = 1; // List of planets
 }
 
-message ListPlanetRequest {
+message ListStarRequest {
     int64 skip = 1;
-    string type = 2;
+    string class = 2;
 }
 
-message ListPlanetResponse {
-    repeated Planet planet = 1; // List of planets
+message ListStarResponse {
+    repeated Star star = 1; // List of planets
     int64 number_of_documents = 2;
 }
 
-service PlanetService {
-    rpc ReadPlanet (ReadPlanetRequest) returns (ReadPlanetResponse); // return NOT_FOUND if not found
-    rpc ListPlanet (ListPlanetRequest) returns (ListPlanetResponse); // return NOT_FOUND if not found
+service StarService {
+    rpc ReadStar (ReadStarRequest) returns (ReadStarResponse); // return NOT_FOUND if not found
+    rpc ListStar (ListStarRequest) returns (ListStarResponse); // return NOT_FOUND if not found
 }

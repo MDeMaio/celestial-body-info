@@ -2,7 +2,9 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net"
 	"os"
@@ -18,7 +20,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
-	"github.com/simplesteph/grpc-go-course/blog/blogpb"
+	"github.com/mdemaio/celestial-body-info/star/starpb"
 	"google.golang.org/grpc"
 )
 
@@ -27,190 +29,151 @@ var collection *mongo.Collection
 type server struct {
 }
 
-type blogItem struct {
-	ID       primitive.ObjectID `bson:"_id,omitempty"`
-	AuthorID string             `bson:"author_id"`
-	Content  string             `bson:"content"`
-	Title    string             `bson:"title"`
+type facts struct {
+	Title string `bson:"title"`
+	Fact  string `bson:"fact"`
 }
 
-func (*server) CreateBlog(ctx context.Context, req *blogpb.CreateBlogRequest) (*blogpb.CreateBlogResponse, error) {
-	fmt.Println("Create blog request")
-	blog := req.GetBlog()
-
-	data := blogItem{
-		AuthorID: blog.GetAuthorId(),
-		Title:    blog.GetTitle(),
-		Content:  blog.GetContent(),
-	}
-
-	res, err := collection.InsertOne(context.Background(), data)
-	if err != nil {
-		return nil, status.Errorf(
-			codes.Internal,
-			fmt.Sprintf("Internal error: %v", err),
-		)
-	}
-	oid, ok := res.InsertedID.(primitive.ObjectID)
-	if !ok {
-		return nil, status.Errorf(
-			codes.Internal,
-			fmt.Sprintf("Cannot convert to OID"),
-		)
-	}
-
-	return &blogpb.CreateBlogResponse{
-		Blog: &blogpb.Blog{
-			Id:       oid.Hex(),
-			AuthorId: blog.GetAuthorId(),
-			Title:    blog.GetTitle(),
-			Content:  blog.GetContent(),
-		},
-	}, nil
-
+type basicInformation struct {
+	Mass        float64 `bson:"mass"`
+	Class       string  `bson:"class"`
+	Radius      float64 `bson:"radius"`
+	System      string  `bson:"system"`
+	Temperature float64 `bson:"temperature"`
+	Age         float64 `bson:"age"`
+}
+type starItem struct {
+	ID               primitive.ObjectID `bson:"_id,omitempty"`
+	Name             string             `bson:"name"`
+	Facts            []facts            `bson:"facts"`
+	Image            string             `bson:"image"`
+	BasicInformation basicInformation   `bson:"basic_information"`
 }
 
-func (*server) ReadBlog(ctx context.Context, req *blogpb.ReadBlogRequest) (*blogpb.ReadBlogResponse, error) {
-	fmt.Println("Read blog request")
+func (*server) ReadStar(ctx context.Context, req *starpb.ReadStarRequest) (*starpb.ReadStarResponse, error) {
+	fmt.Println("Read star request")
 
-	blogID := req.GetBlogId()
-	oid, err := primitive.ObjectIDFromHex(blogID)
-	if err != nil {
-		return nil, status.Errorf(
-			codes.InvalidArgument,
-			fmt.Sprintf("Cannot parse ID"),
-		)
-	}
+	starName := req.GetName()
 
 	// create an empty struct
-	data := &blogItem{}
-	filter := bson.M{"_id": oid}
+	data := &starItem{}
+	filter := bson.M{"name": starName}
 
 	res := collection.FindOne(context.Background(), filter)
 	if err := res.Decode(data); err != nil {
 		return nil, status.Errorf(
 			codes.NotFound,
-			fmt.Sprintf("Cannot find blog with specified ID: %v", err),
+			fmt.Sprintf("Cannot find star with specified Name: %v", err),
 		)
 	}
 
-	return &blogpb.ReadBlogResponse{
-		Blog: dataToBlogPb(data),
+	return &starpb.ReadStarResponse{
+		Star: dataToStarPb(data),
 	}, nil
 }
 
-func dataToBlogPb(data *blogItem) *blogpb.Blog {
-	return &blogpb.Blog{
-		Id:       data.ID.Hex(),
-		AuthorId: data.AuthorID,
-		Content:  data.Content,
-		Title:    data.Title,
-	}
-}
+func (*server) ListStar(ctx context.Context, req *starpb.ListStarRequest) (*starpb.ListStarResponse, error) {
+	fmt.Println("List star request")
 
-func (*server) UpdateBlog(ctx context.Context, req *blogpb.UpdateBlogRequest) (*blogpb.UpdateBlogResponse, error) {
-	fmt.Println("Update blog request")
-	blog := req.GetBlog()
-	oid, err := primitive.ObjectIDFromHex(blog.GetId())
+	filter := bson.M{}          // Nested filter.
+	starClass := req.GetClass() //maybe chage to class (white dwarf, yellow dwarf, etc)
+	fmt.Println(starClass)
+	if starClass != "All" {
+		filter = bson.M{"basic_information.class": starClass}
+	}
+
+	options := options.Find()
+	stars := []*starpb.Star{}
+
+	// Fetch total documents for pagination.
+	itemCount, err := collection.CountDocuments(ctx, filter)
 	if err != nil {
 		return nil, status.Errorf(
-			codes.InvalidArgument,
-			fmt.Sprintf("Cannot parse ID"),
-		)
-	}
-
-	// create an empty struct
-	data := &blogItem{}
-	filter := bson.M{"_id": oid}
-
-	res := collection.FindOne(context.Background(), filter)
-	if err := res.Decode(data); err != nil {
-		return nil, status.Errorf(
-			codes.NotFound,
-			fmt.Sprintf("Cannot find blog with specified ID: %v", err),
-		)
-	}
-
-	// we update our internal struct
-	data.AuthorID = blog.GetAuthorId()
-	data.Content = blog.GetContent()
-	data.Title = blog.GetTitle()
-
-	_, updateErr := collection.ReplaceOne(context.Background(), filter, data)
-	if updateErr != nil {
-		return nil, status.Errorf(
-			codes.Internal,
-			fmt.Sprintf("Cannot update object in MongoDB: %v", updateErr),
-		)
-	}
-
-	return &blogpb.UpdateBlogResponse{
-		Blog: dataToBlogPb(data),
-	}, nil
-
-}
-
-func (*server) DeleteBlog(ctx context.Context, req *blogpb.DeleteBlogRequest) (*blogpb.DeleteBlogResponse, error) {
-	fmt.Println("Delete blog request")
-	oid, err := primitive.ObjectIDFromHex(req.GetBlogId())
-	if err != nil {
-		return nil, status.Errorf(
-			codes.InvalidArgument,
-			fmt.Sprintf("Cannot parse ID"),
-		)
-	}
-
-	filter := bson.M{"_id": oid}
-
-	res, err := collection.DeleteOne(context.Background(), filter)
-
-	if err != nil {
-		return nil, status.Errorf(
-			codes.Internal,
-			fmt.Sprintf("Cannot delete object in MongoDB: %v", err),
-		)
-	}
-
-	if res.DeletedCount == 0 {
-		return nil, status.Errorf(
-			codes.NotFound,
-			fmt.Sprintf("Cannot find blog in MongoDB: %v", err),
-		)
-	}
-
-	return &blogpb.DeleteBlogResponse{BlogId: req.GetBlogId()}, nil
-}
-
-func (*server) ListBlog(req *blogpb.ListBlogRequest, stream blogpb.BlogService_ListBlogServer) error {
-	fmt.Println("List blog request")
-
-	cur, err := collection.Find(context.Background(), primitive.D{{}})
-	if err != nil {
-		return status.Errorf(
 			codes.Internal,
 			fmt.Sprintf("Unknown internal error: %v", err),
 		)
 	}
-	defer cur.Close(context.Background())
-	for cur.Next(context.Background()) {
-		data := &blogItem{}
-		err := cur.Decode(data)
+
+	options.SetLimit(5)
+	options.SetSort(bson.M{"name": 1})
+	options.SetSkip(req.GetSkip())
+	cursor, err := collection.Find(context.Background(), filter, options)
+	if err != nil {
+		return nil, status.Errorf(
+			codes.Internal,
+			fmt.Sprintf("Unknown internal error: %v", err),
+		)
+	}
+	defer cursor.Close(context.Background())
+	for cursor.Next(context.Background()) {
+		data := &starItem{}
+		err := cursor.Decode(data)
 		if err != nil {
-			return status.Errorf(
+			return nil, status.Errorf(
 				codes.Internal,
-				fmt.Sprintf("Error while decoding data from MongoDB: %v", err),
+				fmt.Sprintf("Error while decoding from mongodb: %v", err),
 			)
-
 		}
-		stream.Send(&blogpb.ListBlogResponse{Blog: dataToBlogPb(data)})
+		stars = append(stars, dataToStarPb(data))
 	}
-	if err := cur.Err(); err != nil {
-		return status.Errorf(
-			codes.Internal,
-			fmt.Sprintf("Unknown internal error: %v", err),
-		)
+
+	return &starpb.ListStarResponse{
+		Star:              stars,
+		NumberOfDocuments: itemCount,
+	}, nil
+}
+
+func dataToStarPb(data *starItem) *starpb.Star {
+	facts := []*starpb.Facts{} // Not sure if this is correct.
+	for _, v := range data.Facts {
+		fact := &starpb.Facts{
+			Title: v.Title,
+			Fact:  v.Fact,
+		}
+
+		facts = append(facts, fact)
 	}
-	return nil
+
+	basicInformation := &starpb.BasicInformation{
+		Mass:        data.BasicInformation.Mass,
+		Class:       data.BasicInformation.Class,
+		Radius:      data.BasicInformation.Radius,
+		System:      data.BasicInformation.System,
+		Temperature: data.BasicInformation.Temperature,
+		Age:         data.BasicInformation.Age,
+	}
+
+	return &starpb.Star{
+		StarId:           data.ID.Hex(),
+		Name:             data.Name,
+		Facts:            facts,
+		Image:            data.Image,
+		BasicInformation: basicInformation,
+	}
+}
+
+func insertTestData(ctx context.Context) {
+	filter := bson.M{}
+	collection.DeleteMany(ctx, filter) // Empty collection.
+
+	jsonFile, err := os.Open("star.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	byteValues, err := ioutil.ReadAll(jsonFile)
+	if err != nil {
+		// Print any IO errors with the .json file
+		log.Fatal("ioutil.ReadFile ERROR:", err)
+	}
+
+	var v []interface{}
+	if err := json.Unmarshal(byteValues, &v); err != nil {
+		log.Fatal(err)
+	}
+	if _, err := collection.InsertMany(ctx, v); err != nil {
+		log.Fatal(err)
+	}
 }
 
 func main() {
@@ -219,7 +182,13 @@ func main() {
 
 	fmt.Println("Connecting to MongoDB")
 	// connect to MongoDB
-	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
+	uri := os.Getenv("MONGODB_URI")
+	if uri == "" {
+		uri = "mongodb://localhost:27017"
+	}
+	fmt.Println(uri)
+
+	client, err := mongo.NewClient(options.Client().ApplyURI(uri))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -228,17 +197,25 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Println("Blog Service Started")
-	collection = client.Database("mydb").Collection("blog")
+	fmt.Println("Star Service Started")
+	collection = client.Database("celestial-body-info").Collection("star")
+	insertTestData(context.Background())
 
-	lis, err := net.Listen("tcp", "0.0.0.0:50051")
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = ":50052"
+	} else {
+		port = ":" + port
+	}
+	lis, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
 	}
+	fmt.Println("Up and running on: " + port)
 
 	opts := []grpc.ServerOption{}
 	s := grpc.NewServer(opts...)
-	blogpb.RegisterBlogServiceServer(s, &server{})
+	starpb.RegisterStarServiceServer(s, &server{})
 	// Register reflection service on gRPC server.
 	reflection.Register(s)
 
@@ -257,17 +234,16 @@ func main() {
 	<-ch
 	// First we close the connection with MongoDB:
 	fmt.Println("Closing MongoDB Connection")
-    	// client.Disconnect(context.TODO())	
 	if err := client.Disconnect(context.TODO()); err != nil {
-        	log.Fatalf("Error on disconnection with MongoDB : %v", err)
-    	}
-    	// Second step : closing the listener
-    	fmt.Println("Closing the listener")
-    	if err := lis.Close(); err != nil {
-        	log.Fatalf("Error on closing the listener : %v", err)
+		log.Fatalf("Error on disconnection with MongoDB : %v", err)
+	}
+	// Second step : closing the listener
+	fmt.Println("Closing the listener")
+	if err := lis.Close(); err != nil {
+		log.Fatalf("Error on closing the listener : %v", err)
 	}
 	// Finally, we stop the server
 	fmt.Println("Stopping the server")
-    	s.Stop()
-    	fmt.Println("End of Program")
+	s.Stop()
+	fmt.Println("End of Program")
 }
