@@ -288,5 +288,34 @@
             "fact": "Data has shown large surface-temperature variations which could possibly be caused by volcanic activity. Large clouds of dust would possibly blanket parts of the planet and block any thermal emissions."
         }
         ]
+    },
+    {
+        "name": "Pluto",
+        "basic_information": {
+            "alternate_name": "Dis Pater, Yama",
+            "type": "Dwarf Planet",
+            "number_of_satelites": 5,
+            "star_system": "Solar System",
+            "most_abundant_resource": "Nitrogen Ice",
+            "surface_gravity": 0.620
+        },
+        "image": "./images/Pluto.jpg",
+        "facts": [{
+            "title": "Pluto",
+            "fact": ""
+        },
+        {
+            "title": "Pluto",
+            "fact": ""
+        },
+        {
+            "title": "Pluto",
+            "fact": ""
+        },
+        {
+            "title": "Pluto",
+            "fact": ""
+        }
+        ]
     }
 ]
