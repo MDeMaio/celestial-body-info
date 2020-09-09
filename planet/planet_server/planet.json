@@ -24,7 +24,7 @@
         },
         {
             "title": "Earth is yet to make contact with extraterrestial life, but what could be the cause of this",
-            "fact": "Some theories for why we havent yet include the fact that other life forms may be so advanced that revealig themselves to us simply isnt worth it. Another theory suggest that we might have an early start, since Earth is relatively earlier compared to all planets which will form. An insane amount of planets are yet to be born. Lastly, its possible we just havent look enough yet due to limitations in man power and technology. We have a lot more wavelengths to scan and distance to cover in terms of outer space."
+            "fact": "Some theories for why we havent yet include the fact that other life forms may be so advanced that revealing themselves to us simply isnt worth it. Another theory suggest that we might have an early start, since Earth is relatively early compared to all planets which will form. An insane amount of planets are yet to be born. Lastly, its possible we just havent looked enough yet due to limitations in man power and technology. We have a lot more wavelengths to scan and distance to cover in terms of outer space."
         }
         ]
     },
@@ -70,7 +70,7 @@
         "image": "./images/Mercury.jpg",
         "facts": [{
             "title": "Mercury is the smallest planet in our Solar System",
-            "fact": "Not only is Mercury the smallest planet but it also appears to be shrinking over time. This shrinkage is caused because the planet is cooling. This cooling is warping the surface of Mercury into ridges and edged cliffs known as lobate scarps. These are defined as long, curvilinear structures which can be found on some celestial bodies."
+            "fact": "Not only is Mercury the smallest planet but it also appears to be shrinking over time. This shrinkage is caused by the cooling of the planet. This cooling is warping the surface of Mercury into ridges and edged cliffs known as lobate scarps. These are defined as long, curvilinear structures which can be found on some celestial bodies."
         },
         {
             "title": "Mercury rotates in a unique manner compared to other planets in our Solar System",
@@ -128,11 +128,11 @@
         "image": "./images/Jupiter.jpg",
         "facts": [{
             "title": "Jupiter is the largest planet in the Solar System",
-            "fact": "The planet is known as a gas giant, with a mass one-thousandth that of the Sun. Its mass is more than all other planets in our Solar System combined. It is thought that there is a preferred distance from the sun in which the mass of a planet with grow the biggest, hence Jupiter is within that distance more than likely."
+            "fact": "This planet is known as a gas giant, with a mass one-thousandth that of the Sun. Its mass is more than all other planets in our Solar System combined. It is thought that there is a preferred distance from the sun in which the mass of a planet will grow the biggest, hence Jupiter is within that distance more than likely."
         },
         {
             "title": "Jupiter is a storm covered planet",
-            "fact": "Due to the outer atmosphere being seperated into differing bands, the borders where these bands collide causes turbulence and storms. If not the most famous feature of Jupiter, the 'Big Red Spot' is one of these resulting storms. If earlier estimations are correct, the storm is thought to have existed for at least 360 years. The latitude of this storm has been relatively stable since its first observation, however the longitude has constant variations."
+            "fact": "Due to the outer atmosphere being seperated into differing bands, the borders where these bands collide cause turbulence and storms. If not the most famous feature of Jupiter, the 'Big Red Spot' is one of these resulting storms. If earlier estimations are correct, the storm is thought to have existed for at least 360 years. The latitude of this storm has been relatively stable since its first observation, however the longitude has constant variations."
         },
         {
             "title": "Jupiter has the biggest and strongest magnetic field of all planets in the Solar System",
@@ -140,7 +140,7 @@
         },
         {
             "title": "Jupiter is the only planet whose barycenter with the Sun lies outside the volume of the Sun",
-            "fact": "The barycenter is an astronomy term relating to the center of mass of two or more bodies that orbit eachother. The case on Jupiter is caused by the relatively large distance between Jupiter and the Sun. This means both object(Sun and Jupiter) orbit a combined center of gravity rather than Jupiter directly orbiting the Sun."
+            "fact": "The barycenter is an astronomy term relating to the center of mass of two or more bodies that orbit eachother. The case on Jupiter is caused by the relatively large distance between Jupiter and the Sun. This means both objects(Sun and Jupiter) orbit a combined center of gravity rather than Jupiter directly orbiting the Sun."
         }
         ]
     },
@@ -223,7 +223,7 @@
         },
         {
             "title": "Neptune appears blue in color due to large amounts of methane in its outer regions",
-            "fact": "Methane absorbs the red end of the color spectrum, this means when sunlight bounces off of Neptune and back to your eyes, it appears blue in color. Methane absorbs this red-light due to a property of atoms called Absorption. This is when the electrons absorb energy and jump to a higher energy level. Since the atoms can only absorb specific amount of energy, only certain wavelengths of light will be absorbed. In this case it would be the red end of the color spectrum."
+            "fact": "Methane absorbs the red end of the color spectrum, this means when sunlight bounces off of Neptune and back to your eyes, it appears blue in color. Methane absorbs this red-light due to a property of atoms called Absorption. This is when the electrons absorb energy and jump to a higher energy level. Since the atoms can only absorb specific amounts of energy, only certain wavelengths of light will be absorbed. In this case it would be the red end of the color spectrum."
         },
         {
             "title": "Neptune has a 'Great Dark Spot' which is an anticyclonic storm",
