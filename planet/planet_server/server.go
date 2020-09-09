@@ -150,6 +150,29 @@ func (*server) ListPlanet(ctx context.Context, req *planetpb.ListPlanetRequest) 
 	}, nil
 }
 
+func (*server) ListPlanetType(ctx context.Context, req *planetpb.ListPlanetTypeRequest) (*planetpb.ListPlanetTypeResponse, error) {
+	fmt.Println("List planet type request")
+
+	filter := bson.M{} // Nested filter.
+
+	data, err := collection.Distinct(context.Background(), "basic_information.type", filter)
+	if err != nil {
+		return nil, status.Errorf(
+			codes.Internal,
+			fmt.Sprintf("Error fetching planet type data: %v", err),
+		)
+	}
+
+	types := []string{}
+	for _, value := range data {
+		types = append(types, value.(string))
+	}
+
+	return &planetpb.ListPlanetTypeResponse{
+		PlanetType: types,
+	}, nil
+}
+
 func dataToPlanetPb(data *planetItem) (*planetpb.Planet, error) {
 	facts := []*planetpb.Facts{} // Not sure if this is correct.
 	for _, v := range data.Facts {

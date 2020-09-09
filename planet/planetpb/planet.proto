@@ -51,7 +51,15 @@ message ListPlanetResponse {
     int64 number_of_documents = 2;
 }
 
+message ListPlanetTypeRequest {
+}
+
+message ListPlanetTypeResponse {
+    repeated string planet_type = 1; // List of planet types
+}
+
 service PlanetService {
     rpc ReadPlanet (ReadPlanetRequest) returns (ReadPlanetResponse); // return NOT_FOUND if not found
     rpc ListPlanet (ListPlanetRequest) returns (ListPlanetResponse); // return NOT_FOUND if not found
+    rpc ListPlanetType (ListPlanetTypeRequest) returns (ListPlanetTypeResponse); // return NOT_FOUND if not found
 }
