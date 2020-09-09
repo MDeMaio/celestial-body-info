@@ -81,7 +81,7 @@
             </div>
         </transition>
         <transition name="slide-fade">
-            <img class="img-center col-md-4 justify-content-right" v-if="currentPlanet" v-bind:src="currentPlanet.image">
+            <img class="img-center col-md-4 justify-content-right" v-if="currentPlanet" v-bind:src="'data:image/jpeg;base64,' + currentPlanet.image">
         </transition>
         <div class="col-md-4">
         </div>
