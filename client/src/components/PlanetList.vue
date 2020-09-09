@@ -115,7 +115,7 @@ export default {
             pageArray: [],
             currentPage: typeof this.$route.query.page == "undefined" ? 1 : parseInt(this.$route.query.page),
             totalPages: 0,
-            type: typeof this.$route.query.page == "undefined" ? "All" : this.$route.query.type,
+            type: typeof this.$route.query.type == "undefined" ? "All" : this.$route.query.type,
             loaded: false,
             resetting: false,
             searching: false
