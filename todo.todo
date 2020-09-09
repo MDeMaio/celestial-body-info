@@ -13,6 +13,7 @@
 - [X] Update http server to use timeouts.
 - [] Update http server by adding logging.
 - [] Add Docker to make local building and testing easier -> Require only 1 terminal :)
+- [X] Switch from storing base64 string in DB to file path then convert in go code to base64 string.
 
 ---- Frontend ----
 - [X] Set up boiler plate frontend project(Vue!)

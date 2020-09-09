@@ -43,7 +43,7 @@ message ReadPlanetResponse {
 // Add filter into below request, which will be its own message type with fields Column and Value. Put it as repeated below and remove string type from below.
 message ListPlanetRequest {
     int64 skip = 1;
-    repeated ListPlanetRequestFilter list_planet_request_filter = 5;
+    repeated ListPlanetRequestFilter list_planet_request_filter = 2;
 }
 
 message ListPlanetResponse {
