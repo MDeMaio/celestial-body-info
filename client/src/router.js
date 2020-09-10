@@ -14,13 +14,13 @@ export default new Router({ // Add star route.
     },
     {
       path: "/planets",
-      alias: "/planets",
+      //alias: "/planets",
       name: "planets-list",
       component: () => import("./components/PlanetList")
     },
     {
       path: "/stars",
-      alias: "/stars",
+      //alias: "/stars",
       name: "stars-list",
       component: () => import("./components/StarList")
     }

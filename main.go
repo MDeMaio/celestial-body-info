@@ -28,6 +28,10 @@ type starListResponse struct {
 	NumberOfDocuments int64          `json:"number_of_documents"`
 }
 
+type planetListTypeResponse struct {
+	PlanetType []string `json:"planet_type"`
+}
+
 // Change logic for closing cc later, we only need it when a request is made to be open, otherwise closed.
 func connectToGRPCPlanet() (*grpc.ClientConn, planetpb.PlanetServiceClient) {
 	fmt.Println("Planet Client")
@@ -167,6 +171,35 @@ func readPlanetHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(slcB)
 }
 
+func listPlanetTypeHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Listing the planet types")
+	cc, c := connectToGRPCPlanet()
+	defer cc.Close()
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	resList, err := c.ListPlanetType(context.Background(), &planetpb.ListPlanetTypeRequest{})
+	if err != nil { // Handle our gRPC errors.
+		fmt.Printf("Error happened while listing: %v \n", err)
+		code, errJSON := handleGRPCErrors(err)
+		w.WriteHeader(code)
+		w.Write(errJSON)
+		return
+	}
+
+	res := planetListTypeResponse{
+		PlanetType: resList.GetPlanetType(),
+	}
+	slcB, err := json.Marshal(res)
+	if err != nil {
+		fmt.Printf("Error happened while marshalling: %v \n", err)
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(slcB)
+}
+
 func listStarHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Listing the stars")
 	cc, c := connectToGRPCStar()
@@ -249,6 +282,7 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/planet/{page}/{type}/{name}", listPlanetHandler).Methods(http.MethodGet)
 	r.HandleFunc("/planet/{name}", readPlanetHandler).Methods(http.MethodGet)
+	r.HandleFunc("/planettype", listPlanetTypeHandler).Methods(http.MethodGet)
 	r.HandleFunc("/star/{page}/{classification}/{name}", listStarHandler).Methods(http.MethodGet)
 	r.HandleFunc("/star/{name}", readStarHandler).Methods(http.MethodGet)
 	r.Use(mux.CORSMethodMiddleware(r))

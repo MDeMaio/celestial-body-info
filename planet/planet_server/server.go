@@ -21,6 +21,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"github.com/mdemaio/celestial-body-info/planet/planetpb"
+	"github.com/mdemaio/celestial-body-info/util"
 	"google.golang.org/grpc"
 )
 
@@ -68,8 +69,16 @@ func (*server) ReadPlanet(ctx context.Context, req *planetpb.ReadPlanetRequest) 
 		)
 	}
 
+	planet, err := dataToPlanetPb(data)
+	if err != nil {
+		return nil, status.Errorf(
+			codes.Internal,
+			fmt.Sprintf("Error occured while generating planet data: %v", err),
+		)
+	}
+
 	return &planetpb.ReadPlanetResponse{
-		Planet: dataToPlanetPb(data),
+		Planet: planet,
 	}, nil
 }
 
@@ -123,7 +132,16 @@ func (*server) ListPlanet(ctx context.Context, req *planetpb.ListPlanetRequest) 
 				fmt.Sprintf("Error while decoding from mongodb: %v", err),
 			)
 		}
-		planets = append(planets, dataToPlanetPb(data))
+
+		planet, err := dataToPlanetPb(data)
+		if err != nil {
+			return nil, status.Errorf(
+				codes.Internal,
+				fmt.Sprintf("Error occured while generating planet data: %v", err),
+			)
+		}
+
+		planets = append(planets, planet)
 	}
 
 	return &planetpb.ListPlanetResponse{
@@ -132,7 +150,30 @@ func (*server) ListPlanet(ctx context.Context, req *planetpb.ListPlanetRequest) 
 	}, nil
 }
 
-func dataToPlanetPb(data *planetItem) *planetpb.Planet {
+func (*server) ListPlanetType(ctx context.Context, req *planetpb.ListPlanetTypeRequest) (*planetpb.ListPlanetTypeResponse, error) {
+	fmt.Println("List planet type request")
+
+	filter := bson.M{} // Nested filter.
+
+	data, err := collection.Distinct(context.Background(), "basic_information.type", filter)
+	if err != nil {
+		return nil, status.Errorf(
+			codes.Internal,
+			fmt.Sprintf("Error fetching planet type data: %v", err),
+		)
+	}
+
+	types := []string{}
+	for _, value := range data {
+		types = append(types, value.(string))
+	}
+
+	return &planetpb.ListPlanetTypeResponse{
+		PlanetType: types,
+	}, nil
+}
+
+func dataToPlanetPb(data *planetItem) (*planetpb.Planet, error) {
 	facts := []*planetpb.Facts{} // Not sure if this is correct.
 	for _, v := range data.Facts {
 		fact := &planetpb.Facts{
@@ -152,13 +193,18 @@ func dataToPlanetPb(data *planetItem) *planetpb.Planet {
 		SurfaceGravity:       data.BasicInformation.SurfaceGravity,
 	}
 
+	img, err := util.EncodeImgToBase64(data.Image)
+	if err != nil {
+		return nil, err
+	}
+
 	return &planetpb.Planet{
 		PlanetId:         data.ID.Hex(),
 		Name:             data.Name,
 		Facts:            facts,
-		Image:            data.Image,
+		Image:            img,
 		BasicInformation: basicInformation,
-	}
+	}, nil
 }
 
 func insertTestData(ctx context.Context) {

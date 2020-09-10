@@ -25,10 +25,7 @@
                     Planet Type
                 </button>
                 <div class="dropdown-menu">
-                    <button class="dropdown-item" @click="type = 'All'" :class="{'active':(type === 'All')}">All</button>
-                    <button class="dropdown-item" @click="type = 'Inner Planet'" :class="{'active':(type === 'Inner Planet')}">Inner Planet</button>
-                    <button class="dropdown-item" @click="type = 'Outer Planet'" :class="{'active':(type === 'Outer Planet')}">Outer Planet</button>
-                    <button class="dropdown-item" @click="type = 'Exoplanet'" :class="{'active':(type === 'Exoplanet')}">Exoplanet</button>
+                    <button class="dropdown-item" v-for="(planetType) in planetTypes" :key="planetType" @click="type = planetType" :class="{'active':(type === planetType)}">{{planetType}}</button>
                 </div>
             </div>
             <ul class="list-group">
@@ -81,7 +78,7 @@
             </div>
         </transition>
         <transition name="slide-fade">
-            <img class="img-center col-md-4 justify-content-right" v-if="currentPlanet" v-bind:src="currentPlanet.image">
+            <img class="img-center col-md-4 justify-content-right" v-if="currentPlanet" v-bind:src="'data:image/jpeg;base64,' + currentPlanet.image">
         </transition>
         <div class="col-md-4">
         </div>
@@ -109,13 +106,14 @@ export default {
     data() {
         return {
             planets: [],
+            planetTypes: [],
             currentPlanet: null,
             currentIndex: -1,
             name: typeof this.$route.query.name == "undefined" || this.$route.query.name == "All" ? "" : this.$route.query.name,
             pageArray: [],
             currentPage: typeof this.$route.query.page == "undefined" ? 1 : parseInt(this.$route.query.page),
             totalPages: 0,
-            type: typeof this.$route.query.page == "undefined" ? "All" : this.$route.query.type,
+            type: typeof this.$route.query.type == "undefined" ? "All" : this.$route.query.type,
             loaded: false,
             resetting: false,
             searching: false
@@ -137,6 +135,17 @@ export default {
                     this.resetting = false; // why here????
                     this.searching = false; // ???????????
                 });
+        },
+
+        retrievePlanetTypes() { // Fetchs all of our planet types.
+            PlanetService.getPlanetTypes()
+                .then(response => {
+                    response.data.planet_type.unshift("All");
+                    this.planetTypes = response.data.planet_type;
+                })
+                .catch(e => {
+                    console.log(e);
+                })
         },
 
         clearPlanetView() { // Refreshes the page to the default state.
@@ -234,6 +243,7 @@ export default {
         }
     },
     mounted() {
+        this.retrievePlanetTypes();
         this.retrievePlanets(this.currentPage, this.type, this.name);
         this.loaded = true;
     }
