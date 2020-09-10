@@ -6,11 +6,12 @@ option go_package = "nasapb";
 
 // APOD - Astronomy Picture of the Day - Data is pulled from NASA API once per day and saved in our mongodb.
 message APOD {
-    string copy_right = 1;
-    int64 date = 2; // We will convert from unix time in go code.
-    string explanation = 3;
-    string hd_url = 4;
-    string title = 5;
+    string apod_id = 1;
+    string copy_right = 2;
+    int64 date = 3; // We will convert from unix time in go code.
+    string explanation = 4;
+    string hd_url = 5;
+    string title = 6;
 }
 
 message ReadAPODRequest {
@@ -20,6 +21,6 @@ message ReadAPODResponse {
     APOD apod = 1;
 }
 
-service PlanetService {
+service NasaService {
     rpc ReadAPOD (ReadAPODRequest) returns (ReadAPODResponse); // return NOT_FOUND if not found
 }
