@@ -99,10 +99,6 @@ func (*server) ListStar(ctx context.Context, req *starpb.ListStarRequest) (*star
 		)
 	}
 
-	if itemCount == 0 {
-		fmt.Println("Bad count")
-	}
-
 	options.SetLimit(5)
 	options.SetSort(bson.M{"name": 1})
 	options.SetSkip(req.GetSkip())
