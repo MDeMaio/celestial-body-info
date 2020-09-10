@@ -80,7 +80,7 @@
             </div>
         </transition>
         <transition name="slide-fade">
-            <img class="img-center col-md-4 justify-content-right" v-if="currentStar" v-bind:src="currentStar.image">
+            <img class="img-center col-md-4 justify-content-right" v-if="currentStar" v-bind:src="'data:image/jpeg;base64,' + currentStar.image">
         </transition>
         <div class="col-md-4">
         </div>

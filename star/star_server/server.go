@@ -21,6 +21,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"github.com/mdemaio/celestial-body-info/star/starpb"
+	"github.com/mdemaio/celestial-body-info/util"
 	"google.golang.org/grpc"
 )
 
@@ -67,8 +68,16 @@ func (*server) ReadStar(ctx context.Context, req *starpb.ReadStarRequest) (*star
 		)
 	}
 
+	star, err := dataToStarPb(data)
+	if err != nil {
+		return nil, status.Errorf(
+			codes.Internal,
+			fmt.Sprintf("Error occured while generating star data: %v", err),
+		)
+	}
+
 	return &starpb.ReadStarResponse{
-		Star: dataToStarPb(data),
+		Star: star,
 	}, nil
 }
 
@@ -119,7 +128,16 @@ func (*server) ListStar(ctx context.Context, req *starpb.ListStarRequest) (*star
 				fmt.Sprintf("Error while decoding from mongodb: %v", err),
 			)
 		}
-		stars = append(stars, dataToStarPb(data))
+
+		star, err := dataToStarPb(data)
+		if err != nil {
+			return nil, status.Errorf(
+				codes.Internal,
+				fmt.Sprintf("Error occured while generating star data: %v", err),
+			)
+		}
+
+		stars = append(stars, star)
 	}
 
 	return &starpb.ListStarResponse{
@@ -128,7 +146,7 @@ func (*server) ListStar(ctx context.Context, req *starpb.ListStarRequest) (*star
 	}, nil
 }
 
-func dataToStarPb(data *starItem) *starpb.Star {
+func dataToStarPb(data *starItem) (*starpb.Star, error) {
 	facts := []*starpb.Facts{} // Not sure if this is correct.
 	for _, v := range data.Facts {
 		fact := &starpb.Facts{
@@ -148,13 +166,18 @@ func dataToStarPb(data *starItem) *starpb.Star {
 		Age:            data.BasicInformation.Age,
 	}
 
+	img, err := util.EncodeImgToBase64(data.Image)
+	if err != nil {
+		return nil, err
+	}
+
 	return &starpb.Star{
 		StarId:           data.ID.Hex(),
 		Name:             data.Name,
 		Facts:            facts,
-		Image:            data.Image,
+		Image:            img,
 		BasicInformation: basicInformation,
-	}
+	}, nil
 }
 
 func insertTestData(ctx context.Context) {
