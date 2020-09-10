@@ -7,7 +7,7 @@
                 <a href="/planets" class="nav-link">Planets</a>
             </li>
             <li class="nav-item" :class="{'active':($route.name == 'stars-list')}">
-                <a href="/stars?page=1&type=All" class="nav-link">Stars</a>
+                <a href="/stars" class="nav-link">Stars</a>
             </li>
         </div>
     </nav>

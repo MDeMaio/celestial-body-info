@@ -59,7 +59,7 @@
                 <h1>Basic Information</h1>
                 <ul class="list-group">
                     <li :key="'alternate_name'" class="list-group-item lgi-colored-space">
-                        <p style="font-size: 22px;"><strong>Mass:</strong> {{currentStar.basic_information.mass}} 10<sup>24</sup>kg</p>
+                        <p style="font-size: 22px;"><strong>Mass:</strong> {{currentStar.basic_information.mass}} kg</p>
                     </li>
                     <li :key="'classification'" class="list-group-item lgi-colored-space">
                         <p style="font-size: 22px;"><strong>Classification:</strong> {{currentStar.basic_information.classification}}</p>
