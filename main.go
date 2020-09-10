@@ -12,6 +12,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/mdemaio/celestial-body-info/planet/planetpb"
+	"github.com/mdemaio/celestial-body-info/star/starpb"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -20,6 +21,11 @@ import (
 type planetListResponse struct {
 	Planets           []*planetpb.Planet `json:"planets"`
 	NumberOfDocuments int64              `json:"number_of_documents"`
+}
+
+type starListResponse struct {
+	Stars             []*starpb.Star `json:"stars"`
+	NumberOfDocuments int64          `json:"number_of_documents"`
 }
 
 type planetListTypeResponse struct {
@@ -45,6 +51,27 @@ func connectToGRPCPlanet() (*grpc.ClientConn, planetpb.PlanetServiceClient) {
 	}
 
 	c := planetpb.NewPlanetServiceClient(cc)
+	return cc, c
+}
+
+func connectToGRPCStar() (*grpc.ClientConn, starpb.StarServiceClient) {
+	fmt.Println("Star Client")
+
+	opts := grpc.WithInsecure()
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "0.0.0.0:50052"
+	} else {
+		port = "0.0.0.0:80"
+	}
+
+	cc, err := grpc.Dial(port, opts)
+	if err != nil {
+		log.Fatalf("could not connect: %v", err)
+	}
+
+	c := starpb.NewStarServiceClient(cc)
 	return cc, c
 }
 
@@ -173,11 +200,91 @@ func listPlanetTypeHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(slcB)
 }
 
+func listStarHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Listing the stars")
+	cc, c := connectToGRPCStar()
+	defer cc.Close()
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	vars := mux.Vars(r)
+	page, err := strconv.Atoi(vars["page"])
+	if err != nil {
+		fmt.Printf("Error happened while converting: %v \n", err)
+	}
+
+	filters := []*starpb.ListStarRequestFilter{
+		&starpb.ListStarRequestFilter{
+			Column: "basic_information.classification",
+			Value:  vars["classification"],
+		},
+		&starpb.ListStarRequestFilter{
+			Column: "name",
+			Value:  vars["name"],
+		},
+	}
+
+	resList, err := c.ListStar(context.Background(), &starpb.ListStarRequest{
+		Skip:                  int64((page * 5) - 5),
+		ListStarRequestFilter: filters,
+	})
+	if err != nil { // Handle our gRPC errors.
+		fmt.Printf("Error happened while listing: %v \n", err)
+		code, errJSON := handleGRPCErrors(err)
+		w.WriteHeader(code)
+		w.Write(errJSON)
+		return
+	}
+	//fmt.Printf("Planets were listed: %v \n", resList)
+	res := starListResponse{
+		Stars:             resList.GetStar(),
+		NumberOfDocuments: resList.GetNumberOfDocuments(),
+	}
+	slcB, err := json.Marshal(res)
+	if err != nil {
+		fmt.Printf("Error happened while marshalling: %v \n", err)
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(slcB)
+}
+
+func readStarHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("reading a star")
+	cc, c := connectToGRPCStar()
+	defer cc.Close()
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	vars := mux.Vars(r)
+	resRead, err := c.ReadStar(context.Background(), &starpb.ReadStarRequest{Name: vars["name"]})
+	if err != nil { // Handle our gRPC errors.
+		fmt.Printf("Error happened while reading: %v \n", err)
+		code, errJSON := handleGRPCErrors(err)
+		w.WriteHeader(code)
+		w.Write(errJSON)
+		return
+	}
+
+	fmt.Printf("Star was read: %v \n", resRead)
+	slcB, err := json.Marshal(resRead.GetStar())
+	if err != nil {
+		fmt.Printf("Error happened while marshalling: %v \n", err)
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(slcB)
+}
+
 func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/planet/{page}/{type}/{name}", listPlanetHandler).Methods(http.MethodGet)
 	r.HandleFunc("/planet/{name}", readPlanetHandler).Methods(http.MethodGet)
 	r.HandleFunc("/planettype", listPlanetTypeHandler).Methods(http.MethodGet)
+	r.HandleFunc("/star/{page}/{classification}/{name}", listStarHandler).Methods(http.MethodGet)
+	r.HandleFunc("/star/{name}", readStarHandler).Methods(http.MethodGet)
 	r.Use(mux.CORSMethodMiddleware(r))
 
 	log.Println("Listening for http requests.")

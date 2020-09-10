@@ -1,25 +1,56 @@
 syntax = "proto3";
 
-package planet;
+package star;
 
-option go_package = "planetpb";
+option go_package = "starpb";
 
-// We can define our planet and all of its corresponding data here, we can split this up later if we want.
-message Planet {
-    string planet_id = 1;
+// We can define our star and all of its corresponding data here, we can split this up later if we want.
+message Star {
+    string star_id = 1;
     string name = 2;
-    float aphelion = 3; // golang float32
-    float perihelion = 4; // golang float32
+    repeated Facts facts = 3;
+    string image = 4;
+    BasicInformation basic_information = 5;
 }
 
-message ReadPlanetRequest {
-    string planet_id = 1;
+message Facts {
+    string title = 1;
+    string fact = 2; 
 }
 
-message ReadPlanetResponse {
-    repeated Planet planet = 1;
+message ListStarRequestFilter {
+    string column = 1;
+    string value = 2; 
 }
 
-service BlogService {
-    rpc ListPlanet (ReadPlanetRequest) returns (ReadPlanetResponse); // return NOT_FOUND if not found
+message BasicInformation{
+    string mass = 1;
+    string classification = 2;
+    string radius = 3;
+    string system = 4;
+    string temperature = 5;
+    string age = 6;
+}
+
+message ReadStarRequest {
+    string name = 1;
+}
+
+message ReadStarResponse {
+    Star star = 1; // List of planets
+}
+
+message ListStarRequest {
+    int64 skip = 1;
+    repeated ListStarRequestFilter list_star_request_filter = 2;
+}
+
+message ListStarResponse {
+    repeated Star star = 1; // List of planets
+    int64 number_of_documents = 2;
+}
+
+service StarService {
+    rpc ReadStar (ReadStarRequest) returns (ReadStarResponse); // return NOT_FOUND if not found
+    rpc ListStar (ListStarRequest) returns (ListStarResponse); // return NOT_FOUND if not found
 }
