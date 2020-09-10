@@ -35,12 +35,12 @@ type facts struct {
 }
 
 type basicInformation struct {
-	Mass        float64 `bson:"mass"`
-	Class       string  `bson:"class"`
-	Radius      float64 `bson:"radius"`
-	System      string  `bson:"system"`
-	Temperature float64 `bson:"temperature"`
-	Age         float64 `bson:"age"`
+	Mass           string `bson:"mass"`
+	Classification string `bson:"classification"`
+	Radius         string `bson:"radius"`
+	System         string `bson:"system"`
+	Temperature    string `bson:"temperature"`
+	Age            string `bson:"age"`
 }
 type starItem struct {
 	ID               primitive.ObjectID `bson:"_id,omitempty"`
@@ -75,11 +75,16 @@ func (*server) ReadStar(ctx context.Context, req *starpb.ReadStarRequest) (*star
 func (*server) ListStar(ctx context.Context, req *starpb.ListStarRequest) (*starpb.ListStarResponse, error) {
 	fmt.Println("List star request")
 
-	filter := bson.M{}          // Nested filter.
-	starClass := req.GetClass() //maybe chage to class (white dwarf, yellow dwarf, etc)
-	fmt.Println(starClass)
-	if starClass != "All" {
-		filter = bson.M{"basic_information.class": starClass}
+	filter := bson.M{} // Nested filter.
+	for _, v := range req.GetListStarRequestFilter() {
+		if v.GetValue() != "All" {
+			if v.GetColumn() == "name" { // Need a better way to handle regex.
+				filter["name"] = primitive.Regex{Pattern: fmt.Sprintf("^.*%s.*", v.GetValue()), Options: "i"}
+			} else {
+				filter[v.GetColumn()] = v.GetValue()
+			}
+		}
+
 	}
 
 	options := options.Find()
@@ -92,6 +97,10 @@ func (*server) ListStar(ctx context.Context, req *starpb.ListStarRequest) (*star
 			codes.Internal,
 			fmt.Sprintf("Unknown internal error: %v", err),
 		)
+	}
+
+	if itemCount == 0 {
+		fmt.Println("Bad count")
 	}
 
 	options.SetLimit(5)
@@ -135,12 +144,12 @@ func dataToStarPb(data *starItem) *starpb.Star {
 	}
 
 	basicInformation := &starpb.BasicInformation{
-		Mass:        data.BasicInformation.Mass,
-		Class:       data.BasicInformation.Class,
-		Radius:      data.BasicInformation.Radius,
-		System:      data.BasicInformation.System,
-		Temperature: data.BasicInformation.Temperature,
-		Age:         data.BasicInformation.Age,
+		Mass:           data.BasicInformation.Mass,
+		Classification: data.BasicInformation.Classification,
+		Radius:         data.BasicInformation.Radius,
+		System:         data.BasicInformation.System,
+		Temperature:    data.BasicInformation.Temperature,
+		Age:            data.BasicInformation.Age,
 	}
 
 	return &starpb.Star{

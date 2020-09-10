@@ -18,13 +18,18 @@ message Facts {
     string fact = 2; 
 }
 
+message ListStarRequestFilter {
+    string column = 1;
+    string value = 2; 
+}
+
 message BasicInformation{
-    double mass = 1;
-    string class = 2;
-    double radius = 3;
+    string mass = 1;
+    string classification = 2;
+    string radius = 3;
     string system = 4;
-    double temperature = 5;
-    double age = 6;
+    string temperature = 5;
+    string age = 6;
 }
 
 message ReadStarRequest {
@@ -37,7 +42,7 @@ message ReadStarResponse {
 
 message ListStarRequest {
     int64 skip = 1;
-    string class = 2;
+    repeated ListStarRequestFilter list_star_request_filter = 2;
 }
 
 message ListStarResponse {

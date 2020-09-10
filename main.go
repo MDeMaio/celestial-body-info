@@ -175,17 +175,26 @@ func listStarHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	page, err := strconv.Atoi(r.URL.Query().Get("page"))
+	vars := mux.Vars(r)
+	page, err := strconv.Atoi(vars["page"])
 	if err != nil {
 		fmt.Printf("Error happened while converting: %v \n", err)
 	}
 
-	starClass := r.URL.Query().Get("class")
-	fmt.Println(starClass, page)
+	filters := []*starpb.ListStarRequestFilter{
+		&starpb.ListStarRequestFilter{
+			Column: "basic_information.classification",
+			Value:  vars["classification"],
+		},
+		&starpb.ListStarRequestFilter{
+			Column: "name",
+			Value:  vars["name"],
+		},
+	}
 
 	resList, err := c.ListStar(context.Background(), &starpb.ListStarRequest{
-		Skip:  int64((page * 5) - 5),
-		Class: starClass,
+		Skip:                  int64((page * 5) - 5),
+		ListStarRequestFilter: filters,
 	})
 	if err != nil { // Handle our gRPC errors.
 		fmt.Printf("Error happened while listing: %v \n", err)
@@ -240,7 +249,7 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/planet/{page}/{type}/{name}", listPlanetHandler).Methods(http.MethodGet)
 	r.HandleFunc("/planet/{name}", readPlanetHandler).Methods(http.MethodGet)
-	r.HandleFunc("/star", listStarHandler).Methods(http.MethodGet)
+	r.HandleFunc("/star/{page}/{classification}/{name}", listStarHandler).Methods(http.MethodGet)
 	r.HandleFunc("/star/{name}", readStarHandler).Methods(http.MethodGet)
 	r.Use(mux.CORSMethodMiddleware(r))
 

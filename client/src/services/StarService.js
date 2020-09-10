@@ -1,8 +1,8 @@
 import http from "../http-common";
 
 class StarService {
-  getAll(page, type) {
-    return http.get("/star?page=" + encodeURIComponent(page) + "&type=" + encodeURIComponent(type));
+  getAll(page, classification, name) {
+    return http.get(`/star/${page}/${classification}/${name}`);
   }
 
   get(name) {

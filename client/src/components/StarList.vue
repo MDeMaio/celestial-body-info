@@ -9,7 +9,7 @@
                         <button class="btn btn-outline-primary ml-1 fs-20" type="submit">
                             Search
                         </button>
-                        <button class="btn btn-outline-secondary fs-20" type="button" @click="refreshList">
+                        <button class="btn btn-outline-secondary fs-20" type="button" @click="resetPage">
                             Reset
                         </button>
                     </div>
@@ -22,57 +22,59 @@
             <h4 style="font-size: 35px;">Available Stars</h4>
             <div class="btn-group dropleft mb-2">
                 <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Star Class
+                    Star Classification
                 </button>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item" v-bind:href="'/stars?page=1&class=All'" :class="{'active':(starClass === 'All')}">All</a>
-                    <a class="dropdown-item" v-bind:href="'/stars?page=1&class=Yellow Dwarf'" :class="{'active':(starClass === 'Yellow Dwarf')}">Yellow Dwarf</a>
-                    <a class="dropdown-item" v-bind:href="'/stars?page=1&class=White Dwarf'" :class="{'active':(starClass === 'White Dwarf')}">White Dwarf</a>
+                    <button class="dropdown-item" @click="classification = 'All'" :class="{'active':(classification === 'All')}">All</button>
+                    <button class="dropdown-item" @click="classification = 'Yellow Dwarf'" :class="{'active':(classification === 'Yellow Dwarf')}">Yellow Dwarf</button>
+                    <button class="dropdown-item" @click="classification = 'Yellow Supergiant'" :class="{'active':(classification === 'Yellow Supergiant')}">Yellow Supergiant</button>
                 </div>
             </div>
-            <transition-group name="slide-fade" tag="ul" class="list-group">
+            <ul class="list-group">
                 <li class="list-group-item lgi-pointer py-1" :class="{ active: index == currentIndex }" v-for="(star, index) in stars" :key="star.star_id" @click="setActiveStar(star, index)">
                     {{ star.name }}
                 </li>
-            </transition-group>
+            </ul>
             <nav aria-label="Pagination">
                 <ul class="pagination mt-2 justify-content-center">
                     <li v-if="loaded" :key="'prev'" :class="{'disabled':currentPage === 1}" class="page-item previous-item">
-                        <a class="page-link" v-bind:href="'/stars?page='+ (currentPage-1) + '&class=' + starClass">Prev</a>
+                        <button class="page-link" @click="currentPage--">Prev</button>
                     </li>
                     <li v-for="page in pageArray" :key="page" class="page-item" :class="{'active':(currentPage === page)}">
-                        <a class="page-link" v-bind:href="'/stars?page='+ page + '&class=' + starClass">{{page}}</a>
+                        <button class="page-link" @click="currentPage = page">{{page}}</button>
                     </li>
                     <li v-if="loaded" :key="'next'" :class="{'disabled':currentPage === totalPages}" class="page-item next-item">
-                        <a class="page-link" v-bind:href="'/stars?page='+ (currentPage+1) + '&class=' + starClass">Next</a>
+                        <button class="page-link" @click="currentPage++">Next</button>
                     </li>
                 </ul>
             </nav>
         </div>
     </div>
-    <h1 style="text-align: center; margin-top: 2%; font-size: 50px;" v-if="currentStar">{{ currentStar.name }}</h1>
+    <transition name="slide-fade">
+        <h1 style="text-align: center; margin-top: 2%; font-size: 50px;" v-if="currentStar">{{ currentStar.name }}</h1>
+    </transition>
     <div class="row">
         <transition name="slide-fade">
             <div class="col-md-4" v-if="currentStar">
                 <h1>Basic Information</h1>
                 <ul class="list-group">
-                    <li :key="'class'" class="list-group-item lgi-colored-space">
-                        <p style="font-size: 22px;"><strong>Class:</strong> {{currentStar.basic_information.class}}</p>
+                    <li :key="'alternate_name'" class="list-group-item lgi-colored-space">
+                        <p style="font-size: 22px;"><strong>Mass:</strong> {{currentStar.basic_information.mass}} 10<sup>24</sup>kg</p>
                     </li>
-                    <li :key="'mass'" class="list-group-item lgi-colored-space">
-                        <p style="font-size: 22px;"><strong>Mass:</strong> {{currentStar.basic_information.mass}}</p>
+                    <li :key="'classification'" class="list-group-item lgi-colored-space">
+                        <p style="font-size: 22px;"><strong>Classification:</strong> {{currentStar.basic_information.classification}}</p>
                     </li>
-                    <li :key="'radius'" class="list-group-item lgi-colored-space">
-                        <p style="font-size: 22px;"><strong>Radius:</strong> {{currentStar.basic_information.radius}}</p>
+                    <li :key="'number_of_satelites'" class="list-group-item lgi-colored-space">
+                        <p style="font-size: 22px;"><strong>Radius:</strong> {{currentStar.basic_information.radius}} mi</p>
                     </li>
-                    <li :key="'system'" class="list-group-item lgi-colored-space">
+                    <li :key="'star_system'" class="list-group-item lgi-colored-space">
                         <p style="font-size: 22px;"><strong>System:</strong> {{currentStar.basic_information.system}}</p>
                     </li>
-                    <li :key="'temperature'" class="list-group-item lgi-colored-space">
-                        <p style="font-size: 22px;"><strong>Temperature:</strong> {{currentStar.basic_information.temperature}}</p>
+                    <li :key="'most_abundant_resource'" class="list-group-item lgi-colored-space">
+                        <p style="font-size: 22px;"><strong>Temperature:</strong> {{currentStar.basic_information.temperature}} K</p>
                     </li>
-                    <li :key="'age'" class="list-group-item lgi-colored-space">
-                        <p style="font-size: 22px;"><strong>Age:</strong> {{currentStar.basic_information.age}}m/s<sup>2</sup></p>
+                    <li :key="'surface_gravity'" class="list-group-item lgi-colored-space">
+                        <p style="font-size: 22px;"><strong>Age:</strong> {{currentStar.basic_information.age}} Years</p>
                     </li>
                 </ul>
             </div>
@@ -108,37 +110,37 @@ export default {
             stars: [],
             currentStar: null,
             currentIndex: -1,
-            name: "",
+            name: typeof this.$route.query.name == "undefined" || this.$route.query.name == "All" ? "" : this.$route.query.name,
             pageArray: [],
-            currentPage: parseInt(this.$route.query.page),
+            currentPage: typeof this.$route.query.page == "undefined" ? 1 : parseInt(this.$route.query.page),
             totalPages: 0,
-            starClass: this.$route.query.class,
-            loaded: false
+            classification: typeof this.$route.query.page == "undefined" ? "All" : this.$route.query.classification,
+            loaded: false,
+            resetting: false,
+            searching: false
         };
     },
     methods: {
-        retrieveStars(page, starClass) { // Fetchs all of our stars for the current page.
-            StarService.getAll(page, starClass)
+        retrieveStars(page, classification, name) { // Fetchs all of our stars for the current page.
+            StarService.getAll(page, classification, name == "" ? "All" : name)
                 .then(response => {
                     this.stars = response.data.stars;
-                    console.log(response.data);
-                    console.log(this.pageArray);
                     this.currentPage = page;
+                    this.classification = classification;
                     this.pageArray = this.generatePaginationPageArray(response.data.number_of_documents, 5);
-                    this.currentStar = null;
-                    this.currentIndex = -1;
+                    this.clearStarView();
                 })
                 .catch(e => {
                     console.log(e);
+                }).finally(() => {
+                    this.resetting = false; // why here????
+                    this.searching = false; // ???????????
                 });
         },
 
-        refreshList() { // Refreshes the page to the default state.
-            this.retrieveStars(this.currentPage, this.starClass);
-            this.currentStar = null;
+        clearStarView() { // Refreshes the page to the default state.
             this.currentIndex = -1;
-            this.name = "";
-            document.getElementsByClassName("pagination")[0].style.visibility = "visible";
+            this.currentStar = null;
         },
 
         setActiveStar(star, index) { // Updates currently viewed star.
@@ -153,21 +155,10 @@ export default {
                 return;
             }
 
-            StarService.get(this.name)
-                .then(response => {
-                    this.stars = [];
-                    this.stars.push(response.data);
-                    this.currentStar = null;
-                    this.currentIndex = -1;
-                    document.getElementsByClassName("pagination")[0].style.visibility = "hidden";
-                })
-                .catch(e => {
-                    if (e.response.status == 404) {
-                        alert("No star by that name exists in the database.");
-                        this.name = "";
-                        this.$refs.name.focus();
-                    }
-                });
+            this.searching = true;
+            this.retrieveStars(1, "All", this.name);
+            this.$router.push({ query: Object.assign({}, this.$route.query, { page: 1, classification: "All", name: this.name}) });
+
         },
         validatePageCount(count, total) {
             if (count > total) {
@@ -201,31 +192,48 @@ export default {
                 pageArray.push(i);
             }
             return pageArray;
+        },
+
+        resetPage() {
+            this.name = '';
+            this.resetting = true;
+            this.retrieveStars(1, 'All', 'All');
+            this.$router.push(this.$route.path)
         }
     },
     watch: { // Watch for data change in which page the user is currently on, call API to get new data when it changes.
-        // '$route.query.page': {
-        //     immediate: true,
-        //     handler(page) {
-        //         page = parseInt(page) || 1;
-        //         if (page !== this.currentPage) {
-        //             this.retrieveStars(page, this.type);
-        //         }
-        //     }
-        // },
-        // "currentPage": function () {
-        //     this.refreshList();
-        // },
+        "currentPage": function () {
+            if (this.resetting || this.searching) {
+                return;
+            }
 
-        // "type": function () {
-        //      if (this.currentPage === 1) {   // Otherwise changing current page will take care of the refresh for us.
-        //         this.refreshList();
-        //     }
-        //     this.currentPage = 1;
-        // }
+            this.$router.push({ query: Object.assign({}, this.$route.query, { page: this.currentPage, classification: this.classification, name: this.name == "" ? "All" : this.name }) });
+            this.retrieveStars(this.currentPage, this.classification, this.name);
+        },
+
+        "classification": function () {
+            if (this.resetting || this.searching) {
+                return;
+            }
+
+            this.$router.push({ query: Object.assign({}, this.$route.query, { page: this.currentPage, classification: this.classification, name: this.name == "" ? "All" : this.name }) });
+            this.name = "";
+            if (this.currentPage === 1) { // Otherwise changing current page will take care of the refresh for us.
+                this.retrieveStars(this.currentPage, this.classification, this.name);
+                return;
+            }
+            this.currentPage = 1;
+        },
+
+        "stars": function (val) {
+            if(val.length === 1){
+                this.currentStar = val[0];
+                this.currentIndex = 0;
+            }
+        }
     },
     mounted() {
-        this.retrieveStars(this.currentPage, this.starClass);
+        this.retrieveStars(this.currentPage, this.classification, this.name);
         this.loaded = true;
     }
 };
@@ -259,11 +267,11 @@ export default {
 /* Enter and leave animations can use different */
 /* durations and timing functions.              */
 .slide-fade-enter-active {
-    transition: all 2s ease;
+    transition: all 1s ease;
 }
 
 .slide-fade-leave-active {
-    transition: all 1.5s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+    transition: all 1s ease;
 }
 
 .slide-fade-enter,
@@ -271,7 +279,7 @@ export default {
 
 /* .slide-fade-leave-active below version 2.1.8 */
     {
-    transform: translateX(40px);
+    transform: translatey(300px);
     opacity: 0;
 }
 </style>
