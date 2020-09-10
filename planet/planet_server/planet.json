@@ -288,5 +288,34 @@
             "fact": "Data has shown large surface-temperature variations which could possibly be caused by volcanic activity. Large clouds of dust would possibly blanket parts of the planet and block any thermal emissions."
         }
         ]
+    },
+    {
+        "name": "Pluto",
+        "basic_information": {
+            "alternate_name": "Dis Pater, Yama",
+            "type": "Dwarf Planet",
+            "number_of_satelites": 5,
+            "star_system": "Solar System",
+            "most_abundant_resource": "Nitrogen Ice",
+            "surface_gravity": 0.620
+        },
+        "image": "./images/Pluto.jpg",
+        "facts": [{
+            "title": "Plutos status as a planet was questioned due to objects of similar size being discovered around it",
+            "fact": "Pluto was considered the ninth planet up until 2006, when it was reclassified as a dwarf planet. This was largely due to the discovery of another dwarf planet, Eris, which was located in the same region as Pluto. Due to the fact that Eris was larger than Pluto, the term planet was redefined and Pluto didnt fit the criteria anymore."
+        },
+        {
+            "title": "Pluto on occassion comes closer to the Sun than Neptune",
+            "fact": "This is due to Pluto having an eccentric and inclined orbit, which means it does not orbit the Sun in a perfect circle. This causes Pluto to occassionaly come closer to the Sun than Neptune. However, the two planets have a stable orbital resonance so they dont collide with eachother."
+        },
+        {
+            "title": "Pluto and its largest moon, Charon, are sometimes considered a binary system",
+            "fact": "A binary system means that Pluto and Charon actually orbit eachother around a barycenter, rather than Charon directly orbiting around Pluto. This is caused by the fact that the barycenter of their orbits does not lie within either of them."
+        },
+        {
+            "title": "Pluto is considered one of the most contrastive bodies in our Solar System",
+            "fact": "This contrast is due to large amounts of color variation and differing regions on the surface of Pluto. It has colors such as black, dark orange, and white. It also has large notable geographical features which range and vary in color."
+        }
+        ]
     }
 ]

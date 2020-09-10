@@ -37,5 +37,6 @@
 - [] Add data and information about black holes.
 - [] Add data and information about NEOs.
 - [] If no reliable APIs, possibly an html scraper to grab the data from wikipedia.
+- [] Add page that we can link astronomical words back to to show their definition, or use tooltip.
 - [] Add data and information about moons. Link moons back to parent planet in DB so we can make a link from planet page to moon page. This link will bring user to moon page
 -----> but will be filtering by the planet that redirected the user there.
