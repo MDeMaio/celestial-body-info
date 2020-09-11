@@ -2,9 +2,9 @@
     {
         "name": "Sun",
         "basic_information": {
-            "mass": "1,988,500",
+            "mass": "1",
             "classification": "Yellow Dwarf",
-            "radius": "432,690",
+            "radius": "1",
             "system": "Solar System",
             "temperature": "5,778",
             "age": "4,603,000,000"
@@ -15,8 +15,16 @@
             "fact": "The Sun is the most important source of energy for life on Earth. It accounts for ~98.86% of the total mass of the Solar System."
         },
         {
-            "title": "Suns makeup",
-            "fact": "The sun mostly consists of hydrogen."
+            "title": "Suns Composition",
+            "fact": "The sun mostly consists of Hydrogen (70%) and Helium(28%)."
+        },
+        {
+            "title": "Suns Shape",
+            "fact": "The sun is the closest thing to a perfect sphere that has been observed in nature."
+        },
+        {
+            "title": "Light",
+            "fact": "Light from the Sun takes appoximately 8 minutes to reach earth."
         }
         ]
     },
@@ -32,13 +40,112 @@
         },
         "image": "./images/Polaris_Aa.jpg",
         "facts": [{
-            "title": "Triple Star System",
-            "fact": "Polaris is part of a Triple Star System."
+            "title": "North Star",
+            "fact": "Polaris is known as the North Star due to its location in the Northern Sky. All other stars apear to revolve around Polaris."
         },
         {
             "title": "Earths Axis",
-            "fact": "Earths axis is pointed almost directly at Polaris, this is why it appears to remain in same location."
-        }
+            "fact": "Earths axis is pointed almost directly at Polaris. The position of Polaris allows it to remain motionless in the sky when viewing from earth."
+        },
+        {
+            "title": "Triple Star System",
+            "fact": "Polaris is part of a Triple Star System which includes Polaris Aa, Polaris Ab, and Polaris B."
+        },
+        {
+            "title": "Future Location",
+            "fact":"Due to Polaris moving away from the celestial pole, it will not always be the Northern Star"
+        } 
+        ]
+    },
+    {
+        "name": "Sirius A",
+        "basic_information": {
+            "mass": "2.06",
+            "classification": "Am Star",
+            "radius": "1.711",
+            "system": "Sirius",
+            "temperature": "9,940",
+            "age": "230,000,000"
+        },
+        "image": "./images/Sirius_A.jpg",
+        "facts": [{
+            "title": "Brightneess",
+            "fact": "Sirius is the brightest star in the night sky, it is about 25 times brighter than our Sun."
+        },
+        {
+            "title": "Binary Star System",
+            "fact": "The Sirus System is one of Earths closest neighbors. It is a binary star system made up of Sirius A and Sirius B"
+        },
+        {
+            "title": "Size",
+            "fact": "Sirius A is about doubled the size of the sun while Sirius B is smaller than earth"
+        },
+        {
+            "title": "Location",
+            "fact":"Sirius is gradually moving closer to the Solar System."
+        }       
+        ]
+    },
+    {
+        "name": "Proxima Centauri",
+        "basic_information": {
+            "mass": "0.12",
+            "classification": "Red Dwarf",
+            "radius": "0.15",
+            "system": "Alpha Centauri",
+            "temperature": "3,042",
+            "age": "4,800,000,000"
+        },
+        "image": "./images/Proxima_Centauri.jpg",
+        "facts": [
+        {
+            "title": "Alpha Centauri",
+            "fact": "Proxima Centauri is part of a Triple Star System Alpha Centauri."
+        },
+        {
+            "title": "Distance to Sun",
+            "fact": "Proxima Centauri is the closest known star to our Sun."
+        },
+        
+        {
+            "title": "Planets",
+            "fact": "Proxima Centauri has two known planets"
+        },
+        {
+            "title": "Visibility",
+            "fact":"Although Proxima Centauri is the closest star to our Solar System, it is not visible to the naked eye."
+        }       
+        ]
+    },
+    {
+        "name": "Betelgeuse",
+        "basic_information": {
+            "mass": "11.6",
+            "classification": "Red Supergiant",
+            "radius": "887",
+            "system": "Betelgeuse",
+            "temperature": "3,500",
+            "age": "8,000,000"
+        },
+        "image": "./images/Betelgeuse.jpg",
+        "facts": [
+        {
+            "title": "System",
+            "fact": "Betelgeuse is considered a single isolated star not associated with as cluster."
+        },
+        {
+            "title": "Size",
+            "fact": "Betelgeuse is one of the largest stars visible to the naked eye."
+        },
+        
+        {
+            "title": "Dimming",
+            "fact": "Betelgeuse has been dimming noticeably since 2019."
+        },
+        {
+            "title": "Evolution",
+            "fact":"Betelgeuse is expected to end its evolution with a supernova explosion within 100,000 years."
+        }       
         ]
     }
 ]
