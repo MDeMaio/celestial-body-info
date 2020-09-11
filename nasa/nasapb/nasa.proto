@@ -8,7 +8,7 @@ option go_package = "nasapb";
 message APOD {
     string apod_id = 1;
     string copy_right = 2;
-    int64 date = 3; // We will convert from unix time in go code.
+    string date = 3; 
     string explanation = 4;
     string hd_url = 5;
     string title = 6;

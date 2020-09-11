@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/mdemaio/celestial-body-info/nasa/nasapb"
 	"github.com/mdemaio/celestial-body-info/planet/planetpb"
 	"github.com/mdemaio/celestial-body-info/star/starpb"
 	"google.golang.org/grpc"
@@ -72,6 +73,27 @@ func connectToGRPCStar() (*grpc.ClientConn, starpb.StarServiceClient) {
 	}
 
 	c := starpb.NewStarServiceClient(cc)
+	return cc, c
+}
+
+func connectToGRPCNASA() (*grpc.ClientConn, nasapb.NasaServiceClient) {
+	fmt.Println("NASA Client")
+
+	opts := grpc.WithInsecure()
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "0.0.0.0:50053"
+	} else {
+		port = "0.0.0.0:80"
+	}
+
+	cc, err := grpc.Dial(port, opts)
+	if err != nil {
+		log.Fatalf("could not connect: %v", err)
+	}
+
+	c := nasapb.NewNasaServiceClient(cc)
 	return cc, c
 }
 
@@ -278,6 +300,34 @@ func readStarHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(slcB)
 }
 
+func readNASAAPODHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("reading a apod")
+	cc, c := connectToGRPCNASA()
+	defer cc.Close()
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	//vars := mux.Vars(r)
+	resRead, err := c.ReadAPOD(context.Background(), &nasapb.ReadAPODRequest{})
+	if err != nil { // Handle our gRPC errors.
+		fmt.Printf("Error happened while reading: %v \n", err)
+		code, errJSON := handleGRPCErrors(err)
+		w.WriteHeader(code)
+		w.Write(errJSON)
+		return
+	}
+
+	fmt.Printf("apod was read: %v \n", resRead)
+	slcB, err := json.Marshal(resRead.GetApod())
+	if err != nil {
+		fmt.Printf("Error happened while marshalling: %v \n", err)
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(slcB)
+}
+
 func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/planet/{page}/{type}/{name}", listPlanetHandler).Methods(http.MethodGet)
@@ -285,6 +335,7 @@ func main() {
 	r.HandleFunc("/planettype", listPlanetTypeHandler).Methods(http.MethodGet)
 	r.HandleFunc("/star/{page}/{classification}/{name}", listStarHandler).Methods(http.MethodGet)
 	r.HandleFunc("/star/{name}", readStarHandler).Methods(http.MethodGet)
+	r.HandleFunc("/apod", readNASAAPODHandler).Methods(http.MethodGet)
 	r.Use(mux.CORSMethodMiddleware(r))
 
 	log.Println("Listening for http requests.")
