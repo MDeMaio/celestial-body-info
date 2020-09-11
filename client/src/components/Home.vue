@@ -9,12 +9,22 @@
             about here.
         </h3>
     </div>
-    <div v-if="apod">
-        <h1 class="txt-center">Astronomical Photo of the Day - {{apod.date}}</h1>
-        <h2 class="txt-center">{{apod.title}}</h2>
-        <h3 v-if="apod.copy_right" class="txt-center">By: {{apod.copy_right}}</h3>
-        <img class="col-md-12" v-bind:src="apod.hd_url">
-        <p class="col-md-10 apod-explanation">{{apod.explanation}}</p>
+    <div v-if="currApod">
+        <h1 class="txt-center" id="apodh1">Astronomical Photo of the Day - {{currApod.date}}</h1>
+        <h2 class="txt-center">{{currApod.title}}</h2>
+        <h3 v-if="currApod.copy_right" class="txt-center">By: {{currApod.copy_right}}</h3>
+        <img class="col-md-12" v-bind:src="currApod.hd_url">
+        <nav aria-label="Pagination">
+            <ul class="pagination mt-2 justify-content-center">
+                <li :key="'prev'" class="page-item previous-item" :class="{'disabled':currApodIndex === (apodList.length - 1)}">
+                    <button class="page-link" @click="currApodIndex++">Prev</button>
+                </li>
+                <li :key="'next'" class="page-item next-item" :class="{'disabled':currApodIndex === 0}">
+                    <button class="page-link" @click="currApodIndex--">Next</button>
+                </li>
+            </ul>
+        </nav>
+        <p class="col-md-10 apod-explanation">{{currApod.explanation}}</p>
     </div>
 </div>
 </template>
@@ -26,15 +36,18 @@ export default {
     name: "home",
     data() {
         return {
-            apod: null
+            apodList: [],
+            currApod: null,
+            currApodIndex: 0
         };
     },
     methods: {
-        retrieveAPOD() { // Fetchs all of our stars for the current page.
+        retrieveAPOD() { // Fetchs all of our apods for 7 days.
             HomeService.getAPOD()
                 .then(response => {
-                    this.apod = response.data;
-                    console.log(this.apod);
+                    this.apodList = response.data;
+                    console.log(this.apodList);
+                    this.currApod = this.apodList[0];
 
                 })
                 .catch(e => {
@@ -42,6 +55,21 @@ export default {
                 })
         }
     },
+
+    watch: {
+        "currApodIndex": function (index) {
+            if(index < 0 || index >= 7){    // why this would ever happen, idk.
+                return;
+            }
+            this.currApod = this.apodList[index];
+            setTimeout(function () {
+                document.getElementById("apodh1").scrollIntoView({  // Reposition view to title of apod picture.
+                    behavior: 'smooth'
+                });
+            }, 200);
+        }
+    },
+
     mounted() {
         this.retrieveAPOD();
     }

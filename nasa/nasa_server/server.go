@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"time"
 
 	"github.com/mdemaio/celestial-body-info/nasa/nasapb"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -36,31 +37,44 @@ type apodItem struct {
 	Title       string             `json:"title" bson:"title"`
 }
 
-func (*server) ReadAPOD(ctx context.Context, req *nasapb.ReadAPODRequest) (*nasapb.ReadAPODResponse, error) {
-	fmt.Println("Read APOD Request")
+func (*server) ListAPOD(ctx context.Context, req *nasapb.ListAPODRequest) (*nasapb.ListAPODResponse, error) {
+	fmt.Println("List APOD Request")
 
 	// create an empty struct
-	data := &apodItem{}
 	filter := bson.M{}
+	apods := []*nasapb.APOD{}
 
-	res := collection.FindOne(context.Background(), filter)
-	if err := res.Decode(data); err != nil {
-		return nil, status.Errorf(
-			codes.NotFound,
-			fmt.Sprintf("Cannot find apod: %v", err),
-		)
-	}
-
-	apod, err := dataToAPODPb(data)
+	cursor, err := collection.Find(context.Background(), filter, nil)
 	if err != nil {
 		return nil, status.Errorf(
 			codes.Internal,
-			fmt.Sprintf("Error occured while generating apod data: %v", err),
+			fmt.Sprintf("Unknown internal error: %v", err),
 		)
 	}
+	defer cursor.Close(context.Background())
+	for cursor.Next(context.Background()) {
+		data := &apodItem{}
+		err := cursor.Decode(data)
+		if err != nil {
+			return nil, status.Errorf(
+				codes.Internal,
+				fmt.Sprintf("Error while decoding from mongodb: %v", err),
+			)
+		}
 
-	return &nasapb.ReadAPODResponse{
-		Apod: apod,
+		apod, err := dataToAPODPb(data)
+		if err != nil {
+			return nil, status.Errorf(
+				codes.Internal,
+				fmt.Sprintf("Error occured while generating apod data: %v", err),
+			)
+		}
+
+		apods = append(apods, apod)
+	}
+
+	return &nasapb.ListAPODResponse{
+		Apod: apods,
 	}, nil
 }
 
@@ -75,38 +89,51 @@ func dataToAPODPb(data *apodItem) (*nasapb.APOD, error) {
 	}, nil
 }
 
-func fetchAPOD() (*apodItem, error) { // This function is incomplete, need to parse the date somehow into an int64 before unmarshalling.
-	apod := &apodItem{}
-
-	// SWITCH TO ENV VARIABLE BEFORE PUSHING THIS!!!!!!!
-	// Default date is today, no need to pass it in.
-	url := "https://api.nasa.gov/planetary/apod?api_key=eghT6nR439KFj7tnC8ShZZ6tR77GirCYV19P9DhM"
-	res, err := http.Get(url)
-	if err != nil {
-		log.Fatalf("An error occured while fetching NASA APOD: %v", err)
-		return nil, err
+func fetchAPOD() ([]*apodItem, error) { // This function is incomplete, need to parse the date somehow into an int64 before unmarshalling.
+	apiKey := os.Getenv("NASA_API_KEY") // Use ENV variable instead of hardcode.
+	if apiKey == "" {
+		apiKey = "DEMO_KEY"
 	}
-	resByte, err := ioutil.ReadAll(res.Body)
-	res.Body.Close()
-	if err != nil {
-		log.Fatalf("An error occured while reading response body: %v", err)
-		return nil, err
+	startDate := time.Now()
+	var apodList []*apodItem
+
+	for i := 0; i < 7; i++ { // Get last 7 days worth of data.
+		apod := &apodItem{}
+		url := fmt.Sprintf("https://api.nasa.gov/planetary/apod?api_key=%s&date=%s", apiKey, startDate.Format("2006-01-02")) // Format date to what NASA API expects.
+		res, err := http.Get(url)
+		if err != nil {
+			log.Fatalf("An error occured while fetching NASA APOD: %v", err)
+			return nil, err
+		}
+		resByte, err := ioutil.ReadAll(res.Body)
+		res.Body.Close()
+		if err != nil {
+			log.Fatalf("An error occured while reading response body: %v", err)
+			return nil, err
+		}
+
+		err = json.Unmarshal(resByte, apod)
+		if err != nil {
+			log.Fatalf("An error occured while unmarshalling into struct: %v", err)
+			return nil, err
+		}
+
+		apodList = append(apodList, apod)
+		startDate = startDate.AddDate(0, 0, -1)
 	}
 
-	err = json.Unmarshal(resByte, apod)
-	if err != nil {
-		log.Fatalf("An error occured while unmarshalling into struct: %v", err)
-		return nil, err
-	}
-
-	return apod, nil
+	return apodList, nil
 }
 
-func insertAPOD(ctx context.Context, apod *apodItem) {
+func insertAPOD(ctx context.Context, apodList []*apodItem) {
 	filter := bson.M{}
 	collection.DeleteMany(ctx, filter)
 
-	if _, err := collection.InsertOne(ctx, apod); err != nil {
+	var ts []interface{}
+	for _, apod := range apodList { // Need empty interface for mongodb insert.
+		ts = append(ts, apod)
+	}
+	if _, err := collection.InsertMany(ctx, ts); err != nil {
 		log.Fatal(err)
 	}
 }

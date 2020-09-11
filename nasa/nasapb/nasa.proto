@@ -14,13 +14,13 @@ message APOD {
     string title = 6;
 }
 
-message ReadAPODRequest {
+message ListAPODRequest {
 }
 
-message ReadAPODResponse {
-    APOD apod = 1;
+message ListAPODResponse {
+    repeated APOD apod = 1;
 }
 
 service NasaService {
-    rpc ReadAPOD (ReadAPODRequest) returns (ReadAPODResponse); // return NOT_FOUND if not found
+    rpc ListAPOD (ListAPODRequest) returns (ListAPODResponse); // return NOT_FOUND if not found
 }

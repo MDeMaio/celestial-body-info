@@ -300,16 +300,15 @@ func readStarHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(slcB)
 }
 
-func readNASAAPODHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("reading a apod")
+func listNASAAPODHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("listing all apods")
 	cc, c := connectToGRPCNASA()
 	defer cc.Close()
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	//vars := mux.Vars(r)
-	resRead, err := c.ReadAPOD(context.Background(), &nasapb.ReadAPODRequest{})
+	resRead, err := c.ListAPOD(context.Background(), &nasapb.ListAPODRequest{})
 	if err != nil { // Handle our gRPC errors.
 		fmt.Printf("Error happened while reading: %v \n", err)
 		code, errJSON := handleGRPCErrors(err)
@@ -335,7 +334,7 @@ func main() {
 	r.HandleFunc("/planettype", listPlanetTypeHandler).Methods(http.MethodGet)
 	r.HandleFunc("/star/{page}/{classification}/{name}", listStarHandler).Methods(http.MethodGet)
 	r.HandleFunc("/star/{name}", readStarHandler).Methods(http.MethodGet)
-	r.HandleFunc("/apod", readNASAAPODHandler).Methods(http.MethodGet)
+	r.HandleFunc("/apod", listNASAAPODHandler).Methods(http.MethodGet)
 	r.Use(mux.CORSMethodMiddleware(r))
 
 	log.Println("Listening for http requests.")
