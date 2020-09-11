@@ -36,6 +36,11 @@ html {
   overflow-y: scroll;
 }
 
+body{
+background: #f5f5f5;
+
+}
+
 .fade-enter-active,
 .fade-leave-active {
     transition-duration: 2s;
