@@ -80,7 +80,7 @@ func fetchAPOD() (*apodItem, error) { // This function is incomplete, need to pa
 
 	// SWITCH TO ENV VARIABLE BEFORE PUSHING THIS!!!!!!!
 	// Default date is today, no need to pass it in.
-	url := "https://api.nasa.gov/planetary/apod?api_key=eghT6nR439KFj7tnC8ShZZ6tR77GirCYV19P9DhM&date=2020-09-09"
+	url := "https://api.nasa.gov/planetary/apod?api_key=eghT6nR439KFj7tnC8ShZZ6tR77GirCYV19P9DhM&date=2020-09-07"
 	res, err := http.Get(url)
 	if err != nil {
 		log.Fatalf("An error occured while fetching NASA APOD: %v", err)

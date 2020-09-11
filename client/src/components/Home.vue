@@ -10,9 +10,9 @@
         </h3>
     </div>
     <div v-if="apod">
-        <h1 class="txt-center">Astronomical Photo of the Day</h1>
+        <h1 class="txt-center">Astronomical Photo of the Day - {{apod.date}}</h1>
         <h2 class="txt-center">{{apod.title}}</h2>
-        <h3 class="txt-center">By: {{apod.copy_right}}, {{apod.date}}</h3>
+        <h3 v-if="apod.copy_right" class="txt-center">By: {{apod.copy_right}}</h3>
         <img class="col-md-12" v-bind:src="apod.hd_url">
         <p class="col-md-10 apod-explanation">{{apod.explanation}}</p>
     </div>
