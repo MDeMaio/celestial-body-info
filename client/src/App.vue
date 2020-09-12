@@ -19,9 +19,9 @@
     </div>
 
     <footer>
-        <div class ="container-fluid">
-            <div class="row justify-content-md-center">
-                <div class="col-md-1"><a href="#!">Link1</a></div>
+        <div class="container-fluid" style="background:#C8C8C8;">
+            <div class="row justify-content-md-center" style="font-size:16px;padding-top:20px;">
+                <div class="col-md-1" ><a href="#!">Link1</a></div>
                 <div class="col-md-1"><a href="#!">Link2</a></div>
                 <div class="col-md-1"><a href="#!">Link3</a></div>
                 <div class="col-md-1"><a href="#!">Link4</a></div>
@@ -42,6 +42,10 @@ export default {
 .app {
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     font-size: 22px;
+}
+
+.footer {
+    font-size: 1px;
 }
 
 html {
