@@ -12,6 +12,7 @@ message APOD {
     string explanation = 4;
     string hd_url = 5;
     string title = 6;
+    string media_type = 7;
 }
 
 message ListAPODRequest {

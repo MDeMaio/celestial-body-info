@@ -13,7 +13,8 @@
         <h1 class="txt-center" id="apodh1">Astronomy Picture of the Day - {{currApod.date}}</h1>
         <h2 class="txt-center">{{currApod.title}}</h2>
         <h3 v-if="currApod.copy_right" class="txt-center">By: {{currApod.copy_right}}</h3>
-        <img class="col-md-12" v-bind:src="currApod.hd_url">
+        <img v-if="currApod.media_type === 'image'" class="col-md-12" v-bind:src="currApod.hd_url">
+        <iframe v-if="currApod.media_type === 'video'" v-bind:src="currApod.hd_url" height="200" width="300" title="Iframe Example"></iframe>
         <nav aria-label="Pagination">
             <ul class="pagination mt-2 justify-content-center">
                 <li :key="'prev'" class="page-item previous-item" :class="{'disabled':currApodIndex === (apodList.length - 1)}">
@@ -58,12 +59,12 @@ export default {
 
     watch: {
         "currApodIndex": function (index) {
-            if(index < 0 || index >= 7){    // why this would ever happen, idk.
+            if (index < 0 || index >= 7) { // why this would ever happen, idk.
                 return;
             }
             this.currApod = this.apodList[index];
             setTimeout(function () {
-                document.getElementById("apodh1").scrollIntoView({  // Reposition view to title of apod picture.
+                document.getElementById("apodh1").scrollIntoView({ // Reposition view to title of apod picture.
                     behavior: 'smooth'
                 });
             }, 200);

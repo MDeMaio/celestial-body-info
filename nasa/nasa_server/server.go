@@ -34,7 +34,9 @@ type apodItem struct {
 	Date        string             `json:"date" bson:"date"`
 	Explanation string             `json:"explanation" bson:"explanation"`
 	HDUrl       string             `json:"hdurl" bson:"hd_url"`
+	URL         string             `json:"url"`
 	Title       string             `json:"title" bson:"title"`
+	MediaType   string             `json:"media_type" bson:"media_type"`
 }
 
 func (*server) ListAPOD(ctx context.Context, req *nasapb.ListAPODRequest) (*nasapb.ListAPODResponse, error) {
@@ -86,6 +88,7 @@ func dataToAPODPb(data *apodItem) (*nasapb.APOD, error) {
 		Explanation: data.Explanation,
 		HdUrl:       data.HDUrl,
 		Title:       data.Title,
+		MediaType:   data.MediaType,
 	}, nil
 }
 
@@ -116,6 +119,10 @@ func fetchAPOD() ([]*apodItem, error) { // This function is incomplete, need to 
 		if err != nil {
 			log.Fatalf("An error occured while unmarshalling into struct: %v", err)
 			return nil, err
+		}
+
+		if apod.MediaType == "video" {
+			apod.HDUrl = apod.URL
 		}
 
 		apodList = append(apodList, apod)
