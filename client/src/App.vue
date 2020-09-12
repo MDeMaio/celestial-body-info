@@ -17,6 +17,18 @@
             <router-view />
         </transition>
     </div>
+
+    <footer>
+        <div class ="container-fluid">
+            <div class="row justify-content-md-center">
+                <div class="col-md-1"><a href="#!">Link1</a></div>
+                <div class="col-md-1"><a href="#!">Link2</a></div>
+                <div class="col-md-1"><a href="#!">Link3</a></div>
+                <div class="col-md-1"><a href="#!">Link4</a></div>
+            </div>
+            <div class="footer-copyright text-center py-3">© 2020 Copyright</div>
+        </div>
+    </footer>
 </div>
 </template>
 
