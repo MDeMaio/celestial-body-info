@@ -26,7 +26,7 @@
                 <div class="col-md-1"><a href="#!">Link3</a></div>
                 <div class="col-md-1"><a href="#!">Link4</a></div>
             </div>
-            <div class="footer-copyright text-center py-3">© 2020 Copyright</div>
+            <div class="footer-copyright text-center py-3">© {{ new Date().getFullYear() }} Copyright</div>
         </div>
     </footer>
 </div>
