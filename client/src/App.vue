@@ -12,7 +12,7 @@
         </div>
     </nav>
 
-    <div class="container-fluid mt-3">
+    <div class="container-fluid mt-3 mb-5">
         <transition name="fade" mode="out-in">
             <router-view />
         </transition>
