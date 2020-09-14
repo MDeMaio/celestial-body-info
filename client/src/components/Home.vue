@@ -14,7 +14,9 @@
         <h2 class="txt-center">{{currApod.title}}</h2>
         <h3 v-if="currApod.copy_right" class="txt-center">By: {{currApod.copy_right}}</h3>
         <img v-if="currApod.media_type === 'image'" class="col-md-12" v-bind:src="currApod.hd_url">
-        <iframe v-if="currApod.media_type === 'video'" v-bind:src="currApod.hd_url" height="200" width="300" title="Iframe Example"></iframe>
+        <div v-if="currApod.media_type === 'video'" class="resp-container">
+            <iframe class="col-md-12 resp-iframe" v-bind:src="currApod.hd_url" gesture="media" allow="encrypted-media" allowfullscreen></iframe>
+        </div>
         <nav aria-label="Pagination">
             <ul class="pagination mt-2 justify-content-center">
                 <li :key="'prev'" class="page-item previous-item" :class="{'disabled':currApodIndex === (apodList.length - 1)}">
@@ -87,5 +89,20 @@ export default {
     margin: 0 auto;
     float: none;
     font-size: 23px;
+}
+
+.resp-container {
+    position: relative;
+    overflow: hidden;
+    padding-top: 56.25%;
+}
+
+.resp-iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
 }
 </style>
