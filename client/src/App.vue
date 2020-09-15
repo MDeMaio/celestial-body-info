@@ -18,7 +18,7 @@
         </transition>
     </div>
 
-    <footer class="footer fixed-bottom">
+    <footer class="footer">
         <div class="container-fluid bg-dark">
             <div class="row justify-content-md-center" style="font-size:16px;padding-top:10px;">
                 <div class="footer-copyright text-center py-1 text-white">© {{ new Date().getFullYear() }} Copyright</div>
@@ -49,15 +49,21 @@ body {
 .app {
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     font-size: 22px;
-    height: 100%;
+    
 }
 
 .footer {
     font-size: 1px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
 }
 
 html {
     overflow-y: scroll;
+    height: auto;
+    position: relative;
+    min-height: 100vh;
 }
 
 body{
