@@ -20,7 +20,7 @@
 
     <footer class="footer fixed-bottom">
         <div class="container-fluid bg-dark">
-            <div class="row justify-content-md-center" style="font-size:16px;padding-top:20px;">
+            <div class="row justify-content-md-center" style="font-size:16px;padding-top:10px;">
                 <div class="footer-copyright text-center py-1 text-white">© {{ new Date().getFullYear() }} Copyright</div>
                 <div class="text-right py-1 text-white ml-4">
                     Maintained by <a href="https://www.linkedin.com/in/matthew-demaio-6848ab15a/" target="_blank">Matthew DeMaio</a> & <a href="https://www.linkedin.com/in/dan-pezella-495897150/" target="_blank">Dan Pezella</a>
