@@ -82,9 +82,6 @@ func (*server) ReadPlanet(ctx context.Context, req *planetpb.ReadPlanetRequest) 
 	}, nil
 }
 
-// Update below to use newly created Filter from proto to pass any # of filters into the request, ignoring any filters with value of 'All'
-// Main.go will pass the array of object to the gRPC with values Column and Value.
-// See if way to push values to bson.M{} AFTER defining it.(filter["test"] = "Test")
 func (*server) ListPlanet(ctx context.Context, req *planetpb.ListPlanetRequest) (*planetpb.ListPlanetResponse, error) {
 	fmt.Println("List planet request")
 
@@ -112,9 +109,9 @@ func (*server) ListPlanet(ctx context.Context, req *planetpb.ListPlanetRequest) 
 		)
 	}
 
-	options.SetLimit(5)
-	options.SetSort(bson.M{"name": 1})
-	options.SetSkip(req.GetSkip())
+	options.SetLimit(5)                // Return 5 documents when called.
+	options.SetSort(bson.M{"name": 1}) // Sort by name.
+	options.SetSkip(req.GetSkip())     // Set skip allows us to use pagination, return 5 documents, but the 5 are different depending on the skip.
 	cursor, err := collection.Find(context.Background(), filter, options)
 	if err != nil {
 		return nil, status.Errorf(
@@ -155,7 +152,7 @@ func (*server) ListPlanetType(ctx context.Context, req *planetpb.ListPlanetTypeR
 
 	filter := bson.M{} // Nested filter.
 
-	data, err := collection.Distinct(context.Background(), "basic_information.type", filter)
+	data, err := collection.Distinct(context.Background(), "basic_information.type", filter) // Grab distinct planet types to populate frontend dropdown.
 	if err != nil {
 		return nil, status.Errorf(
 			codes.Internal,
@@ -173,7 +170,7 @@ func (*server) ListPlanetType(ctx context.Context, req *planetpb.ListPlanetTypeR
 	}, nil
 }
 
-func dataToPlanetPb(data *planetItem) (*planetpb.Planet, error) {
+func dataToPlanetPb(data *planetItem) (*planetpb.Planet, error) { // Helper function to format golang struct data into gRPC data.
 	facts := []*planetpb.Facts{} // Not sure if this is correct.
 	for _, v := range data.Facts {
 		fact := &planetpb.Facts{

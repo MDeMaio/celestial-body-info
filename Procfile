@@ -1,1 +1,0 @@
-web: celestial-body-info

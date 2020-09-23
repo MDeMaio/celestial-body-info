@@ -1,5 +1,6 @@
 <template>
 <div>
+    <!-- --- Static welcoming information on homepage, we can update this to whatever we want. ---  -->
     <div class="mb-5">
         <h1 class="mb-3 txt-center">Welcome to Celestial Body Info Website!</h1>
         <h3>
@@ -9,6 +10,9 @@
             about here.
         </h3>
     </div>
+    <!-- --- End static welcoming information --- -->
+
+    <!-- --- Astronomy picture of the day, along with its information pulled from NASA API. --- -->
     <div v-if="currApod">
         <h1 class="txt-center" id="apodh1">Astronomy Picture of the Day - {{currApod.date}}</h1>
         <h2 class="txt-center">{{currApod.title}}</h2>
@@ -29,6 +33,7 @@
         </nav>
         <p class="col-md-10 apod-explanation">{{currApod.explanation}}</p>
     </div>
+    <!-- --- End Astronomy picture of the day --- -->
 </div>
 </template>
 
@@ -65,7 +70,7 @@ export default {
                 return;
             }
             this.currApod = this.apodList[index];
-            setTimeout(function () {
+            setTimeout(function () {    // Short timeout helps reduce jagged motion and allows image to load.
                 document.getElementById("apodh1").scrollIntoView({ // Reposition view to title of apod picture.
                     behavior: 'smooth'
                 });
@@ -94,7 +99,7 @@ export default {
 .resp-container {
     position: relative;
     overflow: hidden;
-    padding-top: 56.25%;
+    padding-top: 56.25%;    /*I can not remember why this was the % I used...*/
 }
 
 .resp-iframe {

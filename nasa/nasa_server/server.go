@@ -92,7 +92,7 @@ func dataToAPODPb(data *apodItem) (*nasapb.APOD, error) {
 	}, nil
 }
 
-func fetchAPOD() ([]*apodItem, error) { // This function is incomplete, need to parse the date somehow into an int64 before unmarshalling.
+func fetchAPOD() ([]*apodItem, error) {
 	apiKey := os.Getenv("NASA_API_KEY") // Use ENV variable instead of hardcode.
 	if apiKey == "" {
 		apiKey = "DEMO_KEY"
@@ -121,12 +121,12 @@ func fetchAPOD() ([]*apodItem, error) { // This function is incomplete, need to 
 			return nil, err
 		}
 
-		if apod.MediaType == "video" {
+		if apod.MediaType == "video" { // Videos dont appear to have an HDUrl, so instead we just update it to the basic URL.
 			apod.HDUrl = apod.URL
 		}
 
 		apodList = append(apodList, apod)
-		startDate = startDate.AddDate(0, 0, -1)
+		startDate = startDate.AddDate(0, 0, -1) // Shift back one day, we do this while looping 7 time, aka we get today and 6 previous days(1 week worth of data)
 	}
 
 	return apodList, nil
@@ -136,7 +136,7 @@ func insertAPOD(ctx context.Context, apodList []*apodItem) {
 	filter := bson.M{}
 	collection.DeleteMany(ctx, filter)
 
-	var ts []interface{}
+	var ts []interface{}            // ts = temp slice
 	for _, apod := range apodList { // Need empty interface for mongodb insert.
 		ts = append(ts, apod)
 	}

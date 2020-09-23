@@ -1,5 +1,6 @@
 <template>
 <div id="app" class="app">
+    <!-- --- Application header(nav), the current routes name is used to determine if the active class is applied or not(turns the name white) ---  -->
     <nav class="navbar navbar-expand navbar-dark bg-dark">
         <a href="/" class="navbar-brand">Celestial Body Info</a>
         <div class="navbar-nav mr-auto">
@@ -11,13 +12,18 @@
             </li>
         </div>
     </nav>
+    <!-- --- End application header(nav) --- -->
 
+    <!-- --- We use this for all content between the header and footer, all content has a fade in and out applied to it, 
+    meaning on the first visit of each page content will fade in --- -->
     <div class="container-fluid mt-3 mb-5">
         <transition name="fade" mode="out-in">
             <router-view />
         </transition>
     </div>
+    <!-- --- End application content --- -->
 
+    <!-- --- Our footer is very basic, it is styled to be sticky to the bottom of the page and only show when scrolled all the way down --- -->
     <footer class="footer">
         <div class="container-fluid bg-dark">
             <div class="row justify-content-md-center" style="font-size:16px;padding-top:10px;">
@@ -31,6 +37,7 @@
             </div>
         </div>
     </footer>
+    <!-- --- End application footer --- -->
 </div>
 </template>
 
@@ -59,6 +66,7 @@ body {
     width: 100%;
 }
 
+/* We always show the scroll bar to help with a weird repositioning issue we were having, might be a better fix */
 html {
     overflow-y: scroll;
     height: auto;

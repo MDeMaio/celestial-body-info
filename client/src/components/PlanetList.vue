@@ -1,5 +1,6 @@
 <template>
 <div>
+    <!-- --- Top level search bar, search button, and reset button --- -->
     <div class="row justify-content-center">
         <div class="col-md-6 list">
             <form v-on:submit.prevent @submit="searchName">
@@ -17,9 +18,11 @@
             </form>
         </div>
     </div>
+    <!-- --- End top level search bar area ---  -->
     <div class="row justify-content-center">
         <div class="col-md-6">
             <h4 style="font-size: 35px;">Available Planets</h4>
+            <!-- --- Filter options for planet, including search bar ---  -->
             <div class="btn-group dropleft mb-2">
                 <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Planet Type
@@ -28,11 +31,15 @@
                     <button class="dropdown-item" v-for="(planetType) in planetTypes" :key="planetType" @click="type = planetType" :class="{'active':(type === planetType)}">{{planetType}}</button>
                 </div>
             </div>
+            <!-- --- End filter options for planet --- -->
+            <!-- --- List of all our planets for current criteria --- -->
             <ul class="list-group">
                 <li class="list-group-item lgi-pointer py-1" :class="{ active: index == currentIndex }" v-for="(planet, index) in planets" :key="planet.planet_id" @click="setActivePlanet(planet, index)">
                     {{ planet.name }}
                 </li>
             </ul>
+            <!-- --- End list of all our planets ---  -->
+            <!-- --- Pagination for our planets list --- -->
             <nav aria-label="Pagination">
                 <ul class="pagination mt-2 justify-content-center">
                     <li v-if="loaded" :key="'prev'" :class="{'disabled':currentPage === 1}" class="page-item previous-item">
@@ -46,11 +53,13 @@
                     </li>
                 </ul>
             </nav>
+            <!-- --- End pagination for our planets list --- -->
         </div>
     </div>
     <transition name="slide-fade">
         <h1 style="text-align: center; margin-top: 2%; font-size: 50px;" v-if="currentPlanet">{{ currentPlanet.name }}</h1>
     </transition>
+    <!-- --- Current planets image and basic information... we can probably break this into its own component --- -->
     <div class="row">
         <transition name="slide-fade">
             <div class="col-md-4" v-if="currentPlanet">
@@ -83,6 +92,8 @@
         <div class="col-md-4">
         </div>
     </div>
+    <!-- --- End Current planet image and basic information --- -->
+    <!-- --- List of our planet facts --- -->
     <div class="row mt-3 justify-content-center">
         <div class="col-md-10">
             <div v-if="currentPlanet">
@@ -95,6 +106,7 @@
             </div>
         </div>
     </div>
+    <!-- --- End list of planet facts --- -->
 </div>
 </template>
 
@@ -140,7 +152,7 @@ export default {
         retrievePlanetTypes() { // Fetchs all of our planet types.
             PlanetService.getPlanetTypes()
                 .then(response => {
-                    response.data.planet_type.unshift("All");
+                    response.data.planet_type.unshift("All");   // Adds "All" to the front of the array, so it is the first option.
                     this.planetTypes = response.data.planet_type;
                 })
                 .catch(e => {
@@ -148,7 +160,7 @@ export default {
                 })
         },
 
-        clearPlanetView() { // Refreshes the page to the default state.
+        clearPlanetView() { // Clears the planet information view.
             this.currentIndex = -1;
             this.currentPlanet = null;
         },
@@ -158,7 +170,7 @@ export default {
             this.currentIndex = index;
         },
 
-        searchName() { // This will search for a planet by name and return it, caps specific as of now.
+        searchName() { // This will search for a planet by name and return it, based on REGEX of value in search input box(matches anything containing that value)
             if (this.name === "") {
                 alert("Please enter a planet to search for.");
                 this.$refs.name.focus();
