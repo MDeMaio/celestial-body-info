@@ -1,0 +1,23 @@
+version: "3.8"
+services:
+    app:
+        build: .
+        ports: 
+            - "50051:50051"
+            - "50052:50052"
+            - "50053:50053"
+    planet:
+        build: ./planet
+        ports:
+            - "50051:50051"
+    mongodb_container: 
+        image: mongo:latest
+        container_name: 'mongodb_container'
+        ports:
+            - "27017:27017"
+        volumes:
+            - mongodb_data_container:/data/db
+    client:
+        build: ./client
+        ports: 
+            - "8081:8081"
