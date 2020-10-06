@@ -5,5 +5,5 @@ COPY . .
 # Build the application.
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64
 RUN go build -o main
-EXPOSE 50051
+EXPOSE 8080
 ENTRYPOINT [ "./main" ]
