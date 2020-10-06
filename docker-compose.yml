@@ -1,15 +1,25 @@
-version: "3.8"
+version: "3.7"
 services:
-    app:
-        build: .
-        ports: 
-            - "50051:50051"
-            - "50052:50052"
-            - "50053:50053"
     planet:
         build: ./planet
         ports:
             - "50051:50051"
+    star:
+        build: ./star
+        ports:
+            - "50052:50052"
+    nasa:
+        build: ./nasa
+        ports:
+            - "50053:50053"
+    app:
+        build: .
+        ports: 
+            - "8080:8080"
+    client:
+        build: ./client
+        ports: 
+            - "8081:8081"
     mongodb_container: 
         image: mongo:latest
         container_name: 'mongodb_container'
@@ -17,7 +27,5 @@ services:
             - "27017:27017"
         volumes:
             - mongodb_data_container:/data/db
-    client:
-        build: ./client
-        ports: 
-            - "8081:8081"
+volumes:
+    mongodb_data_container:

@@ -239,7 +239,7 @@ func main() {
 	// connect to MongoDB
 	uri := os.Getenv("MONGODB_URI")
 	if uri == "" {
-		uri = "mongodb://localhost:27017"
+		uri = "mongodb://mongodb_container:27017"
 	}
 	fmt.Println(uri)
 
