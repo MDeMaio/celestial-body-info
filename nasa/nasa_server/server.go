@@ -152,10 +152,11 @@ func main() {
 
 	fmt.Println("Connecting to MongoDB")
 	// connect to MongoDB
-	uri := os.Getenv("MONGODB_URI")
-	if uri == "" {
-		uri = "mongodb://mongodb_container:27017"
+	ip := os.Getenv("MONGODB_URI")
+	if ip == "" {
+		ip = "localhost"
 	}
+	uri := "mongodb://" + ip + ":27017"
 	fmt.Println(uri)
 
 	client, err := mongo.NewClient(options.Client().ApplyURI(uri))

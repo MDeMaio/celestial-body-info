@@ -39,7 +39,11 @@ func connectToGRPCPlanet() (*grpc.ClientConn, planetpb.PlanetServiceClient) {
 
 	opts := grpc.WithInsecure()
 
-	port := "celestial-body-info_planet_1:50051"
+	ip := os.Getenv("PLANET_PORT")
+	if ip == "" {
+		ip = "0.0.0.0"
+	}
+	port := ip + ":50051"
 
 	cc, err := grpc.Dial(port, opts)
 	if err != nil {
@@ -55,7 +59,11 @@ func connectToGRPCStar() (*grpc.ClientConn, starpb.StarServiceClient) {
 
 	opts := grpc.WithInsecure()
 
-	port := "celestial-body-info_star_1:50052"
+	ip := os.Getenv("STAR_PORT")
+	if ip == "" {
+		ip = "0.0.0.0"
+	}
+	port := ip + ":50052"
 
 	cc, err := grpc.Dial(port, opts)
 	if err != nil {
@@ -71,7 +79,11 @@ func connectToGRPCNASA() (*grpc.ClientConn, nasapb.NasaServiceClient) {
 
 	opts := grpc.WithInsecure()
 
-	port := "celestial-body-info_nasa_1:50053"
+	ip := os.Getenv("NASA_PORT")
+	if ip == "" {
+		ip = "0.0.0.0"
+	}
+	port := ip + ":50053"
 
 	cc, err := grpc.Dial(port, opts)
 	if err != nil {

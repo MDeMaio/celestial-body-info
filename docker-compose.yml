@@ -2,18 +2,32 @@ version: "3.7"
 services:
     planet:
         build: ./planet
+        container_name: planet_server
+        environment: 
+            - MONGODB_URI=mongodb_container
         ports:
             - "50051:50051"
     star:
         build: ./star
+        container_name: star_server
+        environment: 
+            - MONGODB_URI=mongodb_container
         ports:
             - "50052:50052"
     nasa:
         build: ./nasa
+        container_name: nasa_server
+        environment: 
+            - MONGODB_URI=mongodb_container
         ports:
             - "50053:50053"
     app:
         build: .
+        environment: 
+            - PLANET_PORT=planet_server
+            - STAR_PORT=star_server
+            - NASA_PORT=nasa_server
+
         ports: 
             - "8080:8080"
     client:
