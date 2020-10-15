@@ -39,12 +39,11 @@ func connectToGRPCPlanet() (*grpc.ClientConn, planetpb.PlanetServiceClient) {
 
 	opts := grpc.WithInsecure()
 
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "0.0.0.0:50051"
-	} else {
-		port = "0.0.0.0:80"
+	ip := os.Getenv("PLANET_PORT")
+	if ip == "" {
+		ip = "0.0.0.0"
 	}
+	port := ip + ":50051"
 
 	cc, err := grpc.Dial(port, opts)
 	if err != nil {
@@ -60,12 +59,11 @@ func connectToGRPCStar() (*grpc.ClientConn, starpb.StarServiceClient) {
 
 	opts := grpc.WithInsecure()
 
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "0.0.0.0:50052"
-	} else {
-		port = "0.0.0.0:80"
+	ip := os.Getenv("STAR_PORT")
+	if ip == "" {
+		ip = "0.0.0.0"
 	}
+	port := ip + ":50052"
 
 	cc, err := grpc.Dial(port, opts)
 	if err != nil {
@@ -81,12 +79,11 @@ func connectToGRPCNASA() (*grpc.ClientConn, nasapb.NasaServiceClient) {
 
 	opts := grpc.WithInsecure()
 
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "0.0.0.0:50053"
-	} else {
-		port = "0.0.0.0:80"
+	ip := os.Getenv("NASA_PORT")
+	if ip == "" {
+		ip = "0.0.0.0"
 	}
+	port := ip + ":50053"
 
 	cc, err := grpc.Dial(port, opts)
 	if err != nil {
