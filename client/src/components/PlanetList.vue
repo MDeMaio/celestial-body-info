@@ -1,6 +1,6 @@
 <template>
 <div>
-   <search-bar @search="searchName" @reset="resetPage"> </search-bar>
+    <search-bar @search="searchName" @reset="resetPage"> </search-bar>
     <div class="row justify-content-center">
         <div class="col-md-6">
             <h4 style="font-size: 35px;">Available Planets</h4>
@@ -133,7 +133,7 @@ export default {
         retrievePlanetTypes() { // Fetchs all of our planet types.
             PlanetService.getPlanetTypes()
                 .then(response => {
-                    response.data.planet_type.unshift("All");   // Adds "All" to the front of the array, so it is the first option.
+                    response.data.planet_type.unshift("All"); // Adds "All" to the front of the array, so it is the first option.
                     this.planetTypes = response.data.planet_type;
                 })
                 .catch(e => {
@@ -154,7 +154,13 @@ export default {
         searchName(value) { // This will search for a planet by name and return it, based on REGEX of value in search input box(matches anything containing that value)
             this.searching = true;
             this.retrievePlanets(1, "All", value);
-            this.$router.push({ query: Object.assign({}, this.$route.query, { page: 1, type: "All", name: value}) }).catch(()=>{});  // Catch the error because we dont care about redirecting to same page.
+            this.$router.push({
+                query: Object.assign({}, this.$route.query, {
+                    page: 1,
+                    type: "All",
+                    name: value
+                })
+            }).catch(() => {}); // Catch the error because we dont care about redirecting to same page.
 
         },
         validatePageCount(count, total) {
@@ -195,7 +201,7 @@ export default {
         resetPage() {
             this.resetting = true;
             this.retrievePlanets(1, 'All', 'All');
-            this.$router.push(this.$route.path).catch(()=>{});  // Catch the error because we dont care about redirecting to same page.
+            this.$router.push(this.$route.path).catch(() => {}); // Catch the error because we dont care about redirecting to same page.
         }
     },
     watch: { // Watch for data change in which page the user is currently on, call API to get new data when it changes.
@@ -205,7 +211,13 @@ export default {
             }
 
             const name = typeof this.$route.query.name == "undefined" ? "All" : this.$route.query.name;
-            this.$router.push({ query: Object.assign({}, this.$route.query, { page: this.currentPage, type: this.type, name: name }) });
+            this.$router.push({
+                query: Object.assign({}, this.$route.query, {
+                    page: this.currentPage,
+                    type: this.type,
+                    name: name
+                })
+            });
             this.retrievePlanets(this.currentPage, this.type, name);
         },
 
@@ -214,7 +226,13 @@ export default {
                 return;
             }
 
-            this.$router.push({ query: Object.assign({}, this.$route.query, { page: this.currentPage, type: this.type, name: "All" }) });
+            this.$router.push({
+                query: Object.assign({}, this.$route.query, {
+                    page: this.currentPage,
+                    type: this.type,
+                    name: "All"
+                })
+            });
             if (this.currentPage === 1) { // Otherwise changing current page will take care of the refresh for us.
                 this.retrievePlanets(this.currentPage, this.type, "All");
                 return;
@@ -223,11 +241,11 @@ export default {
         },
 
         "planets": function (val) {
-            if(val === null){
+            if (val === null) {
                 return;
             }
 
-            if(val.length === 1){
+            if (val.length === 1) {
                 this.currentPlanet = val[0];
                 this.currentIndex = 0;
             }

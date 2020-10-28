@@ -134,7 +134,13 @@ export default {
         searchName(value) { // This will search for a star by name and return it, caps specific as of now.
             this.searching = true;
             this.retrieveStars(1, "All", value);
-            this.$router.push({ query: Object.assign({}, this.$route.query, { page: 1, classification: "All", name: value}) }).catch(()=>{});  // Catch the error because we dont care about redirecting to same page.;
+            this.$router.push({
+                query: Object.assign({}, this.$route.query, {
+                    page: 1,
+                    classification: "All",
+                    name: value
+                })
+            }).catch(() => {}); // Catch the error because we dont care about redirecting to same page.;
 
         },
         validatePageCount(count, total) {
@@ -175,7 +181,7 @@ export default {
         resetPage() {
             this.resetting = true;
             this.retrieveStars(1, 'All', 'All');
-            this.$router.push(this.$route.path).catch(()=>{});  // Catch the error because we dont care about redirecting to same page.
+            this.$router.push(this.$route.path).catch(() => {}); // Catch the error because we dont care about redirecting to same page.
         }
     },
     watch: { // Watch for data change in which page the user is currently on, call API to get new data when it changes.
@@ -185,7 +191,13 @@ export default {
             }
 
             const name = typeof this.$route.query.name == "undefined" ? "All" : this.$route.query.name;
-            this.$router.push({ query: Object.assign({}, this.$route.query, { page: this.currentPage, classification: this.classification, name: name }) });
+            this.$router.push({
+                query: Object.assign({}, this.$route.query, {
+                    page: this.currentPage,
+                    classification: this.classification,
+                    name: name
+                })
+            });
             this.retrieveStars(this.currentPage, this.classification, name);
         },
 
@@ -194,7 +206,13 @@ export default {
                 return;
             }
 
-            this.$router.push({ query: Object.assign({}, this.$route.query, { page: this.currentPage, classification: this.classification, name: "All" }) });
+            this.$router.push({
+                query: Object.assign({}, this.$route.query, {
+                    page: this.currentPage,
+                    classification: this.classification,
+                    name: "All"
+                })
+            });
             if (this.currentPage === 1) { // Otherwise changing current page will take care of the refresh for us.
                 this.retrieveStars(this.currentPage, this.classification, "All");
                 return;
@@ -203,11 +221,11 @@ export default {
         },
 
         "stars": function (val) {
-            if(val === null){
+            if (val === null) {
                 return;
             }
 
-            if(val.length === 1){
+            if (val.length === 1) {
                 this.currentStar = val[0];
                 this.currentIndex = 0;
             }
