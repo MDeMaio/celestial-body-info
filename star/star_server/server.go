@@ -10,19 +10,17 @@ import (
 	"os"
 	"os/signal"
 
-	"gopkg.in/mgo.v2/bson"
-
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/reflection"
-	"google.golang.org/grpc/status"
-
+	"github.com/mdemaio/celestial-body-info/logger"
+	"github.com/mdemaio/celestial-body-info/star/starpb"
+	"github.com/mdemaio/celestial-body-info/util"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-
-	"github.com/mdemaio/celestial-body-info/star/starpb"
-	"github.com/mdemaio/celestial-body-info/util"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/reflection"
+	"google.golang.org/grpc/status"
+	"gopkg.in/mgo.v2/bson"
 )
 
 var collection *mongo.Collection
@@ -52,6 +50,7 @@ type starItem struct {
 }
 
 func (*server) ReadStar(ctx context.Context, req *starpb.ReadStarRequest) (*starpb.ReadStarResponse, error) {
+
 	fmt.Println("Read star request")
 
 	starName := req.GetName()
@@ -82,6 +81,14 @@ func (*server) ReadStar(ctx context.Context, req *starpb.ReadStarRequest) (*star
 }
 
 func (*server) ListStar(ctx context.Context, req *starpb.ListStarRequest) (*starpb.ListStarResponse, error) {
+	var l = &logger.Logger{
+		Msg:     "List-Star request",
+		Funtion: "ListStar",
+		Service: "Star",
+		LogType: "INFORMATION",
+	}
+
+	l.LogToFile("/logs/logs.txt")
 	fmt.Println("List star request")
 
 	filter := bson.M{} // Nested filter.
