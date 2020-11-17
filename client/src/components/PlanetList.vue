@@ -22,19 +22,7 @@
             </ul>
             <!-- --- End list of all our planets ---  -->
             <!-- --- Pagination for our planets list --- -->
-            <nav aria-label="Pagination">
-                <ul class="pagination mt-2 justify-content-center">
-                    <li v-if="loaded" :key="'prev'" :class="{'disabled':currentPage === 1 || totalPages === 0}" class="page-item previous-item">
-                        <button class="page-link" @click="currentPage--">Prev</button>
-                    </li>
-                    <li v-for="page in pageArray" :key="page" class="page-item" :class="{'active':(currentPage === page)}">
-                        <button class="page-link" @click="currentPage = page">{{page}}</button>
-                    </li>
-                    <li v-if="loaded" :key="'next'" :class="{'disabled':currentPage === totalPages || totalPages === 0}" class="page-item next-item">
-                        <button class="page-link" @click="currentPage++">Next</button>
-                    </li>
-                </ul>
-            </nav>
+            <pagination :numOfDocuments="documents" :onPageChange="handlePageChange" ref="pagination"> </pagination>
             <!-- --- End pagination for our planets list --- -->
         </div>
     </div>
@@ -103,9 +91,7 @@ export default {
             planetTypes: [],
             currentPlanet: null,
             currentIndex: -1,
-            pageArray: [],
-            currentPage: typeof this.$route.query.page == "undefined" ? 1 : parseInt(this.$route.query.page),
-            totalPages: 0,
+            documents: 0,
             type: typeof this.$route.query.type == "undefined" ? "All" : this.$route.query.type,
             loaded: false,
             resetting: false,
@@ -117,9 +103,8 @@ export default {
             PlanetService.getAll(page, type, name == "" ? "All" : name)
                 .then(response => {
                     this.planets = response.data.planets;
-                    this.currentPage = page;
                     this.type = type;
-                    this.pageArray = this.generatePaginationPageArray(response.data.number_of_documents, 5);
+                    this.documents = response.data.number_of_documents;
                     this.clearPlanetView();
                 })
                 .catch(e => {
@@ -161,51 +146,28 @@ export default {
                     name: value
                 })
             }).catch(() => {}); // Catch the error because we dont care about redirecting to same page.
-
-        },
-        validatePageCount(count, total) {
-            if (count > total) {
-                count = total;
-            }
-            if (count % 2 == 0) { //ensure odd number
-                count--;
-            }
-            return count;
-        },
-        generatePaginationPageArray(numOfDocuments, recordsPerPage) { // Fetch our pages in an array so we can iterate over it later to create the pagination list items.
-            if (numOfDocuments == 0) { // No paging if no records.
-                this.totalPages = 0;
-                return;
+            
+            if (this.$refs.pagination.currentPage !== 1) { // Access childs current page, changing this to 1 will trigger a data reload.
+                this.$refs.pagination.currentPage = 1;
             }
 
-            const pageArray = [];
-            this.totalPages = Math.ceil(numOfDocuments / recordsPerPage); // sets total page count for data
-            let pageDisplayCount = this.validatePageCount(5, this.totalPages);
-            const mid = Math.ceil(pageDisplayCount / 2); // sets mid of displayed pages
-            let startIndex = (this.currentPage + 1) - mid; // set first page to be displayed
-
-            if (this.totalPages <= recordsPerPage) {
-                startIndex = 1;
-                pageDisplayCount = this.totalPages;
-            } else if (this.currentPage < mid) { // account for front half
-                startIndex = 1;
-            } else if ((this.currentPage + (mid - 1)) > this.totalPages) { //account for back half
-                startIndex = this.totalPages - pageDisplayCount + 1;
-            }
-            for (let i = startIndex; i < startIndex + pageDisplayCount; i++) {
-                pageArray.push(i);
-            }
-            return pageArray;
         },
 
         resetPage() {
             this.resetting = true;
+
+            if (this.$refs.pagination.currentPage !== 1) { // Access childs current page, changing this to 1 will trigger a data reload.
+                this.$refs.pagination.currentPage = 1;
+            }
             this.retrievePlanets(1, 'All', 'All');
             this.$router.push(this.$route.path).catch(() => {}); // Catch the error because we dont care about redirecting to same page.
-        }
-    },
-    watch: { // Watch for data change in which page the user is currently on, call API to get new data when it changes.
-        "currentPage": function () {
+        },
+
+        resetPageValue() {
+            return true;
+        },
+
+        handlePageChange(page) {
             if (this.resetting || this.searching) {
                 return;
             }
@@ -213,31 +175,32 @@ export default {
             const name = typeof this.$route.query.name == "undefined" ? "All" : this.$route.query.name;
             this.$router.push({
                 query: Object.assign({}, this.$route.query, {
-                    page: this.currentPage,
+                    page: page,
                     type: this.type,
                     name: name
                 })
             });
-            this.retrievePlanets(this.currentPage, this.type, name);
-        },
-
+            this.retrievePlanets(page, this.type, name);
+        }
+    },
+    watch: { // Watch for data change in which page the user is currently on, call API to get new data when it changes.
         "type": function () {
             if (this.resetting || this.searching) {
                 return;
             }
 
-            this.$router.push({
-                query: Object.assign({}, this.$route.query, {
-                    page: this.currentPage,
-                    type: this.type,
-                    name: "All"
-                })
-            });
-            if (this.currentPage === 1) { // Otherwise changing current page will take care of the refresh for us.
-                this.retrievePlanets(this.currentPage, this.type, "All");
-                return;
+            if (this.$refs.pagination.currentPage !== 1) { // Access childs current page, changing this to 1 will trigger a data reload.
+                this.$refs.pagination.currentPage = 1;
+            } else {
+                this.$router.push({
+                    query: Object.assign({}, this.$route.query, {
+                        page: 1,
+                        type: this.type,
+                        name: "All"
+                    })
+                });
+                this.retrievePlanets(1, this.type, "All");
             }
-            this.currentPage = 1;
         },
 
         "planets": function (val) {
@@ -254,7 +217,8 @@ export default {
     mounted() {
         this.retrievePlanetTypes();
         const name = typeof this.$route.query.name == "undefined" || this.$route.query.name == "All" ? "" : this.$route.query.name
-        this.retrievePlanets(this.currentPage, this.type, name);
+        const page = typeof this.$route.query.page == "undefined" ? 1 : parseInt(this.$route.query.page)
+        this.retrievePlanets(page, this.type, name);
         this.loaded = true;
     }
 };
