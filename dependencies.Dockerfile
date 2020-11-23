@@ -7,5 +7,7 @@ WORKDIR /app
 COPY go.mod .
 COPY go.sum .
 COPY /util /app/util
+COPY /logger /app/logger
+
 
 RUN go mod download

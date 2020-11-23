@@ -88,8 +88,8 @@ func (*server) ListStar(ctx context.Context, req *starpb.ListStarRequest) (*star
 		LogType: "INFORMATION",
 	}
 
-	l.LogToFile("/logs/logs.txt")
-	fmt.Println("List star request")
+	l.LogToFile("/logs/info.log")
+	// fmt.Println("List star request")
 
 	filter := bson.M{} // Nested filter.
 	for _, v := range req.GetListStarRequestFilter() {
