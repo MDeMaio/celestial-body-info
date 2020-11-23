@@ -1,24 +1,6 @@
 <template>
 <div>
-    <!-- --- Top level search bar, search button, and reset button --- -->
-    <div class="row justify-content-center">
-        <div class="col-md-6 list">
-            <form v-on:submit.prevent @submit="searchName">
-                <div class="input-group mb-3">
-                    <input ref="name" type="text" class="form-control fs-20" placeholder="Search by name" v-model="name" />
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-primary ml-1 fs-20" type="submit">
-                            Search
-                        </button>
-                        <button class="btn btn-outline-secondary fs-20" type="button" @click="resetPage">
-                            Reset
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-    <!-- --- End top level search bar area ---  -->
+    <search-bar @search="searchName" @reset="resetPage"> </search-bar>
     <div class="row justify-content-center">
         <div class="col-md-6">
             <h4 style="font-size: 35px;">Available Planets</h4>
@@ -40,19 +22,7 @@
             </ul>
             <!-- --- End list of all our planets ---  -->
             <!-- --- Pagination for our planets list --- -->
-            <nav aria-label="Pagination">
-                <ul class="pagination mt-2 justify-content-center">
-                    <li v-if="loaded" :key="'prev'" :class="{'disabled':currentPage === 1}" class="page-item previous-item">
-                        <button class="page-link" @click="currentPage--">Prev</button>
-                    </li>
-                    <li v-for="page in pageArray" :key="page" class="page-item" :class="{'active':(currentPage === page)}">
-                        <button class="page-link" @click="currentPage = page">{{page}}</button>
-                    </li>
-                    <li v-if="loaded" :key="'next'" :class="{'disabled':currentPage === totalPages}" class="page-item next-item">
-                        <button class="page-link" @click="currentPage++">Next</button>
-                    </li>
-                </ul>
-            </nav>
+            <pagination :numOfDocuments="documents" :onPageChange="handlePageChange" ref="pagination"> </pagination>
             <!-- --- End pagination for our planets list --- -->
         </div>
     </div>
@@ -121,10 +91,7 @@ export default {
             planetTypes: [],
             currentPlanet: null,
             currentIndex: -1,
-            name: typeof this.$route.query.name == "undefined" || this.$route.query.name == "All" ? "" : this.$route.query.name,
-            pageArray: [],
-            currentPage: typeof this.$route.query.page == "undefined" ? 1 : parseInt(this.$route.query.page),
-            totalPages: 0,
+            documents: 0,
             type: typeof this.$route.query.type == "undefined" ? "All" : this.$route.query.type,
             loaded: false,
             resetting: false,
@@ -136,9 +103,8 @@ export default {
             PlanetService.getAll(page, type, name == "" ? "All" : name)
                 .then(response => {
                     this.planets = response.data.planets;
-                    this.currentPage = page;
                     this.type = type;
-                    this.pageArray = this.generatePaginationPageArray(response.data.number_of_documents, 5);
+                    this.documents = response.data.number_of_documents;
                     this.clearPlanetView();
                 })
                 .catch(e => {
@@ -152,7 +118,7 @@ export default {
         retrievePlanetTypes() { // Fetchs all of our planet types.
             PlanetService.getPlanetTypes()
                 .then(response => {
-                    response.data.planet_type.unshift("All");   // Adds "All" to the front of the array, so it is the first option.
+                    response.data.planet_type.unshift("All"); // Adds "All" to the front of the array, so it is the first option.
                     this.planetTypes = response.data.planet_type;
                 })
                 .catch(e => {
@@ -170,85 +136,79 @@ export default {
             this.currentIndex = index;
         },
 
-        searchName() { // This will search for a planet by name and return it, based on REGEX of value in search input box(matches anything containing that value)
-            if (this.name === "") {
-                alert("Please enter a planet to search for.");
-                this.$refs.name.focus();
-                return;
-            }
-
+        searchName(value) { // This will search for a planet by name and return it, based on REGEX of value in search input box(matches anything containing that value)
             this.searching = true;
-            this.retrievePlanets(1, "All", this.name);
-            this.$router.push({ query: Object.assign({}, this.$route.query, { page: 1, type: "All", name: this.name}) });
-
-        },
-        validatePageCount(count, total) {
-            if (count > total) {
-                count = total;
-            }
-            if (count % 2 == 0) { //ensure odd number
-                count--;
-            }
-            return count;
-        },
-        generatePaginationPageArray(numOfDocuments, recordsPerPage) { // Fetch our pages in an array so we can iterate over it later to create the pagination list items.
-            if (numOfDocuments == 0) { // No paging if no records.
-                return;
+            this.retrievePlanets(1, "All", value);
+            this.$router.push({
+                query: Object.assign({}, this.$route.query, {
+                    page: 1,
+                    type: "All",
+                    name: value
+                })
+            }).catch(() => {}); // Catch the error because we dont care about redirecting to same page.
+            
+            if (this.$refs.pagination.currentPage !== 1) { // Access childs current page, changing this to 1 will trigger a data reload.
+                this.$refs.pagination.currentPage = 1;
             }
 
-            const pageArray = [];
-            this.totalPages = Math.ceil(numOfDocuments / recordsPerPage); // sets total page count for data
-            let pageDisplayCount = this.validatePageCount(5, this.totalPages);
-            const mid = Math.ceil(pageDisplayCount / 2); // sets mid of displayed pages
-            let startIndex = (this.currentPage + 1) - mid; // set first page to be displayed
-
-            if (this.totalPages <= recordsPerPage) {
-                startIndex = 1;
-                pageDisplayCount = this.totalPages;
-            } else if (this.currentPage < mid) { // account for front half
-                startIndex = 1;
-            } else if ((this.currentPage + (mid - 1)) > this.totalPages) { //account for back half
-                startIndex = this.totalPages - pageDisplayCount + 1;
-            }
-            for (let i = startIndex; i < startIndex + pageDisplayCount; i++) {
-                pageArray.push(i);
-            }
-            return pageArray;
         },
 
         resetPage() {
-            this.name = '';
             this.resetting = true;
+
+            if (this.$refs.pagination.currentPage !== 1) { // Access childs current page, changing this to 1 will trigger a data reload.
+                this.$refs.pagination.currentPage = 1;
+            }
             this.retrievePlanets(1, 'All', 'All');
-            this.$router.push(this.$route.path)
-        }
-    },
-    watch: { // Watch for data change in which page the user is currently on, call API to get new data when it changes.
-        "currentPage": function () {
+            this.$router.push(this.$route.path).catch(() => {}); // Catch the error because we dont care about redirecting to same page.
+        },
+
+        resetPageValue() {
+            return true;
+        },
+
+        handlePageChange(page) {
             if (this.resetting || this.searching) {
                 return;
             }
 
-            this.$router.push({ query: Object.assign({}, this.$route.query, { page: this.currentPage, type: this.type, name: this.name == "" ? "All" : this.name }) });
-            this.retrievePlanets(this.currentPage, this.type, this.name);
-        },
-
+            const name = typeof this.$route.query.name == "undefined" ? "All" : this.$route.query.name;
+            this.$router.push({
+                query: Object.assign({}, this.$route.query, {
+                    page: page,
+                    type: this.type,
+                    name: name
+                })
+            });
+            this.retrievePlanets(page, this.type, name);
+        }
+    },
+    watch: { // Watch for data change in which page the user is currently on, call API to get new data when it changes.
         "type": function () {
             if (this.resetting || this.searching) {
                 return;
             }
 
-            this.$router.push({ query: Object.assign({}, this.$route.query, { page: this.currentPage, type: this.type, name: this.name == "" ? "All" : this.name }) });
-            this.name = "";
-            if (this.currentPage === 1) { // Otherwise changing current page will take care of the refresh for us.
-                this.retrievePlanets(this.currentPage, this.type, this.name);
-                return;
+            if (this.$refs.pagination.currentPage !== 1) { // Access childs current page, changing this to 1 will trigger a data reload.
+                this.$refs.pagination.currentPage = 1;
+            } else {
+                this.$router.push({
+                    query: Object.assign({}, this.$route.query, {
+                        page: 1,
+                        type: this.type,
+                        name: "All"
+                    })
+                });
+                this.retrievePlanets(1, this.type, "All");
             }
-            this.currentPage = 1;
         },
 
         "planets": function (val) {
-            if(val.length === 1){
+            if (val === null) {
+                return;
+            }
+
+            if (val.length === 1) {
                 this.currentPlanet = val[0];
                 this.currentIndex = 0;
             }
@@ -256,7 +216,9 @@ export default {
     },
     mounted() {
         this.retrievePlanetTypes();
-        this.retrievePlanets(this.currentPage, this.type, this.name);
+        const name = typeof this.$route.query.name == "undefined" || this.$route.query.name == "All" ? "" : this.$route.query.name
+        const page = typeof this.$route.query.page == "undefined" ? 1 : parseInt(this.$route.query.page)
+        this.retrievePlanets(page, this.type, name);
         this.loaded = true;
     }
 };
